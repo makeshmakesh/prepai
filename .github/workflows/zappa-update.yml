@@ -1,10 +1,10 @@
-name: Zappa Update
+name: Zappa Deploy/Update
 
 on:
   workflow_dispatch:
 
 jobs:
-  update:
+  deploy-update:
     runs-on: ubuntu-latest
 
     env:
@@ -33,5 +33,13 @@ jobs:
           pip install -r requirements.txt
           pip install zappa
 
-          # ✅ Run the Zappa update
-          zappa update dev
+      - name: 🚀 Deploy or Update with Zappa
+        run: |
+          source venv/bin/activate
+          if zappa status dev > /dev/null 2>&1; then
+            echo "🔄 Environment exists → running update..."
+            zappa update dev
+          else
+            echo "✨ First time deploy → running deploy..."
+            zappa deploy dev
+          fi
