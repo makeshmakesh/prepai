@@ -777,7 +777,7 @@ function handleEarlyAccessForm() {
         submitBtn.disabled = true;
         
         try {
-            const response = await fetch('/early-access/', {
+            const response = await fetch('{% url "early_access" %}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
