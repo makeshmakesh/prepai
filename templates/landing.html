@@ -799,7 +799,7 @@ function handleEarlyAccessForm() {
                     submitBtn.disabled = false;
                 }, 5000);
             } else {
-                console.error('Error:', response.statusText);
+                console.error('Error:', response);
                 throw new Error('Network response was not ok');
             }
         } catch (error) {

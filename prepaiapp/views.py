@@ -4,7 +4,7 @@ from django.views import View
 from .models import EarlyAccessEmail
 from django.shortcuts import render, redirect
 from django.contrib import messages
-
+from django.http import JsonResponse
 class HomePage(View):
     """Renders the landing page."""
     def get(self, request):
@@ -21,13 +21,12 @@ class EarlyAccessSignupView(View):
 
     def post(self, request):
         email = request.POST.get("email", "").strip().lower()
+        print("Received email:", email)
         if email:
             obj, created = EarlyAccessEmail.objects.get_or_create(email=email)
             if created:
-                messages.success(request, "🎉 Thanks for joining early access!")
+                return JsonResponse({"status": "success", "message": "Thanks for joining!"})
             else:
-                messages.info(request, "You're already on the early access list.")
+                return JsonResponse({"status": "info", "message": "You're already on the list."})
         else:
-            messages.error(request, "Please enter a valid email.")
-
-        return redirect("/")  # named URL
+            return JsonResponse({"status": "error", "message": "Please enter a valid email."})
