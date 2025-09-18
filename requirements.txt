@@ -11,3 +11,4 @@ daphne>=4.0.0  # ASGI server
 numpy>=1.24.0
 openai  # For OpenAI agents SDK
 openai-agents[voice]
+python-dotenv
