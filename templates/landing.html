@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PrepAI - Smart Quiz Generation Platform</title>
+    <title>PrepAI - Your Personal AI Voice Learning Assistant</title>
     <style>
         * {
             margin: 0;
@@ -20,9 +20,9 @@
 
         /* Animated gradient background */
         .hero {
-            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe);
+            background-size: 600% 600%;
+            animation: gradientShift 20s ease infinite;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -31,7 +31,9 @@
 
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+            25% { background-position: 100% 50%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
             100% { background-position: 0% 50%; }
         }
 
@@ -97,6 +99,14 @@
             font-weight: 800;
             color: white;
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: '🎓';
+            font-size: 1.5rem;
         }
 
         .nav-links {
@@ -132,44 +142,75 @@
         .hero-content {
             text-align: center;
             color: white;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding-top: 100px;
         }
 
         .hero h1 {
-            font-size: clamp(3rem, 8vw, 5rem);
+            font-size: clamp(3rem, 8vw, 5.5rem);
             font-weight: 800;
             margin-bottom: 1.5rem;
             animation: fadeInUp 1s ease 0.2s both;
+            background: linear-gradient(135deg, #ffffff, #f0f8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease 0.4s both;
+            font-weight: 600;
         }
 
         .hero p {
-            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
             margin-bottom: 3rem;
             opacity: 0.9;
-            animation: fadeInUp 1s ease 0.4s both;
+            animation: fadeInUp 1s ease 0.6s both;
+            line-height: 1.7;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease 0.8s both;
         }
 
         .cta-button {
             background: rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 1rem 2.5rem;
+            padding: 1.2rem 3rem;
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 50px;
             font-size: 1.1rem;
             font-weight: 600;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
-            animation: fadeInUp 1s ease 0.6s both;
+        }
+
+        .cta-button.primary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-color: transparent;
         }
 
         .cta-button:hover {
             background: rgba(255, 255, 255, 0.3);
             transform: translateY(-3px);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-button.primary:hover {
+            background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
         }
 
         @keyframes fadeInUp {
@@ -186,7 +227,7 @@
         /* Features Section */
         .features {
             padding: 6rem 0;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             position: relative;
         }
 
@@ -203,7 +244,7 @@
             font-size: 1.3rem;
             color: #666;
             margin-bottom: 4rem;
-            max-width: 600px;
+            max-width: 700px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -223,6 +264,23 @@
             text-align: center;
             transition: all 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
         }
 
         .feature-card:hover {
@@ -260,36 +318,134 @@
             background: white;
         }
 
-        .steps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 4rem;
+        .flow-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
         }
 
-        .step {
+        .flow-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .flow-step:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .flow-step::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -2rem;
+            width: 2px;
+            height: 2rem;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            transform: translateX(-50%);
+        }
+
+        .flow-step:last-child::after {
+            display: none;
+        }
+
+        .step-content {
+            flex: 1;
+            padding: 0 2rem;
+        }
+
+        .step-visual {
+            flex: 1;
             text-align: center;
             padding: 2rem;
         }
 
         .step-number {
-            width: 60px;
-            height: 60px;
+            width: 80px;
+            height: 80px;
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: bold;
             margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3);
+        }
+
+        .step-icon {
+            font-size: 4rem;
+            margin: 1rem 0;
+            opacity: 0.8;
+        }
+
+        .step-content h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .step-content p {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        /* Learning modes section */
+        .learning-modes {
+            padding: 6rem 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .modes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .mode-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .mode-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .mode-card h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .mode-card p {
+            opacity: 0.9;
+            line-height: 1.7;
         }
 
         /* Early Access Section */
         .early-access {
             padding: 6rem 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d3748 100%);
             color: white;
             text-align: center;
             position: relative;
@@ -395,15 +551,18 @@
 
         .benefits-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 2rem;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
         .benefit-item {
             text-align: center;
-            padding: 1.5rem;
+            padding: 2rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .benefit-icon {
@@ -499,7 +658,7 @@
                 padding-top: 120px;
             }
             
-            .features-grid {
+            .features-grid, .modes-grid {
                 grid-template-columns: 1fr;
             }
             
@@ -516,6 +675,20 @@
             .early-access {
                 padding: 4rem 0;
             }
+
+            .flow-step {
+                flex-direction: column !important;
+                text-align: center;
+            }
+
+            .flow-step::after {
+                left: 50%;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
         }
 
         /* Scroll animations */
@@ -529,6 +702,31 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* Voice wave animation */
+        .voice-wave {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            margin-left: 0.5rem;
+        }
+
+        .wave-bar {
+            width: 3px;
+            height: 15px;
+            background: currentColor;
+            border-radius: 2px;
+            animation: wave 1.5s ease-in-out infinite;
+        }
+
+        .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.3s; }
+
+        @keyframes wave {
+            0%, 40%, 100% { transform: scaleY(0.4); }
+            20% { transform: scaleY(1); }
+        }
     </style>
 </head>
 <body>
@@ -538,8 +736,8 @@
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
                 <li><a href="#how-it-works">How it Works</a></li>
+                <li><a href="#modes">Learning Modes</a></li>
                 <li><a href="#early-access">Early Access</a></li>
-                <li><a href="#contact">Contact</a></li>
             </ul>
         </nav>
     </header>
@@ -548,35 +746,57 @@
         <div class="particles"></div>
         <div class="container">
             <div class="hero-content">
-                <h1>Smart Quiz Generation with AI</h1>
-                <p>Transform any topic or PDF into engaging quizzes instantly. Get personalized feedback and detailed explanations to accelerate your learning journey.</p>
-                <a href="#" class="cta-button">Start Creating Quizzes</a>
+                <h1>Your Personal AI Voice Learning Assistant</h1>
+                <p class="subtitle">Learn Smarter with Interactive Voice Teaching</p>
+                <p>Choose from curated topics or upload your study materials. Our AI voice assistant teaches you interactively, provides detailed explanations with examples, and tests your knowledge - all through natural conversation.</p>
+                <div class="cta-buttons">
+                    <a href="#early-access" class="cta-button primary">🎤 Start Learning Now</a>
+                    <a href="#how-it-works" class="cta-button">📚 See How It Works</a>
+                </div>
             </div>
         </div>
     </section>
 
     <section class="features" id="features">
         <div class="container">
-            <h2 class="section-title fade-in-on-scroll">Powerful Features</h2>
-            <p class="section-subtitle fade-in-on-scroll">Everything you need to create, take, and master quizzes</p>
+            <h2 class="section-title fade-in-on-scroll">Revolutionary Learning Features</h2>
+            <p class="section-subtitle fade-in-on-scroll">Experience the future of personalized education with AI-powered voice interaction</p>
             
             <div class="features-grid">
                 <div class="feature-card fade-in-on-scroll">
-                    <div class="feature-icon">🧠</div>
-                    <h3>AI-Powered Generation</h3>
-                    <p>Enter any topic - from mathematics to solar systems - and our AI instantly creates comprehensive quizzes tailored to your learning needs.</p>
+                    <div class="feature-icon">🎯</div>
+                    <h3>Smart Topic Selection</h3>
+                    <p>Choose from expertly curated topics like Python, Java, SQL, Data Science, and more. Each topic is broken down into digestible subtopics for focused learning.</p>
                 </div>
                 
                 <div class="feature-card fade-in-on-scroll">
-                    <div class="feature-icon">📄</div>
-                    <h3>PDF Upload & Analysis</h3>
-                    <p>Upload textbooks, study materials, or any PDF documents. Our AI extracts key concepts and generates relevant questions automatically.</p>
+                    <div class="feature-icon">📤</div>
+                    <h3>Upload & Learn</h3>
+                    <p>Upload any study material, textbook, or notes. Our AI analyzes your content and creates personalized learning sessions tailored to your material.</p>
+                </div>
+                
+                <div class="feature-card fade-in-on-scroll">
+                    <div class="feature-icon">🎙️</div>
+                    <h3>Interactive Voice Teaching</h3>
+                    <p>Learn through natural conversation with our AI voice assistant. Get explanations, ask questions, and receive immediate responses - just like having a personal tutor.</p>
+                </div>
+                
+                <div class="feature-card fade-in-on-scroll">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Adaptive Learning</h3>
+                    <p>Our AI adapts to your learning pace and style, providing examples and explanations that match your current understanding level.</p>
                 </div>
                 
                 <div class="feature-card fade-in-on-scroll">
                     <div class="feature-icon">📊</div>
-                    <h3>Smart Evaluation</h3>
-                    <p>Get instant results with detailed feedback, explanations for each answer, and personalized recommendations to improve your understanding.</p>
+                    <h3>Smart Assessment</h3>
+                    <p>Take voice-based or text-based tests that evaluate your knowledge. Get detailed scores, feedback, and personalized improvement suggestions.</p>
+                </div>
+                
+                <div class="feature-card fade-in-on-scroll">
+                    <div class="feature-icon">📈</div>
+                    <h3>Progress Tracking</h3>
+                    <p>Monitor your learning journey with detailed analytics, track your improvement over time, and identify areas that need more focus.</p>
                 </div>
             </div>
         </div>
@@ -584,26 +804,98 @@
 
     <section class="how-it-works" id="how-it-works">
         <div class="container">
-            <h2 class="section-title fade-in-on-scroll">How It Works</h2>
-            <p class="section-subtitle fade-in-on-scroll">Simple, fast, and effective learning in three steps</p>
+            <h2 class="section-title fade-in-on-scroll">Your Learning Journey</h2>
+            <p class="section-subtitle fade-in-on-scroll">A seamless flow from selection to mastery</p>
             
-            <div class="steps">
-                <div class="step fade-in-on-scroll">
-                    <div class="step-number">1</div>
-                    <h3>Choose Your Method</h3>
-                    <p>Enter a topic directly or upload any PDF document containing the material you want to study.</p>
+            <div class="flow-container">
+                <div class="flow-step fade-in-on-scroll">
+                    <div class="step-content">
+                        <h3>Enter Your Dashboard</h3>
+                        <p>Access your personalized learning hub with a clean, intuitive interface. Track your progress and continue where you left off with any topic or uploaded material.</p>
+                    </div>
+                    <div class="step-visual">
+                        <div class="step-number">1</div>
+                        <div class="step-icon">🏠</div>
+                    </div>
+                </div>
+
+                <div class="flow-step fade-in-on-scroll">
+                    <div class="step-content">
+                        <h3>Choose Your Path</h3>
+                        <p>Select from our curated topics (Python, Java, SQL, Data Science, etc.) or upload your own study materials. Each path is designed for comprehensive learning.</p>
+                    </div>
+                    <div class="step-visual">
+                        <div class="step-number">2</div>
+                        <div class="step-icon">🛤️</div>
+                    </div>
+                </div>
+
+                <div class="flow-step fade-in-on-scroll">
+                    <div class="step-content">
+                        <h3>Explore Subtopics</h3>
+                        <p>Dive into specific areas within your chosen topic. Each subtopic is carefully structured to build upon previous knowledge and ensure comprehensive understanding.</p>
+                    </div>
+                    <div class="step-visual">
+                        <div class="step-number">3</div>
+                        <div class="step-icon">🔍</div>
+                    </div>
+                </div>
+
+                <div class="flow-step fade-in-on-scroll">
+                    <div class="step-content">
+                        <h3>Learn or Test</h3>
+                        <p>For each subtopic, choose to Learn (interactive voice teaching with examples) or Take Test (voice/text-based assessment to evaluate your knowledge).</p>
+                    </div>
+                    <div class="step-visual">
+                        <div class="step-number">4</div>
+                        <div class="step-icon">🎯</div>
+                    </div>
+                </div>
+
+                <div class="flow-step fade-in-on-scroll">
+                    <div class="step-content">
+                        <h3>Master & Progress</h3>
+                        <p>Receive detailed feedback, scores, and improvement suggestions. Continue learning until you achieve mastery, then move on to advanced topics.</p>
+                    </div>
+                    <div class="step-visual">
+                        <div class="step-number">5</div>
+                        <div class="step-icon">🏆</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="learning-modes" id="modes">
+        <div class="container">
+            <h2 class="section-title fade-in-on-scroll">Two Powerful Learning Modes</h2>
+            <p class="section-subtitle fade-in-on-scroll">Comprehensive teaching and precise assessment in one platform</p>
+            
+            <div class="modes-grid">
+                <div class="mode-card fade-in-on-scroll">
+                    <div class="mode-icon">🎓</div>
+                    <h3>Learn Mode
+                        <div class="voice-wave">
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                        </div>
+                    </h3>
+                    <p>Interactive voice and text-based teaching with our AI assistant. Get end-to-end explanations, practical examples, step-by-step guidance, and immediate answers to your questions. Learn at your own pace with personalized instruction.</p>
                 </div>
                 
-                <div class="step fade-in-on-scroll">
-                    <div class="step-number">2</div>
-                    <h3>AI Generates Quiz</h3>
-                    <p>Our advanced AI analyzes your input and creates customized quiz questions that test key concepts and knowledge.</p>
-                </div>
-                
-                <div class="step fade-in-on-scroll">
-                    <div class="step-number">3</div>
-                    <h3>Learn & Improve</h3>
-                    <p>Take the quiz, get instant feedback, and receive detailed explanations to reinforce your learning.</p>
+                <div class="mode-card fade-in-on-scroll">
+                    <div class="mode-icon">📝</div>
+                    <h3>Test Mode
+                        <div class="voice-wave">
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                        </div>
+                    </h3>
+                    <p>Comprehensive knowledge assessment through voice or text interaction. Receive detailed scores, identify knowledge gaps, get improvement suggestions, and track your progress over time. Perfect for exam preparation.</p>
                 </div>
             </div>
         </div>
@@ -612,8 +904,8 @@
     <section class="early-access" id="early-access">
         <div class="container">
             <div class="early-access-content">
-                <h2 class="section-title fade-in-on-scroll">Join the Future of Learning</h2>
-                <p class="section-subtitle fade-in-on-scroll">Be among the first to experience PrepAI's revolutionary quiz generation platform</p>
+                <h2 class="section-title fade-in-on-scroll">Join the Learning Revolution</h2>
+                <p class="section-subtitle fade-in-on-scroll">Be among the first to experience AI-powered voice learning that adapts to you</p>
                 
                 <div class="signup-form fade-in-on-scroll">
                     <form id="earlyAccessForm" class="form-container">
@@ -625,7 +917,7 @@
                                 <span class="btn-loading" style="display: none;">Joining...</span>
                             </button>
                         </div>
-                        <p class="form-note">Join 2,700+ users already on the waitlist</p>
+                        <p class="form-note">Join 140+ learners already on the waitlist</p>
                     </form>
                 </div>
 
@@ -633,25 +925,30 @@
                     <div class="benefit-item fade-in-on-scroll">
                         <div class="benefit-icon">⚡</div>
                         <h4>First Access</h4>
-                        <p>Be the first to try new features</p>
+                        <p>Be the first to try revolutionary AI voice learning</p>
                     </div>
                     <div class="benefit-item fade-in-on-scroll">
                         <div class="benefit-icon">💰</div>
                         <h4>Special Pricing</h4>
-                        <p>50% off for early adopters</p>
+                        <p>50% off lifetime subscription for early adopters</p>
                     </div>
                     <div class="benefit-item fade-in-on-scroll">
                         <div class="benefit-icon">🎯</div>
                         <h4>Priority Support</h4>
-                        <p>Direct line to our development team</p>
+                        <p>Direct feedback line to shape the platform</p>
+                    </div>
+                    <div class="benefit-item fade-in-on-scroll">
+                        <div class="benefit-icon">📚</div>
+                        <h4>Free Content</h4>
+                        <p>Access premium learning topics at no cost</p>
                     </div>
                 </div>
 
                 <div class="success-message" id="successMessage" style="display: none;">
                     <div class="success-content">
                         <div class="success-icon">✨</div>
-                        <h3>You're on the list!</h3>
-                        <p>Thanks for joining! We'll notify you as soon as PrepAI launches.</p>
+                        <h3>Welcome to the future!</h3>
+                        <p>You're on the list! We'll notify you as soon as PrepAI launches with your exclusive early access.</p>
                     </div>
                 </div>
             </div>
@@ -663,15 +960,23 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>PrepAI</h3>
-                    <p>Revolutionizing education through AI-powered quiz generation. Learn smarter, not harder.</p>
+                    <p>Revolutionizing education through AI-powered voice learning. Experience personalized, interactive learning like never before.</p>
                 </div>
                 
                 <div class="footer-section">
-                    <h3>Features</h3>
-                    <a href="#">AI Quiz Generation</a><br>
-                    <a href="#">PDF Analysis</a><br>
-                    <a href="#">Smart Feedback</a><br>
-                    <a href="#">Progress Tracking</a>
+                    <h3>Learning Features</h3>
+                    <a href="#">Voice Teaching</a><br>
+                    <a href="#">Smart Assessment</a><br>
+                    <a href="#">Progress Tracking</a><br>
+                    <a href="#">Custom Content</a>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Topics</h3>
+                    <a href="#">Programming</a><br>
+                    <a href="#">Data Science</a><br>
+                    <a href="#">Web Development</a><br>
+                    <a href="#">Upload Custom</a>
                 </div>
                 
                 <div class="footer-section">
@@ -681,7 +986,7 @@
                 </div>
             </div>
             
-            <p>&copy; 2025 PrepAI. All rights reserved.</p>
+            <p>&copy; 2025 PrepAI. Transforming learning through AI. All rights reserved.</p>
         </div>
     </footer>
 
@@ -689,7 +994,7 @@
         // Create floating particles
         function createParticles() {
             const particles = document.querySelector('.particles');
-            const particleCount = 50;
+            const particleCount = 60;
             
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
@@ -752,66 +1057,67 @@
             });
         }
 
-function handleEarlyAccessForm() {
-    const form = document.getElementById('earlyAccessForm');
-    const successMessage = document.getElementById('successMessage');
-    
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const email = document.getElementById('email').value.trim();
-        const submitBtn = form.querySelector('.signup-btn');
-        const btnText = submitBtn.querySelector('.btn-text');
-        const btnLoading = submitBtn.querySelector('.btn-loading');
-        const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
-        
-        // Validate email
-        if (!email || !email.includes('@')) {
-            alert('Please enter a valid email address');
-            return;
-        }
-        
-        // Show loading state
-        btnText.style.display = 'none';
-        btnLoading.style.display = 'inline';
-        submitBtn.disabled = true;
-        
-        try {
-            const response = await fetch('{% url "early_access" %}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': csrfToken,
-                },
-                body: `email=${encodeURIComponent(email)}`
-            });
+        function handleEarlyAccessForm() {
+            const form = document.getElementById('earlyAccessForm');
+            const successMessage = document.getElementById('successMessage');
             
-            if (response.ok) {
-                form.style.display = 'none';
-                successMessage.style.display = 'block';
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
                 
-                setTimeout(() => {
-                    successMessage.style.display = 'none';
-                    form.style.display = 'block';
-                    form.reset();
+                const email = document.getElementById('email').value.trim();
+                const submitBtn = form.querySelector('.signup-btn');
+                const btnText = submitBtn.querySelector('.btn-text');
+                const btnLoading = submitBtn.querySelector('.btn-loading');
+                const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+                
+                // Validate email
+                if (!email || !email.includes('@')) {
+                    alert('Please enter a valid email address');
+                    return;
+                }
+                
+                // Show loading state
+                btnText.style.display = 'none';
+                btnLoading.style.display = 'inline';
+                submitBtn.disabled = true;
+                
+                try {
+                    const response = await fetch('{% url "early_access" %}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': csrfToken,
+                        },
+                        body: `email=${encodeURIComponent(email)}`
+                    });
+                    
+                    if (response.ok) {
+                        form.style.display = 'none';
+                        successMessage.style.display = 'block';
+                        
+                        setTimeout(() => {
+                            successMessage.style.display = 'none';
+                            form.style.display = 'block';
+                            form.reset();
+                            btnText.style.display = 'inline';
+                            btnLoading.style.display = 'none';
+                            submitBtn.disabled = false;
+                        }, 6000);
+                    } else {
+                        console.error('Error:', response);
+                        throw new Error('Network response was not ok');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Something went wrong. Please try again.');
+                    
                     btnText.style.display = 'inline';
                     btnLoading.style.display = 'none';
                     submitBtn.disabled = false;
-                }, 5000);
-            } else {
-                console.error('Error:', response);
-                throw new Error('Network response was not ok');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Something went wrong. Please try again.');
-            
-            btnText.style.display = 'inline';
-            btnLoading.style.display = 'none';
-            submitBtn.disabled = false;
+                }
+            });
         }
-    });
-}
+
         // Initialize everything
         document.addEventListener('DOMContentLoaded', () => {
             createParticles();
