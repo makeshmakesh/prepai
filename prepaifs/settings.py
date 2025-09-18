@@ -41,6 +41,11 @@ INSTALLED_APPS = [
     'channels'
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://prepai.online",
+    "https://www.prepai.online",
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
