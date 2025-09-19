@@ -1,0 +1,604 @@
+{% extends 'base.html' %}
+
+{% block title %}Interview History - PrepAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Interview History Specific Styles */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .stat-card:hover::before {
+        left: 100%;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-medium);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: var(--secondary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: var(--text-secondary);
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .session-grid {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .session-card {
+        background: white;
+        border-radius: 20px;
+        border: none;
+        box-shadow: var(--shadow-light);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .session-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .session-card:hover::before {
+        left: 100%;
+    }
+
+    .session-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-medium);
+    }
+
+    .session-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .session-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #2d3748 !important;
+        margin: 0;
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+    }
+
+    .status-completed {
+        background: rgba(34, 197, 94, 0.1);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .status-in_progress {
+        background: rgba(251, 191, 36, 0.1);
+        color: #fbbf24;
+        border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .status-abandoned {
+        background: rgba(245, 87, 108, 0.1);
+        color: #f5576c;
+        border: 1px solid rgba(245, 87, 108, 0.3);
+    }
+
+    .session-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+    }
+
+    .info-icon {
+        font-size: 1.1rem;
+        width: 20px;
+        text-align: center;
+    }
+
+    .session-description {
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    .session-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .btn-view-details {
+        background: var(--accent-gradient);
+        color: white;
+        padding: 0.6rem 1.5rem;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-view-details:hover {
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+    }
+
+    .btn-continue {
+        background: var(--secondary-gradient);
+        color: white;
+    }
+
+    .btn-continue:hover {
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(240, 147, 251, 0.3);
+    }
+
+    .difficulty-badge {
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .difficulty-easy {
+        background: rgba(34, 197, 94, 0.1);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .difficulty-medium {
+        background: rgba(251, 191, 36, 0.1);
+        color: #fbbf24;
+        border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .difficulty-hard {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .role-badge {
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        background: var(--primary-gradient);
+        color: white;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: var(--shadow-light);
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .empty-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+    }
+
+    .empty-description {
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .filters-section {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow-light);
+    }
+
+    .filters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        align-items: end;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .filter-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 0.9rem;
+    }
+
+    .filter-select {
+        padding: 0.6rem 1rem;
+        border: 2px solid rgba(102, 126, 234, 0.3);
+        border-radius: 15px;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .filter-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 15px rgba(102, 126, 234, 0.1);
+    }
+
+    .transcript-preview {
+        background: rgba(102, 126, 234, 0.05);
+        border-left: 3px solid #667eea;
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 0 10px 10px 0;
+        font-family: 'Monaco', 'Consolas', monospace;
+        font-size: 0.85rem;
+        line-height: 1.6;
+        color: var(--text-secondary);
+        max-height: 100px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .transcript-preview::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 30px;
+        background: linear-gradient(transparent, rgba(102, 126, 234, 0.05));
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+        }
+
+        .session-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .session-actions {
+            justify-content: flex-start;
+            width: 100%;
+        }
+
+        .filters-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .session-info {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .session-actions {
+            flex-direction: column;
+        }
+
+        .btn-view-details,
+        .btn-continue {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header fade-in">
+    <h1 class="page-title">Interview History</h1>
+    <p class="page-subtitle">Track your progress and review past interview sessions</p>
+</div>
+
+<!-- Statistics Cards -->
+<div class="stats-grid fade-in-on-scroll">
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.total_interviews }}</div>
+        <div class="stat-label">Total Interviews</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.completed_count }}</div>
+        <div class="stat-label">Completed</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.in_progress_count }}</div>
+        <div class="stat-label">In Progress</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.latest_difficulty|default:"N/A" }}</div>
+        <div class="stat-label">Latest Level</div>
+    </div>
+</div>
+
+<!-- Filters Section -->
+<div class="filters-section fade-in-on-scroll">
+    <form method="get" class="filters-form">
+        <div class="filters-grid">
+            <div class="filter-group">
+                <label class="filter-label">Status</label>
+                <select name="status" class="filter-select">
+                    <option value="">All Statuses</option>
+                    {% for status_key, status_display in status_choices %}
+                        <option value="{{ status_key }}" {% if filters.status == status_key %}selected{% endif %}>
+                            {{ status_display }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Role Type</label>
+                <select name="role_type" class="filter-select">
+                    <option value="">All Roles</option>
+                    {% for role_key, role_display in role_choices %}
+                        <option value="{{ role_key }}" {% if filters.role_type == role_key %}selected{% endif %}>
+                            {{ role_display }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Difficulty</label>
+                <select name="difficulty" class="filter-select">
+                    <option value="">All Levels</option>
+                    {% for difficulty_key, difficulty_display in difficulty_choices %}
+                        <option value="{{ difficulty_key }}" {% if filters.difficulty == difficulty_key %}selected{% endif %}>
+                            {{ difficulty_display }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <button type="submit" class="btn btn-primary">Apply Filters</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Interview Sessions -->
+{% if sessions %}
+    <div class="session-grid">
+        {% for session in sessions %}
+        <div class="session-card card fade-in-on-scroll">
+            <div class="card-body">
+                <div class="session-header">
+                    <h3 class="session-title">{{ session.template.title }}</h3>
+                    <span class="status-badge status-{{ session.status }}">
+                        {% if session.status == 'completed' %}✅{% elif session.status == 'in_progress' %}⏱️{% else %}❌{% endif %}
+                        {{ session.get_status_display }}
+                    </span>
+                </div>
+
+                <div class="session-info">
+                    <div class="info-item">
+                        <span class="info-icon">👤</span>
+                        <span class="role-badge">{{ session.template.get_role_type_display }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">📊</span>
+                        <span class="difficulty-badge difficulty-{{ session.template.difficulty }}">
+                            {{ session.template.get_difficulty_display }}
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">📅</span>
+                        <span>{{ session.started_at|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">⏰</span>
+                        <span>
+                            {% if session.completed_at %}
+                                Completed {{ session.completed_at|date:"H:i" }}
+                            {% else %}
+                                Started {{ session.started_at|date:"H:i" }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <p class="session-description">{{ session.template.description|truncatewords:25 }}</p>
+
+                <div class="session-actions">
+                    <a href="{% url 'interview_results' session_id=session.id %}" class="btn btn-view-details">
+                        <span>📝</span>
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination could be added here if needed -->
+    <div class="text-center mt-4">
+        <p class="text-muted">Showing {{ stats.total_interviews }} interview session{{ stats.total_interviews|pluralize }}</p>
+    </div>
+
+{% else %}
+    <!-- Empty State -->
+    <div class="empty-state fade-in-on-scroll">
+        <div class="empty-icon">🎯</div>
+        <h2 class="empty-title">No Interview History Yet</h2>
+        <p class="empty-description">
+            You haven't taken any AI interviews yet. Start your first mock interview to begin tracking your progress and improving your skills.
+        </p>
+        <a href="{% url 'interview_types' %}" class="btn btn-primary">
+            <span>🚀</span>
+            Start Your First Interview
+        </a>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Auto-submit filters on change
+    $('.filter-select').on('change', function() {
+        $(this).closest('form').submit();
+    });
+
+    // Add loading states for action buttons
+    $('.btn-view-details, .btn-continue').on('click', function(e) {
+        const $btn = $(this);
+        const originalText = $btn.html();
+        
+        $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
+        $btn.prop('disabled', true);
+        
+        // Re-enable after 3 seconds (or remove this if you have actual navigation)
+        setTimeout(() => {
+            $btn.html(originalText);
+            $btn.prop('disabled', false);
+        }, 3000);
+    });
+
+    // Enhanced card hover effects
+    $('.session-card').on('mouseenter', function() {
+        $(this).find('.session-title').css('color', '#667eea');
+    }).on('mouseleave', function() {
+        $(this).find('.session-title').css('color', 'var(--text-primary)');
+    });
+
+    // Statistics animation on scroll
+    const observerOptions = {
+        threshold: 0.5,
+        rootMargin: '0px 0px -100px 0px'
+    };
+
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const statNumbers = entry.target.querySelectorAll('.stat-number');
+                statNumbers.forEach((statNumber, index) => {
+                    const finalValue = parseInt(statNumber.textContent) || 0;
+                    let currentValue = 0;
+                    const increment = Math.ceil(finalValue / 20);
+                    
+                    const counter = setInterval(() => {
+                        currentValue += increment;
+                        if (currentValue >= finalValue) {
+                            statNumber.textContent = finalValue;
+                            clearInterval(counter);
+                        } else {
+                            statNumber.textContent = currentValue;
+                        }
+                    }, 50);
+                });
+                
+                statsObserver.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    const statsGrid = document.querySelector('.stats-grid');
+    if (statsGrid) {
+        statsObserver.observe(statsGrid);
+    }
+});
+</script>
+{% endblock %}

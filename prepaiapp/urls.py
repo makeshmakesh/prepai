@@ -19,6 +19,7 @@ urlpatterns = [
     path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
     path("courses/", views.CourseView.as_view(), name="courses"),
     path("interview_types/", views.InterviewView.as_view(), name="interview_types"),
+    path("interview_history/", views.InterviewHistoryView.as_view(), name="interview_history"),
     path(
         "course/<slug:slug>/subtopics/",
         views.CourseSubtopicsView.as_view(),

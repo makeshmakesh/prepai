@@ -20,7 +20,99 @@ from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.core.cache import cache
 from openai import OpenAI
-import datetime
+from datetime import datetime, time
+from django.db.models import Count, Q
+
+
+class InterviewHistoryView(LoginRequiredMixin, View):
+    """
+    View to display user's past interview sessions with statistics
+    """
+    login_url = "/login/"
+    
+    def get(self, request):
+        # Get all sessions for the user
+        base_sessions = InterviewSession.objects.filter(user=request.user).select_related('template')
+        
+        # Apply filters
+        filtered_sessions = self.apply_filters(base_sessions, request.GET)
+        
+        # Calculate statistics
+        stats = self.calculate_statistics(base_sessions)
+        
+        # Order sessions by most recent first
+        sessions = filtered_sessions.order_by('-started_at')
+        
+        context = {
+            'sessions': sessions,
+            'stats': stats,
+            'filters': {
+                'status': request.GET.get('status', ''),
+                'role_type': request.GET.get('role_type', ''),
+                'difficulty': request.GET.get('difficulty', ''),
+            },
+            'role_choices': InterviewTemplate.ROLE_CHOICES,
+            'difficulty_choices': InterviewTemplate.DIFFICULTY_CHOICES,
+            'status_choices': InterviewSession.STATUS_CHOICES,
+        }
+        return render(request, 'interview_history.html', context)
+    
+    def apply_filters(self, queryset, filters):
+        """Apply filters to the queryset"""
+        status = filters.get('status')
+        role_type = filters.get('role_type')
+        difficulty = filters.get('difficulty')
+        
+        if status:
+            queryset = queryset.filter(status=status)
+        if role_type:
+            queryset = queryset.filter(template__role_type=role_type)
+        if difficulty:
+            queryset = queryset.filter(template__difficulty=difficulty)
+            
+        return queryset
+    
+    def calculate_statistics(self, sessions):
+        """Calculate statistics for the dashboard"""
+        # Basic counts
+        total_interviews = sessions.count()
+        completed_count = sessions.filter(status='completed').count()
+        in_progress_count = sessions.filter(status='in_progress').count()
+        abandoned_count = sessions.filter(status='abandoned').count()
+        
+        # Get latest difficulty
+        latest_session = sessions.order_by('-started_at').first()
+        latest_difficulty = None
+        if latest_session:
+            latest_difficulty = latest_session.template.get_difficulty_display()
+        
+        # Additional useful stats
+        completion_rate = 0
+        if total_interviews > 0:
+            completion_rate = round((completed_count / total_interviews) * 100, 1)
+        
+        # Most attempted role
+        role_stats = (sessions
+                     .values('template__role_type')
+                     .annotate(count=Count('template__role_type'))
+                     .order_by('-count')
+                     .first())
+        
+        most_attempted_role = None
+        if role_stats:
+            # Get display name for the role
+            role_dict = dict(InterviewTemplate.ROLE_CHOICES)
+            most_attempted_role = role_dict.get(role_stats['template__role_type'])
+        
+        return {
+            'total_interviews': total_interviews,
+            'completed_count': completed_count,
+            'in_progress_count': in_progress_count,
+            'abandoned_count': abandoned_count,
+            'latest_difficulty': latest_difficulty,
+            'completion_rate': completion_rate,
+            'most_attempted_role': most_attempted_role,
+        }
 class InterviewResultView(LoginRequiredMixin, View):
     """
     View to display interview results and feedback
@@ -45,8 +137,10 @@ class InterviewResultView(LoginRequiredMixin, View):
                 return redirect('interview_types')
             
             # Check cache first to avoid re-analysis
-            cache_key = f"interview_analysis_{session_id}"
+            cache_key = f"interview_analysi_{session_id}"
             analysis_results = cache.get(cache_key)
+            if not analysis_results:
+                analysis_results = session.feedback if session.feedback else None
             
             if not analysis_results:
                 # Generate analysis using OpenAI
@@ -92,7 +186,8 @@ class InterviewResultView(LoginRequiredMixin, View):
                 'conversation_history': conversation_history,
             }
             print("Context for interview results:", context)  # Debug print
-            self.update_session_feedback(session, context)
+            if not session.feedback:
+                self.update_session_feedback(session, context)
             
             return render(request, 'interview_results.html', context)
             
@@ -108,6 +203,7 @@ class InterviewResultView(LoginRequiredMixin, View):
         """
         Analyze interview transcript using OpenAI and return structured results
         """
+
         try:
             transcript = session.transcript
             template = session.template
@@ -265,10 +361,6 @@ Please ensure your response contains ONLY the JSON object with no additional for
             logger.error(f"Unexpected error parsing analysis response: {e}")
             return None
 
-    def get_fallback_analysis(self):
-        """
-        Provide fallback analysis if OpenAI fails
-        """
     def calculate_session_duration(self, session):
         """Calculate interview duration in minutes"""
         try:
@@ -403,7 +495,7 @@ Please ensure your response contains ONLY the JSON object with no additional for
 
     def parse_timestamp(self, timestamp_str):
         """Parse timestamp string to datetime object"""
-        from datetime import datetime, time
+        
         try:
             # Parse time like "14:30:15"
             time_parts = timestamp_str.split(':')
@@ -454,7 +546,7 @@ Please ensure your response contains ONLY the JSON object with no additional for
             }
             
             # Save to feedback field
-            session.feedback = json.dumps(feedback_data, indent=2)
+            session.feedback = feedback_data
             session.save(update_fields=['feedback'])
             
             logger.info(f"Context data saved to session {session.id} feedback field")
@@ -510,32 +602,6 @@ Please ensure your response contains ONLY the JSON object with no additional for
                 }
             ]
         }
-# class InterviewResultView(LoginRequiredMixin, View):
-#     """
-#     View to display interview results and feedback
-#     """
-#     login_url = "/login/"
-    
-#     def get(self, request, session_id):
-#         try:
-#             # Get the interview session
-#             session = get_object_or_404(
-#                 InterviewSession,
-#                 id=session_id,
-#                 user=request.user
-#             )
-            
-            
-#             context = {
-#                 'session': session,
-#                 'template': session.template,
-#             }
-            
-#             return render(request, 'interview_results.html', context)
-            
-#         except InterviewSession.DoesNotExist:
-#             messages.error(request, "Interview session not found.")
-#             return redirect('interview_types')
 class StartInterviewView(LoginRequiredMixin, View):
     """
     Start a new interview session
@@ -634,9 +700,47 @@ class DashboardView(LoginRequiredMixin, View):
     """
     login_url = "/login/"
     
+    def get_overall_score(self, sessions):
+        if not sessions:
+            return 0
+        total_score = 0
+        count = 0
+        for session in sessions:
+            if session.feedback:
+                try:
+                    feedback_data = session.feedback
+                    score = feedback_data.get('scores', {}).get('overall_score', 0)
+                    total_score += score
+                    count += 1
+                except json.JSONDecodeError:
+                    continue
+        return int(total_score / count) if count > 0 else 0
+    
+    def recent_interviews(self, sessions, limit=5):
+        res = []
+        for session in sessions[:limit]:
+            feedback = {}
+            if session.feedback:
+                try:
+                    feedback = session.feedback
+                except json.JSONDecodeError:
+                    feedback = {}
+            res.append({
+                'session': session,
+                'template': session.template,
+                'overall_score': feedback.get('scores', {}).get('overall_score', None),
+                'created_at': session.completed_at
+            })
+        return res
+    
     def get(self, request):
-        
+        sessions = InterviewSession.objects.filter(user=request.user).order_by('-started_at')
+        session_count = sessions.count()
+        overall_score = self.get_overall_score(sessions)
         context = {
+            "interview_count" : session_count,
+            "avg_score" : overall_score,
+            "recent_interviews" : self.recent_interviews(sessions),
         }
         return render(request, 'dashboard.html', context)
 class CourseSubtopicsView(LoginRequiredMixin, View):

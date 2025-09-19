@@ -397,14 +397,7 @@
             <div class="stat-number">{{ avg_score|default:"--" }}{% if avg_score %}%{% endif %}</div>
             <div class="stat-label">Average Score</div>
         </div>
-        <div class="stat-item">
-            <div class="stat-number">{{ improvement|default:"--" }}{% if improvement %}%{% endif %}</div>
-            <div class="stat-label">Improvement</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number">{{ streak|default:0 }}</div>
-            <div class="stat-label">Day Streak</div>
-        </div>
+
     </div>
 </div>
 
@@ -418,7 +411,7 @@
             <div class="activity-icon">🎤</div>
             <div class="activity-content">
                 <div class="activity-title">{{ interview.role_type|title }} Interview</div>
-                <div class="activity-time">Score: {{ interview.score }}% • {{ interview.created_at|timesince }} ago</div>
+                <div class="activity-time">Score: {{ interview.overall_score }}% • {{ interview.created_at|timesince }} ago</div>
             </div>
         </div>
         {% endfor %}
