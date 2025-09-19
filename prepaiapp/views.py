@@ -518,7 +518,7 @@ Please ensure your response contains ONLY the JSON object with no additional for
         try:
             # Create a clean copy of context without Django objects
             feedback_data = {
-                'analysis_timestamp': datetime.now().isoformat(),
+                'analysis_timestamp': str(datetime.now().isoformat()),
                 'scores': {
                     'overall_score': context.get('overall_score', 0),
                     'confidence_level': context.get('confidence_level', 0),
