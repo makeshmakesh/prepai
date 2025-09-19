@@ -672,22 +672,25 @@ body:has([style*="background: linear-gradient(135deg, #1a1a1a"]) .navbar-toggler
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'courses' %}">Courses</a>
-                        </li>
+
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'interview_types' %}">AI Interview</a>
                         </li>
                                 <li class="nav-item">
             <a class="nav-link" href="{% url 'interview_history' %}">My Interviews</a>
         </li>
+                                <li class="nav-item">
+                            <a class="nav-link" href="{% url 'courses' %}">Courses</a>
+                        </li>
                     {% endif %}
                 </ul>
 
                 <div class="navbar-nav ml-auto">
                     {% if user.is_authenticated %}
                         <div class="user-profile mr-3">
-                            👤 {{ user.username|title }}
+                  <a href="{% url 'profile' %}" class="" style="text-decoration: none; color: white;">
+                        👤 {{ user.username|title }}
+                    </a>
                         </div>
                         <form method="post" action="{% url 'logout' %}" style="display: inline;">
                             {% csrf_token %}

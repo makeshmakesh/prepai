@@ -1,0 +1,661 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Purchase Credits - PrepAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Purchase Credits specific styles */
+    .purchase-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .purchase-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .purchase-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: var(--secondary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .purchase-subtitle {
+        color: var(--text-secondary);
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .current-balance {
+        background: var(--primary-gradient);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 25px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    /* Credit Packages */
+    .credit-packages {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .package-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--shadow-light);
+        color: var(--text-primary);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: 3px solid transparent;
+        cursor: pointer;
+    }
+
+    .package-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-medium);
+    }
+
+    .package-card.popular {
+        border-color: #f093fb;
+        position: relative;
+    }
+
+    .package-card.popular::before {
+        content: 'Most Popular';
+        position: absolute;
+        top: -1px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--secondary-gradient);
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 0 0 15px 15px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .package-card.best-value {
+        border-color: #132781ff;
+        position: relative;
+    }
+
+    .package-card.best-value::before {
+        content: 'Best Value';
+        position: absolute;
+        top: -1px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--primary-gradient);
+        color: black;
+        padding: 0.5rem 1.5rem;
+        border-radius: 0 0 15px 15px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .package-card.selected {
+        border-color: #22c55e;
+        background: rgba(34, 197, 94, 0.05);
+    }
+
+    .package-icon {
+        font-size: 3rem;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .package-credits {
+        font-size: 2rem;
+        font-weight: 800;
+        color: black;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .package-price {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #0c0a0cff;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .package-price .original-price {
+        text-decoration: line-through;
+        color: red;
+        font-size: 1rem;
+        margin-left: 0.5rem;
+    }
+
+    .package-features {
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0;
+    }
+
+    .package-features li {
+        padding: 0.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+    }
+
+    .package-features li::before {
+        content: '✓';
+        color: #22c55e;
+        font-weight: 600;
+    }
+
+    .per-interview {
+        text-align: center;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Payment Section */
+    .payment-section {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--shadow-light);
+        margin-bottom: 2rem;
+    }
+
+    .payment-header {
+        display: flex;
+        align-items: center;
+        justify-content: between;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .payment-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: black;
+        margin: 0;
+    }
+
+    .secure-badge {
+        background: rgba(34, 197, 94, 0.1);
+        color: #22c55e;
+        padding: 0.5rem 1rem;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .payment-methods {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .payment-method {
+        background: rgba(102, 126, 234, 0.05);
+        border: 2px solid rgba(102, 126, 234, 0.2);
+        border-radius: 15px;
+        padding: 1rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .payment-method:hover {
+        background: rgba(102, 126, 234, 0.1);
+        border-color: #667eea;
+    }
+
+    .payment-method.selected {
+        background: rgba(102, 126, 234, 0.1);
+        border-color: #667eea;
+    }
+
+    .payment-method-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .payment-method-name {
+        font-weight: 600;
+        color: black;
+    }
+
+    /* Mock Payment Form */
+    .payment-form {
+        display: none;
+        color: black
+    }
+
+    .payment-form.active {
+        display: block;
+        animation: fadeInUp 0.3s ease;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    /* Order Summary */
+    .order-summary {
+        background: rgba(240, 147, 251, 0.05);
+        border: 1px solid rgba(240, 147, 251, 0.2);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .summary-title {
+        font-weight: 700;
+        color: black;
+        margin-bottom: 1rem;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        color:black;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .summary-row:last-child {
+        border-bottom: none;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #1c041fff;
+        margin-top: 0.5rem;
+        padding-top: 1rem;
+        border-top: 2px solid rgba(240, 147, 251, 0.3);
+    }
+
+    /* Purchase Button */
+    .btn-purchase {
+        background: var(--secondary-gradient);
+        color: white;
+        padding: 1rem 3rem;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 1.5rem;
+    }
+
+    .btn-purchase:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(240, 147, 251, 0.4);
+    }
+
+    .btn-purchase:disabled {
+        background: rgba(108, 117, 125, 0.3);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* Success Animation */
+    .success-animation {
+        display: none;
+        text-align: center;
+        padding: 3rem;
+    }
+
+    .success-animation.show {
+        display: block;
+        animation: fadeInUp 0.5s ease;
+    }
+
+    .success-icon {
+        font-size: 4rem;
+        color: #22c55e;
+        margin-bottom: 1rem;
+        animation: bounce 0.6s ease;
+    }
+
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-20px); }
+        60% { transform: translateY(-10px); }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .credit-packages {
+            grid-template-columns: 1fr;
+        }
+
+        .payment-methods {
+            grid-template-columns: 1fr;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .purchase-title {
+            font-size: 2rem;
+        }
+
+        .package-card {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="purchase-container fade-in-on-scroll">
+    <!-- Purchase Header -->
+    <div class="purchase-header">
+        <h1 class="purchase-title">Purchase Credits</h1>
+        <p class="purchase-subtitle">Choose a credit package to continue your AI learning journey</p>
+        <div class="current-balance">
+            💳 Current Balance: {{ user.profile.credits|default:0 }} credits
+        </div>
+    </div>
+
+    <!-- Credit Packages -->
+    <div class="credit-packages">
+        <div class="package-card" data-credits="25" data-price="9" onclick="selectPackage(this)">
+            <div class="package-icon">🥉</div>
+            <div class="package-credits">25 Credits</div>
+            <div class="package-price">₹9</div>
+            <div class="per-interview">~5 interviews</div>
+            <ul class="package-features">
+                {% comment %} <li>Perfect for beginners</li>
+                <li>Basic interview practice</li>
+                <li>Standard AI feedback</li> {% endcomment %}
+            </ul>
+        </div>
+
+        <div class="package-card popular" data-credits="60" data-price="19.99" onclick="selectPackage(this)">
+            <div class="package-icon">🥈</div>
+            <div class="package-credits">60 Credits</div>
+            <div class="package-price">
+                ₹19
+                <span class="original-price">₹23</span>
+            </div>
+            <div class="per-interview">~12 interviews</div>
+            <ul class="package-features">
+                {% comment %} <li>Most popular choice</li>
+                <li>Extended practice sessions</li>
+                <li>Detailed performance analytics</li>
+                <li>Priority support</li> {% endcomment %}
+            </ul>
+        </div>
+
+        <div class="package-card best-value" data-credits="150" data-price="39.99" onclick="selectPackage(this)">
+            <div class="package-icon">🥇</div>
+            <div class="package-credits">150 Credits</div>
+            <div class="package-price">
+                ₹39
+                <span class="original-price">₹59</span>
+            </div>
+            <div class="per-interview">~30 interviews</div>
+            <ul class="package-features">
+                {% comment %} <li>Best value package</li>
+                <li>Comprehensive interview prep</li>
+                <li>Advanced AI insights</li>
+                <li>Custom interview scenarios</li>
+                <li>Premium support</li> {% endcomment %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Payment Section -->
+    <div class="payment-section" id="paymentSection" style="display: none;">
+        <div class="payment-header">
+            <h2 class="payment-title">Payment Details</h2>
+            <div class="secure-badge">
+                🔒 Secure Payment
+            </div>
+        </div>
+
+        <!-- Payment Methods -->
+        <div class="payment-methods">
+            <div class="payment-method" onclick="selectPaymentMethod('gpay')">
+                <span class="payment-method-icon">🔴</span>
+                <div class="payment-method-name">Google Pay</div>
+            </div>
+        </div>
+
+        <!-- Credit Card Form -->
+        <div class="payment-form" id="cardForm">
+            <form id="creditCardForm">
+                <div class="form-group">
+                    <label for="cardName">Cardholder Name</label>
+                    <input type="text" class="form-control" id="cardName" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label for="cardNumber">Card Number</label>
+                    <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="expiryDate">Expiry Date</label>
+                        <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY" maxlength="5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">CVV</label>
+                        <input type="text" class="form-control" id="cvv" placeholder="123" maxlength="3" required>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Other Payment Forms (Simplified) -->
+        <div class="payment-form" id="paypalForm">
+            <div class="text-center" style="padding: 2rem;">
+                <p>You will be redirected to PayPal to complete your payment securely.</p>
+            </div>
+        </div>
+
+        <div class="payment-form" id="gpayForm">
+            <div class="text-center" style="padding: 2rem;">
+                <p>You will be redirected to Google Pay to complete your payment.</p>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="order-summary">
+            <div class="summary-title">Order Summary</div>
+            <div class="summary-row">
+                <span>Package</span>
+                <span id="summaryPackage">-</span>
+            </div>
+            <div class="summary-row">
+                <span>Credits</span>
+                <span id="summaryCredits">-</span>
+            </div>
+            <div class="summary-row">
+                <span>Price</span>
+                <span id="summaryPrice">-</span>
+            </div>
+            <div class="summary-row">
+                <span>Total</span>
+                <span id="summaryTotal">-</span>
+            </div>
+        </div>
+
+        <button class="btn-purchase" id="purchaseBtn" disabled onclick="processPurchase()">
+            Complete Purchase
+        </button>
+    </div>
+
+    <!-- Success Animation -->
+    <div class="success-animation" id="successAnimation">
+        <div class="success-icon">🎉</div>
+        <h2>Purchase Successful!</h2>
+        <p>Your credits have been added to your account.</p>
+        <a href="{% url 'profile' %}" class="btn btn-primary">View Profile</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let selectedPackage = null;
+let selectedPaymentMethod = null;
+
+function selectPackage(element) {
+    // Remove previous selection
+    document.querySelectorAll('.package-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    // Add selection to clicked package
+    element.classList.add('selected');
+    selectedPackage = {
+        credits: element.dataset.credits,
+        price: element.dataset.price
+    };
+    
+    // Update order summary
+    updateOrderSummary();
+    
+    // Show payment section
+    document.getElementById('paymentSection').style.display = 'block';
+    
+    // Scroll to payment section
+    document.getElementById('paymentSection').scrollIntoView({ 
+        behavior: 'smooth' 
+    });
+}
+
+function selectPaymentMethod(method) {
+    // Remove previous selection
+    document.querySelectorAll('.payment-method').forEach(pm => {
+        pm.classList.remove('selected');
+    });
+    
+    // Add selection to clicked method
+    event.target.closest('.payment-method').classList.add('selected');
+    selectedPaymentMethod = method;
+    
+    // Hide all forms
+    document.querySelectorAll('.payment-form').forEach(form => {
+        form.classList.remove('active');
+    });
+    
+    // Show selected form
+    const formId = method + 'Form';
+    document.getElementById(formId).classList.add('active');
+    
+    // Enable purchase button
+    updatePurchaseButton();
+}
+
+function updateOrderSummary() {
+    if (selectedPackage) {
+        document.getElementById('summaryPackage').textContent = `${selectedPackage.credits} Credits`;
+        document.getElementById('summaryCredits').textContent = selectedPackage.credits;
+        document.getElementById('summaryPrice').textContent = `$${selectedPackage.price}`;
+        document.getElementById('summaryTotal').textContent = `$${selectedPackage.price}`;
+    }
+}
+
+function updatePurchaseButton() {
+    const purchaseBtn = document.getElementById('purchaseBtn');
+    if (selectedPackage && selectedPaymentMethod) {
+        purchaseBtn.disabled = false;
+        purchaseBtn.textContent = `Purchase ${selectedPackage.credits} Credits - $${selectedPackage.price}`;
+    }
+}
+
+function processPurchase() {
+    const purchaseBtn = document.getElementById('purchaseBtn');
+    purchaseBtn.disabled = true;
+    purchaseBtn.textContent = 'Processing...';
+    
+    // Prepare purchase data
+    const purchaseData = {
+        credits: selectedPackage.credits,
+        amount: selectedPackage.price,
+        payment_method: selectedPaymentMethod,
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+    };
+    
+    // Submit to Django backend
+    fetch('{% url "process_purchase" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify(purchaseData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Redirect to confirmation page with transaction ID
+            window.location.href = `/purchase/confirmation/${data.transaction_id}/`;
+        } else {
+            // Handle error
+            alert('Payment failed: ' + (data.error || 'Unknown error'));
+            purchaseBtn.disabled = false;
+            purchaseBtn.textContent = `Purchase ${selectedPackage.credits} Credits - ₹${selectedPackage.price}`;
+        }
+    })
+    .catch(error => {
+        console.error('Payment error:', error);
+        alert('Payment processing failed. Please try again.');
+        purchaseBtn.disabled = false;
+        purchaseBtn.textContent = `Purchase ${selectedPackage.credits} Credits - ₹${selectedPackage.price}`;
+    });
+}
+
+// Format card number input
+document.addEventListener('DOMContentLoaded', function() {
+    const cardNumberInput = document.getElementById('cardNumber');
+    if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s+/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            if (formattedValue !== value) {
+                e.target.value = formattedValue;
+            }
+        });
+    }
+    
+    const expiryInput = document.getElementById('expiryDate');
+    if (expiryInput) {
+        expiryInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+    }
+});
+</script>
+{% endblock %}

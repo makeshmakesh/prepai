@@ -1,0 +1,549 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profile - PrepAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Profile-specific styles */
+    .profile-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .profile-header {
+        background: var(--primary-gradient);
+        color: white;
+        border-radius: 25px;
+        padding: 3rem;
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .profile-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.1) 100%);
+        animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        margin: 0 auto 1.5rem;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        position: relative;
+        z-index: 1;
+    }
+
+    .profile-name {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .profile-email {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        position: relative;
+        z-index: 1;
+    }
+
+    .profile-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: var(--shadow-light);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .stat-card:hover::before {
+        left: 100%;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-medium);
+    }
+
+    .stat-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 800;
+        color: black;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: var(--text-secondary);
+        font-weight: 600;
+    }
+
+    .credits-card {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+    }
+
+    .credits-card .stat-value {
+        color: white;
+    }
+
+    .credits-card .stat-label {
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .profile-sections {
+        display: grid;
+        gap: 2rem;
+    }
+
+    .profile-section {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--shadow-light);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+        padding-bottom: 1rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+    }
+
+    .edit-btn {
+        background: var(--secondary-gradient);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .edit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(240, 147, 251, 0.3);
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: var(--text-secondary);
+    }
+
+    .info-value {
+        color: black;
+        font-weight: 500;
+    }
+
+    .credits-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .btn-credits {
+        background: var(--accent-gradient);
+        color: white;
+        padding: 0.8rem 2rem;
+        border-radius: 25px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-credits:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(79, 172, 254, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .achievement-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .badge {
+        background: var(--primary-gradient);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--secondary-gradient);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .activity-details {
+        flex: 1;
+    }
+
+    .activity-title {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.2rem;
+    }
+
+    .activity-time {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+        .profile-header {
+            padding: 2rem 1.5rem;
+        }
+
+        .profile-name {
+            font-size: 2rem;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            font-size: 3rem;
+        }
+
+        .profile-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .credits-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-credits {
+            width: 100%;
+            max-width: 250px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .profile-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .info-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container fade-in-on-scroll">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="profile-avatar">
+            👤
+        </div>
+        <h1 class="profile-name">{{ user.get_full_name|default:user.username|title }}</h1>
+        <p class="profile-email">{{ user.email }}</p>
+    </div>
+
+    <!-- Profile Stats -->
+    <div class="profile-stats">
+        <div class="stat-card credits-card">
+            <span class="stat-icon">💳</span>
+            <div class="stat-value">{{ user.profile.credits|default:0 }}</div>
+            <div class="stat-label">Available Credits</div>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon">🎯</span>
+            <div class="stat-value">{{ user.interview_sessions.count|default:0 }}</div>
+            <div class="stat-label">Interviews Completed</div>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon">📚</span>
+            <div class="stat-value">{{ user.course_enrollments.count|default:0 }}</div>
+            <div class="stat-label">Courses Enrolled</div>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon">⭐</span>
+            <div class="stat-value">{{ user.profile.total_score|default:0 }}%</div>
+            <div class="stat-label">Average Score</div>
+        </div>
+    </div>
+
+    <!-- Profile Sections -->
+    <div class="profile-sections">
+        <!-- Account Information -->
+        <div class="profile-section">
+            <div class="section-header">
+                <h2 class="section-title">Account Information</h2>
+                {% comment %} <button class="edit-btn" onclick="editProfile()">Edit Profile</button> {% endcomment %}
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Full Name</span>
+                <span class="info-value">{{ user.get_full_name|default:"Not provided" }}</span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Username</span>
+                <span class="info-value">{{ user.username }}</span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Email</span>
+                <span class="info-value">{{ user.email }}</span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Member Since</span>
+                <span class="info-value">{{ user.date_joined|date:"F d, Y" }}</span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Last Login</span>
+                <span class="info-value">{{ user.last_login|date:"F d, Y H:i" }}</span>
+            </div>
+        </div>
+
+        <!-- Credits Management -->
+        <div class="profile-section">
+            <div class="section-header">
+                <h2 class="section-title">Credits Management</h2>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Current Balance</span>
+                <span class="info-value">{{ user.profile.credits|default:0 }} credits</span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Credits Used</span>
+                <span class="info-value">{{ user.profile.credits_used|default:0 }} credits</span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Credits Per Interview</span>
+                <span class="info-value">5 credits</span>
+            </div>
+
+            <div class="credits-actions">
+                <a href="{% url 'purchase_credits' %}" class="btn-credits">
+                    💳 Purchase Credits
+                </a>
+                <a href="#" class="btn-credits" onclick="viewTransactions()">
+                    📊 View History
+                </a>
+            </div>
+        </div>
+
+        <!-- Achievements -->
+        <div class="profile-section">
+            <div class="section-header">
+                <h2 class="section-title">Achievements</h2>
+            </div>
+            
+            <div class="achievement-badges">
+                {% if user.interview_sessions.count >= 1 %}
+                    <span class="badge">🥉 First Interview</span>
+                {% endif %}
+                {% if user.interview_sessions.count >= 5 %}
+                    <span class="badge">🥈 Interview Rookie</span>
+                {% endif %}
+                {% if user.interview_sessions.count >= 10 %}
+                    <span class="badge">🥇 Interview Pro</span>
+                {% endif %}
+                {% if user.course_enrollments.count >= 1 %}
+                    <span class="badge">📚 Learning Started</span>
+                {% endif %}
+                {% if user.profile.total_score >= 80 %}
+                    <span class="badge">⭐ High Achiever</span>
+                {% endif %}
+            </div>
+            
+            {% if not user.interview_sessions.count %}
+                <div class="text-center" style="padding: 2rem; color: var(--text-secondary);">
+                    Complete your first interview to start earning achievements!
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="profile-section">
+            <div class="section-header">
+                <h2 class="section-title">Recent Activity</h2>
+            </div>
+            
+            {% if user.interview_sessions.all %}
+                {% for session in user.interview_sessions.all|slice:":5" %}
+                    <div class="activity-item">
+                        <div class="activity-icon">🎯</div>
+                        <div class="activity-details">
+                            <div class="activity-title">Completed {{ session.template.title }}</div>
+                            <div class="activity-time">{{ session.completed_at|timesince }} ago</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center" style="padding: 2rem; color: var(--text-secondary);">
+                    No activity yet. Start your first interview to see activity here!
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Profile</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" action="{% url 'profile' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="first_name">First Name</label>
+                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function editProfile() {
+    $('#editProfileModal').modal('show');
+}
+
+function viewTransactions() {
+    // Redirect to transaction history page
+    alert('Transaction history feature coming soon!');
+    // window.location.href = '/credits/history/';
+}
+
+// Auto-hide success messages
+$(document).ready(function() {
+    setTimeout(function() {
+        $('.alert').fadeOut('slow');
+    }, 5000);
+});
+</script>
+{% endblock %}

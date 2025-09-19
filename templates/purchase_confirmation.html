@@ -1,0 +1,457 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Purchase Confirmation - PrepAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Confirmation page specific styles */
+    .confirmation-container {
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .status-card {
+        background: white;
+        border-radius: 25px;
+        padding: 3rem;
+        box-shadow: var(--shadow-medium);
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .status-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+
+    /* Success Status */
+    .status-success {
+        border: 3px solid #22c55e;
+    }
+
+    .status-success .status-icon {
+        color: #22c55e;
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        animation: bounce 1s ease;
+    }
+
+    .status-success .status-title {
+        color: #22c55e;
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
+
+    /* Failed Status */
+    .status-failed {
+        border: 3px solid #ef4444;
+    }
+
+    .status-failed .status-icon {
+        color: #ef4444;
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+
+    .status-failed .status-title {
+        color: #ef4444;
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
+
+    /* Pending Status */
+    .status-pending {
+        border: 3px solid #f59e0b;
+    }
+
+    .status-pending .status-icon {
+        color: #f59e0b;
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        animation: spin 2s linear infinite;
+    }
+
+    .status-pending .status-title {
+        color: #f59e0b;
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
+
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-20px); }
+        60% { transform: translateY(-10px); }
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .status-message {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+
+    /* Transaction Details */
+    .transaction-details {
+        background: rgba(102, 126, 234, 0.05);
+        border: 1px solid rgba(102, 126, 234, 0.2);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        text-align: left;
+    }
+
+    .details-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.8rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        font-weight: 600;
+        color: var(--text-secondary);
+    }
+
+    .detail-value {
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    .credits-highlight {
+        background: var(--secondary-gradient);
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.9rem;
+    }
+
+    /* Credit Balance Update */
+    .balance-update {
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .balance-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .balance-amount {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .balance-change {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+
+    .btn-action {
+        padding: 0.8rem 2rem;
+        border-radius: 25px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary-action {
+        background: var(--primary-gradient);
+        color: white;
+    }
+
+    .btn-primary-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-secondary-action {
+        background: transparent;
+        color: var(--text-secondary);
+        border: 2px solid rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-secondary-action:hover {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        text-decoration: none;
+    }
+
+    /* Error Actions */
+    .error-actions {
+        background: rgba(239, 68, 68, 0.05);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .error-title {
+        font-weight: 700;
+        color: #ef4444;
+        margin-bottom: 1rem;
+    }
+
+    .error-message {
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+        line-height: 1.6;
+    }
+
+    /* Auto-refresh indicator */
+    .refresh-indicator {
+        background: rgba(251, 191, 36, 0.1);
+        color: #f59e0b;
+        padding: 1rem;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .refresh-countdown {
+        font-weight: 600;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .confirmation-container {
+            padding: 1rem;
+        }
+
+        .status-card {
+            padding: 2rem 1.5rem;
+        }
+
+        .status-title {
+            font-size: 1.5rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-action {
+            width: 100%;
+            max-width: 250px;
+        }
+
+        .detail-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.3rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="confirmation-container fade-in-on-scroll">
+    {% if transaction.status == 'success' %}
+        <!-- Success Status -->
+        <div class="status-card status-success">
+            <div class="status-icon">🎉</div>
+            <h1 class="status-title">Payment Successful!</h1>
+            <p class="status-message">
+                Your payment has been processed successfully. 
+                {{ transaction.credits }} credits have been added to your account.
+            </p>
+        </div>
+
+        <!-- Updated Balance -->
+        <div class="balance-update">
+            <div class="balance-title">Your New Credit Balance</div>
+            <div class="balance-amount">{{ user.profile.credits }} Credits</div>
+            <div class="balance-change">+ {{ transaction.credits }} credits added</div>
+        </div>
+
+    {% elif transaction.status == 'failed' %}
+        <!-- Failed Status -->
+        <div class="status-card status-failed">
+            <div class="status-icon">❌</div>
+            <h1 class="status-title">Payment Failed</h1>
+            <p class="status-message">
+                Unfortunately, your payment could not be processed. 
+                Please try again or contact support if the issue persists.
+            </p>
+        </div>
+
+        <!-- Error Details -->
+        <div class="error-actions">
+            <div class="error-title">What happened?</div>
+            <p class="error-message">
+                {{ transaction.error_message|default:"Your payment was declined. Please check your payment details and try again." }}
+            </p>
+        </div>
+
+    {% else %}
+        <!-- Pending Status -->
+        <div class="status-card status-pending">
+            <div class="status-icon">⏳</div>
+            <h1 class="status-title">Payment Processing</h1>
+            <p class="status-message">
+                Your payment is being processed. This may take a few moments.
+                We'll update this page automatically when the payment is complete.
+            </p>
+        </div>
+
+        <!-- Auto-refresh indicator -->
+        <div class="refresh-indicator">
+            🔄 Refreshing in <span class="refresh-countdown" id="countdown">10</span> seconds...
+        </div>
+    {% endif %}
+
+    <!-- Transaction Details -->
+    <div class="transaction-details">
+        <div class="details-title">Transaction Details</div>
+        
+        <div class="detail-row">
+            <span class="detail-label">Transaction ID</span>
+            <span class="detail-value">{{ transaction.transaction_id }}</span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">Credits Purchased</span>
+            <span class="detail-value">
+                <span class="credits-highlight">{{ transaction.credits }} Credits</span>
+            </span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">Amount Paid</span>
+            <span class="detail-value">₹{{ transaction.amount }}</span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">Payment Method</span>
+            <span class="detail-value">{{ transaction.payment_method|title }}</span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">Date & Time</span>
+            <span class="detail-value">{{ transaction.created_at|date:"M d, Y H:i" }}</span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">Status</span>
+            <span class="detail-value">{{ transaction.get_status_display|title }}</span>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        {% if transaction.status == 'success' %}
+            <a href="{% url 'interview_types' %}" class="btn-action btn-primary-action">
+                🎯 Start Interview
+            </a>
+            <a href="{% url 'profile' %}" class="btn-action btn-secondary-action">
+                👤 View Profile
+            </a>
+        {% elif transaction.status == 'failed' %}
+            <a href="{% url 'purchase_credits' %}" class="btn-action btn-primary-action">
+                🔄 Try Again
+            </a>
+            <a href="{% url 'dashboard' %}" class="btn-action btn-secondary-action">
+                🏠 Back to Dashboard
+            </a>
+        {% else %}
+            <a href="{% url 'dashboard' %}" class="btn-action btn-secondary-action">
+                🏠 Back to Dashboard
+            </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if transaction.status == 'pending' %}
+<script>
+// Auto-refresh for pending transactions
+let countdown = 10;
+const countdownElement = document.getElementById('countdown');
+
+const timer = setInterval(() => {
+    countdown--;
+    countdownElement.textContent = countdown;
+    
+    if (countdown <= 0) {
+        clearInterval(timer);
+        window.location.reload();
+    }
+}, 1000);
+
+// Check transaction status via AJAX every 5 seconds
+const statusChecker = setInterval(() => {
+    fetch(`/transaction-status/{{ transaction.transaction_id }}/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status !== 'pending') {
+                clearInterval(statusChecker);
+                clearInterval(timer);
+                window.location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Status check failed:', error);
+        });
+}, 5000);
+</script>
+{% endif %}
+{% endblock %}

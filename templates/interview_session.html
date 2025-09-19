@@ -6,6 +6,37 @@
 {% block extra_css %}
 <style>
     /* Override base background for dark theme compatibility */
+
+
+    .page-loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.page-loading-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.simple-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
     html, body {
         background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
         color: #ffffff;
@@ -413,6 +444,7 @@ class InterviewSession {
         this.sessionStartTime = new Date();
         this.questionCount = 0;
         this.responseCount = 0;
+        this.interviewEnded = false; 
 
         // Audio streaming queue
         this.audioQueue = [];
@@ -421,6 +453,8 @@ class InterviewSession {
         this.initializeElements();
         this.connect();
         this.startSessionTimer();
+        this.setupBeforeUnload();
+        
     }
 
     initializeElements() {
@@ -434,14 +468,44 @@ class InterviewSession {
         this.sessionTimeEl = document.getElementById('sessionTime');
         this.responseCountEl = document.getElementById('responseCount');
         this.endBtn = document.getElementById('endBtn');
+        
 
         // Event listeners
         this.startBtn.addEventListener('click', () => this.startRecording());
         this.stopBtn.addEventListener('click', () => this.stopRecording());
         this.interruptBtn.addEventListener('click', () => this.interrupt());
         this.endBtn.addEventListener('click', () => this.endInterview());
+        this.createSimpleSpinner();
+    }
+    setupBeforeUnload() {
+        // Store reference to the handler so we can remove it later
+        this.beforeUnloadHandler = (event) => {
+            if (!this.interviewEnded) {
+                event.preventDefault();
+                event.returnValue = 'Are you sure you want to leave the interview?';
+                return 'Are you sure you want to leave the interview?';
+            }
+        };
+        
+        window.addEventListener('beforeunload', this.beforeUnloadHandler);
+    }
+        removeBeforeUnload() {
+        if (this.beforeUnloadHandler) {
+            window.removeEventListener('beforeunload', this.beforeUnloadHandler);
+            this.beforeUnloadHandler = null;
+        }
+    }
+    createSimpleSpinner() {
+        const overlay = document.createElement('div');
+        overlay.className = 'page-loading-overlay';
+        overlay.innerHTML = '<div class="simple-spinner"></div>';
+        document.body.appendChild(overlay);
+        this.loadingOverlay = overlay;
     }
 
+    showPageLoadingSpinner() {
+        this.loadingOverlay.classList.add('show');
+    }
     connect() {
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         const wsUrl = `${protocol}//${window.location.host}/ws/interview/{{ session.id }}/`;
@@ -476,6 +540,11 @@ class InterviewSession {
 
     endInterview() {
     if (confirm('Are you sure you want to end the interview? Your progress will be saved.')) {
+        this.interviewEnded = true; // Set flag first
+            this.removeBeforeUnload(); // Remove the beforeunload listener
+                    this.updateStatus('🔄 Redirecting to results...', 'processing');
+        this.disableControls();
+        this.showPageLoadingSpinner();
         if (this.isConnected) {
             this.socket.send(JSON.stringify({ type: 'end_interview' }));
         }
@@ -693,13 +762,16 @@ class InterviewSession {
     }
 
     handleSessionComplete(data) {
+        this.interviewEnded = true; // Set flag
+        this.removeBeforeUnload(); // Remove the beforeunload listener
         this.disableControls();
-        this.updateStatus('✅ Interview Completed!', 'connected');
+this.updateStatus('✅ Interview Completed!', 'connected');
+    this.logMessage('Interview completed - Redirecting to results...', 'info');
         
         // Redirect to results page after a short delay
         setTimeout(() => {
             window.location.href = `/interview/results/{{ session.id }}/`;
-        }, 3000);
+        }, 1000);
     }
 
     disableControls() {
@@ -753,10 +825,5 @@ document.addEventListener('DOMContentLoaded', () => {
     new InterviewSession();
 });
 
-// Handle page unload
-window.addEventListener('beforeunload', (event) => {
-    event.preventDefault();
-    event.returnValue = 'Are you sure you want to leave the interview?';
-});
 </script>
 {% endblock %}

@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.auth.models import User
-from .models import Profile, Course, InterviewTemplate, InterviewSession
+from .models import Profile, Course, InterviewTemplate, InterviewSession, Transaction
 import os
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -21,8 +21,67 @@ from django.utils import timezone
 from django.core.cache import cache
 from openai import OpenAI
 from datetime import datetime, time
+from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 
+class ProfileView(LoginRequiredMixin, View):
+    """
+    View to display and update user profile
+    """
+    login_url = "/login/"
+    
+    def get(self, request):
+        profile = Profile.objects.get(user=request.user)
+        context = {
+            'profile': profile,
+        }
+        return render(request, 'profile.html', context)
+    
+    def post(self, request):
+        try:
+            profile = Profile.objects.get(user=request.user)
+            # Update profile fields from form data
+            profile.save()
+            
+            messages.success(request, "Profile updated successfully!")
+            return redirect('profile')
+        except Exception as e:
+            logger.error(f"Error updating profile: {e}")
+            messages.error(request, "An error occurred while updating your profile. Please try again.")
+            return redirect('profile')
+class PurchaseCredits(LoginRequiredMixin, View):
+    """
+    View to handle purchasing credits (minutes)
+    """
+    login_url = "/login/"
+    
+    def get(self, request):
+        profile = Profile.objects.get(user=request.user)
+        context = {
+            'current_credits': profile.credits,
+        }
+        return render(request, 'purchase_credits.html', context)
+    
+    def post(self, request):
+        try:
+            amount = int(request.POST.get('amount', 0))
+            if amount <= 0:
+                messages.error(request, "Invalid amount. Please enter a positive number.")
+                return redirect('purchase_credits')
+            
+            profile = Profile.objects.get(user=request.user)
+            profile.credits += amount
+            profile.save()
+            
+            messages.success(request, f"Successfully purchased {amount} minutes!")
+            return redirect('dashboard')
+        except ValueError:
+            messages.error(request, "Invalid input. Please enter a valid number.")
+            return redirect('purchase_credits')
+        except Exception as e:
+            logger.error(f"Error purchasing credits: {e}")
+            messages.error(request, "An error occurred while processing your purchase. Please try again.")
+            return redirect('purchase_credits')
 
 class InterviewHistoryView(LoginRequiredMixin, View):
     """
@@ -140,7 +199,7 @@ class InterviewResultView(LoginRequiredMixin, View):
             cache_key = f"interview_analysi_{session_id}"
             analysis_results = cache.get(cache_key)
             if not analysis_results:
-                analysis_results = session.feedback if session.feedback else None
+                analysis_results = json.loads(session.feedback) if session.feedback else None
             
             if not analysis_results:
                 # Generate analysis using OpenAI
@@ -205,6 +264,7 @@ class InterviewResultView(LoginRequiredMixin, View):
         """
 
         try:
+            return self.get_fallback_analysis()  # Temporary fallback for testing
             transcript = session.transcript
             template = session.template
             
@@ -546,7 +606,7 @@ Please ensure your response contains ONLY the JSON object with no additional for
             }
             
             # Save to feedback field
-            session.feedback = feedback_data
+            session.feedback = json.dumps(feedback_data)
             session.save(update_fields=['feedback'])
             
             logger.info(f"Context data saved to session {session.id} feedback field")
@@ -616,7 +676,10 @@ class StartInterviewView(LoginRequiredMixin, View):
                 id=template_id, 
                 is_active=True
             )
-            
+            profile = Profile.objects.get(user=request.user)
+            if not profile.has_minutes(required=template.estimated_duration_minutes):
+                messages.error(request, "You don’t have enough credits. Please top up.")
+                return redirect("purchase_credits")  # redirect to your top-up page
             # Check if user has an ongoing session for this template
             ongoing_session = InterviewSession.objects.filter(
                 user=request.user,
@@ -627,7 +690,7 @@ class StartInterviewView(LoginRequiredMixin, View):
             if ongoing_session:
                 # Redirect to existing session
                 return redirect('interview_session', session_id=ongoing_session.id)
-            
+            profile.deduct_minutes(used=template.estimated_duration_minutes)
             # Create new interview session
             session = InterviewSession.objects.create(
                 template=template,
@@ -708,7 +771,7 @@ class DashboardView(LoginRequiredMixin, View):
         for session in sessions:
             if session.feedback:
                 try:
-                    feedback_data = session.feedback
+                    feedback_data = json.loads(session.feedback)
                     score = feedback_data.get('scores', {}).get('overall_score', 0)
                     total_score += score
                     count += 1
@@ -722,7 +785,7 @@ class DashboardView(LoginRequiredMixin, View):
             feedback = {}
             if session.feedback:
                 try:
-                    feedback = session.feedback
+                    feedback = json.loads(session.feedback)
                 except json.JSONDecodeError:
                     feedback = {}
             res.append({
@@ -961,3 +1024,75 @@ def sub_topic(request):
     # This would later connect to your Realtime agent logic
     # but for now just return something simple
     return render(request, "subtopic.html")
+
+
+
+@login_required 
+@csrf_exempt
+def process_purchase(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        
+        # Create transaction record
+        transaction = Transaction.objects.create(
+            user=request.user,
+            credits=int(data['credits']),
+            amount=float(data['amount']),
+            payment_method=data['payment_method'],
+            status='pending'
+        )
+        
+        # Mock payment processing
+        success = mock_payment_processing(data)
+        
+        if success:
+            transaction.status = 'success'
+            transaction.save()
+            
+            # Update user credits
+            profile = request.user.profile
+            profile.credits += transaction.credits
+            profile.save()
+            
+            return JsonResponse({
+                'success': True,
+                'transaction_id': str(transaction.transaction_id)
+            })
+        else:
+            transaction.status = 'failed'
+            transaction.error_message = 'Payment declined'
+            transaction.save()
+            
+            return JsonResponse({
+                'success': False,
+                'transaction_id': str(transaction.transaction_id),
+                'error': 'Payment processing failed'
+            })
+
+def mock_payment_processing(data):
+    # Mock payment logic - 90% success rate
+    # import random
+    # return random.random() < 0.5
+    return False
+
+@login_required
+def purchase_confirmation(request, transaction_id):
+    transaction = get_object_or_404(Transaction, 
+                                  transaction_id=transaction_id,
+                                  user=request.user)
+    
+    return render(request, 'purchase_confirmation.html', {
+        'transaction': transaction
+    })
+
+@login_required
+def transaction_status(request, transaction_id):
+    transaction = get_object_or_404(Transaction,
+                                  transaction_id=transaction_id,
+                                  user=request.user)
+    
+    return JsonResponse({
+        'status': transaction.status,
+        'credits': transaction.credits,
+        'amount': str(transaction.amount)
+    })

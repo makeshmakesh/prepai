@@ -4,7 +4,7 @@ from django.utils.html import format_html
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from .models import (
-    EarlyAccessEmail, Course, Subtopic, InterviewTemplate, InterviewSession
+    EarlyAccessEmail, Course, Subtopic, InterviewTemplate, InterviewSession, Profile, Transaction
 )
 
 
@@ -13,7 +13,14 @@ class EarlyAccessEmailAdmin(admin.ModelAdmin):
     list_display = ("email", "created_at")
     search_fields = ("email",)
     
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    pass
 
+@admin.register(Transaction)
+class TransactionAdmin(admin.ModelAdmin):
+    pass
+    
 @admin.register(InterviewTemplate)
 class InterviewTemplateAdmin(admin.ModelAdmin):
     pass

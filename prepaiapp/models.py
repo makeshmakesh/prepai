@@ -58,6 +58,7 @@ class InterviewSession(models.Model):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('abandoned', 'Abandoned'),
+        ('disconnected', 'Disconnected'),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -89,10 +90,28 @@ class EarlyAccessEmail(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    # Core billing unit
+    credits = models.IntegerField(default=0)  # total balance
+
     configurations = models.JSONField(default=dict, blank=True, null=True)
 
     def __str__(self):
         return self.user.username
+
+    def has_minutes(self, required=10):
+        return self.credits >= required
+
+    def deduct_minutes(self, used=10):
+        if self.credits >= used:
+            self.credits -= used
+            self.save()
+            return True
+        return False
+
+    def add_minutes(self, minutes):
+        self.credits += minutes
+        self.save()
     
     
 
@@ -261,3 +280,25 @@ class Subtopic(models.Model):
 
 
 
+class Transaction(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('success', 'Success'), 
+        ('failed', 'Failed'),
+    ]
+    
+    PAYMENT_METHOD_CHOICES = [
+        ('card', 'Credit Card'),
+        ('paypal', 'PayPal'),
+        ('gpay', 'Google Pay'),
+    ]
+    
+    transaction_id = models.UUIDField(default=uuid.uuid4, unique=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    credits = models.IntegerField()
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    error_message = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

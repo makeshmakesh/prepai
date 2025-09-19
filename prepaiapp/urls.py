@@ -20,6 +20,11 @@ urlpatterns = [
     path("courses/", views.CourseView.as_view(), name="courses"),
     path("interview_types/", views.InterviewView.as_view(), name="interview_types"),
     path("interview_history/", views.InterviewHistoryView.as_view(), name="interview_history"),
+    path("purchase_credits/", views.PurchaseCredits.as_view(), name="purchase_credits"),
+    path("profile/", views.ProfileView.as_view(), name="profile"),
+    path('process-purchase/', views.process_purchase, name='process_purchase'),
+    path('purchase/confirmation/<uuid:transaction_id>/', views.purchase_confirmation, name='purchase_confirmation'),
+    path('transaction-status/<uuid:transaction_id>/', views.transaction_status, name='transaction_status'),
     path(
         "course/<slug:slug>/subtopics/",
         views.CourseSubtopicsView.as_view(),
