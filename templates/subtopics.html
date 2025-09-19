@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ course.title }} - PrepAI{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<div style="margin-bottom: 2rem;">
+    <a href="{% url 'courses' %}" style="color: #667eea; text-decoration: none;">Topics</a>
+    <span style="color: rgba(255,255,255,0.5); margin: 0 0.5rem;">›</span>
+    <span style="color: rgba(255,255,255,0.7);">{{ course.title }}</span>
+</div>
+
+<!-- Course Header -->
+<div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 20px; padding: 3rem; margin-bottom: 3rem; border: 1px solid rgba(255,255,255,0.1);">
+    <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem;">
+        <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">
+            {{ course.icon }}
+        </div>
+        <div>
+            <h1 style="color: white; font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem;">{{ course.title }}</h1>
+            <p style="color: rgba(255,255,255,0.8); font-size: 1.1rem;">{{ course.short_description }}</p>
+        </div>
+    </div>
+    
+    <p style="color: rgba(255,255,255,0.8); font-size: 1.1rem; line-height: 1.7; margin-bottom: 2rem;">{{ course.description }}</p>
+    
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;">
+        <div style="text-align: center; padding: 1.5rem; background: rgba(102,126,234,0.1); border-radius: 15px;">
+            <span style="color: #667eea; font-size: 2rem; font-weight: 800; display: block;">{{ subtopics.count }}</span>
+            <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Subtopics</span>
+        </div>
+        <div style="text-align: center; padding: 1.5rem; background: rgba(102,126,234,0.1); border-radius: 15px;">
+            <span style="color: #667eea; font-size: 2rem; font-weight: 800; display: block;">{{ course.estimated_hours }}</span>
+            <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Hours</span>
+        </div>
+        <div style="text-align: center; padding: 1.5rem; background: rgba(102,126,234,0.1); border-radius: 15px;">
+            <span style="color: #667eea; font-size: 2rem; font-weight: 800; display: block;">0</span>
+            <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Completed</span>
+        </div>
+        <div style="text-align: center; padding: 1.5rem; background: rgba(102,126,234,0.1); border-radius: 15px;">
+            <span style="color: #667eea; font-size: 2rem; font-weight: 800; display: block;">{{ subtopics.count }}</span>
+            <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Remaining</span>
+        </div>
+    </div>
+</div>
+
+<!-- Progress Section -->
+<div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 20px; padding: 2rem; margin-bottom: 3rem; border: 1px solid rgba(255,255,255,0.1);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2 style="color: white; font-size: 1.3rem; font-weight: 700;">Your Learning Progress</h2>
+        <span style="color: #f093fb; font-size: 1.1rem; font-weight: 600;">0%</span>
+    </div>
+    <div style="width: 100%; height: 12px; background: rgba(240,147,251,0.2); border-radius: 6px; margin-bottom: 1rem;">
+        <div style="height: 100%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 6px; width: 0%;"></div>
+    </div>
+    <div style="display: flex; justify-content: space-between; color: rgba(255,255,255,0.7); font-size: 0.9rem;">
+        <span>0 of {{ subtopics.count }} subtopics completed</span>
+        <span>~{{ course.estimated_hours }} hours remaining</span>
+    </div>
+</div>
+
+<!-- Subtopics Section -->
+<div style="margin-bottom: 3rem;">
+    <h2 style="color: white; font-size: 2rem; font-weight: 800; margin-bottom: 2rem;">📚 Learning Subtopics</h2>
+    
+    {% if subtopics %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem;">
+            {% for subtopic in subtopics %}
+            <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,0.1); position: relative;">
+                <div style="position: absolute; top: 1rem; right: 1rem; padding: 0.3rem 0.8rem; background: rgba(156,163,175,0.1); color: #9ca3af; border-radius: 15px; font-size: 0.8rem;">
+                    {% if forloop.counter == 1 %}🔓 Available{% else %}🔒 Locked{% endif %}
+                </div>
+                
+                <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem;">
+                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem;">
+                        {{ forloop.counter }}
+                    </div>
+                    <div style="flex: 1;">
+                        <h3 style="color: white; font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem;">{{ subtopic.title }}</h3>
+                    </div>
+                </div>
+                
+                <p style="color: rgba(255,255,255,0.8); line-height: 1.6; margin-bottom: 1.5rem;">{{ subtopic.description }}</p>
+                
+                <div style="display: flex; gap: 1.5rem; margin-bottom: 2rem; font-size: 0.9rem; color: rgba(255,255,255,0.7); flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 0.3rem;">
+                        <span style="color: #f093fb;">⏱️</span>
+                        <span>{{ subtopic.estimated_minutes }} minutes</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.3rem;">
+                        <span style="color: #f093fb;">📊</span>
+                        <span>{% if subtopic.difficulty_rating <= 2 %}Beginner{% elif subtopic.difficulty_rating <= 3 %}Intermediate{% elif subtopic.difficulty_rating <= 4 %}Advanced{% else %}Expert{% endif %}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.3rem;">
+                        <span style="color: #f093fb;">🎯</span>
+                        <span>{{ subtopic.get_content_type_display }}</span>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 1rem;">
+                    {% if forloop.counter == 1 %}
+                        <a href="#" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 0.8rem 1.5rem; text-decoration: none; border-radius: 25px; flex: 1; text-align: center; font-weight: 600;">
+                            🎓 Start Learning
+                        </a>
+                        <a href="#" style="background: rgba(156,163,175,0.1); color: #9ca3af; padding: 0.8rem 1.5rem; text-decoration: none; border-radius: 25px; flex: 1; text-align: center; font-weight: 600;">
+                            🔒 Take Test
+                        </a>
+                    {% else %}
+                        <a href="#" style="background: rgba(156,163,175,0.1); color: #9ca3af; padding: 0.8rem 1.5rem; text-decoration: none; border-radius: 25px; flex: 1; text-align: center; font-weight: 600; cursor: not-allowed;">
+                            🔒 Start Learning
+                        </a>
+                        <a href="#" style="background: rgba(156,163,175,0.1); color: #9ca3af; padding: 0.8rem 1.5rem; text-decoration: none; border-radius: 25px; flex: 1; text-align: center; font-weight: 600; cursor: not-allowed;">
+                            🔒 Take Test
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 4rem; color: rgba(255,255,255,0.7);">
+            <div style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.5;">📚</div>
+            <h3 style="color: white; margin-bottom: 0.5rem;">No Subtopics Available</h3>
+            <p>This course doesn't have any subtopics yet.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

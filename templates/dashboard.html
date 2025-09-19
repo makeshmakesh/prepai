@@ -1,0 +1,512 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - PrepAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Dashboard Specific Styles */
+    .dashboard-hero {
+        background: var(--primary-gradient);
+        color: white;
+        padding: 4rem 0;
+        border-radius: 30px;
+        margin-bottom: 4rem;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+    }
+
+    .dashboard-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .dashboard-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .welcome-text {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #ffffff, #f0f8ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .welcome-subtitle {
+        font-size: 1.3rem;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+        font-weight: 500;
+    }
+
+    .main-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 3rem;
+        margin-bottom: 4rem;
+    }
+
+    .option-card {
+        background: white;
+        border-radius: 25px;
+        padding: 3rem 2.5rem;
+        box-shadow: var(--shadow-light);
+        text-align: center;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        border: 2px solid transparent;
+    }
+
+    .option-card.available {
+        cursor: pointer;
+    }
+
+    .option-card.available:hover {
+        transform: translateY(-15px);
+        box-shadow: var(--shadow-heavy);
+        border-color: rgba(240, 147, 251, 0.3);
+    }
+
+    .option-card.available::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(240, 147, 251, 0.1), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .option-card.available:hover::before {
+        left: 100%;
+    }
+
+    .option-card.disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        background: #f8f9fa;
+        position: relative;
+    }
+
+    .option-card.disabled::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(2px);
+    }
+
+    .option-icon {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 2rem;
+        background: var(--secondary-gradient);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        box-shadow: 0 15px 30px rgba(240, 147, 251, 0.3);
+        position: relative;
+        z-index: 2;
+    }
+
+    .option-card.disabled .option-icon {
+        background: #6c757d;
+        box-shadow: 0 15px 30px rgba(108, 117, 125, 0.2);
+    }
+
+    .option-title {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+        position: relative;
+        z-index: 2;
+    }
+
+    .option-description {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        line-height: 1.7;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .option-features {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .option-features li {
+        padding: 0.5rem 0;
+        color: var(--text-secondary);
+        position: relative;
+        padding-left: 2rem;
+    }
+
+    .option-features li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: #22c55e;
+        font-weight: bold;
+    }
+
+    .option-card.disabled .option-features li::before {
+        color: #6c757d;
+    }
+
+    .coming-soon {
+        display: inline-block;
+        background: var(--secondary-gradient);
+        color: white;
+        padding: 0.8rem 2rem;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 1rem;
+        position: relative;
+        z-index: 2;
+        margin-top: 1rem;
+    }
+
+    .option-card.disabled .coming-soon {
+        background: #6c757d;
+    }
+
+    .stats-section {
+        background: white;
+        border-radius: 25px;
+        padding: 3rem 2.5rem;
+        box-shadow: var(--shadow-light);
+        margin-bottom: 4rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1.5rem;
+        background: rgba(102, 126, 234, 0.05);
+        border-radius: 15px;
+        border: 1px solid rgba(102, 126, 234, 0.1);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #667eea;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    .recent-activity {
+        background: white;
+        border-radius: 25px;
+        padding: 3rem 2.5rem;
+        box-shadow: var(--shadow-light);
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(102, 126, 234, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-size: 1.2rem;
+    }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-title {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+    }
+
+    .activity-time {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .dashboard-hero {
+            padding: 2rem 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-text {
+            font-size: 2rem;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.1rem;
+        }
+
+        .main-options {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .option-card {
+            padding: 2rem 1.5rem;
+        }
+
+        .option-icon {
+            width: 100px;
+            height: 100px;
+            font-size: 2.5rem;
+        }
+
+        .option-title {
+            font-size: 1.5rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stats-section, .recent-activity {
+            padding: 2rem 1.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-hero fade-in-on-scroll">
+    <div class="dashboard-hero-content">
+        <h1 class="welcome-text">Welcome back, {{ user.first_name|default:user.username }}!</h1>
+        <p class="welcome-subtitle">Ready to advance your career with AI-powered practice?</p>
+    </div>
+</div>
+
+<div class="main-options fade-in-on-scroll">
+    <!-- AI Interview Practice - Available -->
+    <div class="option-card available" onclick="location.href='{% url 'interview_types' %}'">
+        <div class="option-icon">🎤</div>
+        <h2 class="option-title">AI Mock Interviews</h2>
+        <p class="option-description">Practice with AI-powered mock interviews that adapt to your responses and provide instant feedback.</p>
+        
+        <ul class="option-features">
+            <li>Natural voice conversations</li>
+            <li>Role-specific questions</li>
+            <li>Instant detailed feedback</li>
+            <li>Progress tracking</li>
+            <li>Personalized recommendations</li>
+        </ul>
+        
+        <a href="{% url 'interview_types' %}" class="btn btn-primary">
+            Start Mock Interview
+            <div class="voice-wave">
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Learn Courses - Disabled -->
+    <div class="option-card disabled">
+        <div class="option-icon">📚</div>
+        <h2 class="option-title">Learn Courses</h2>
+        <p class="option-description">Interactive AI-powered courses on programming, data science, and professional skills.</p>
+        
+        <ul class="option-features">
+            <li>Voice-guided lessons</li>
+            <li>Interactive examples</li>
+            <li>Hands-on practice</li>
+            <li>Adaptive curriculum</li>
+            <li>Skill assessments</li>
+        </ul>
+        
+        <div class="coming-soon">Coming Soon</div>
+    </div>
+</div>
+
+<!-- User Stats Section -->
+<div class="stats-section fade-in-on-scroll">
+    <h3 class="section-title">Your Progress</h3>
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-number">{{ interview_count|default:0 }}</div>
+            <div class="stat-label">Mock Interviews</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">{{ avg_score|default:"--" }}{% if avg_score %}%{% endif %}</div>
+            <div class="stat-label">Average Score</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">{{ improvement|default:"--" }}{% if improvement %}%{% endif %}</div>
+            <div class="stat-label">Improvement</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">{{ streak|default:0 }}</div>
+            <div class="stat-label">Day Streak</div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="recent-activity fade-in-on-scroll">
+    <h3 class="section-title">Recent Activity</h3>
+    
+    {% if recent_interviews %}
+        {% for interview in recent_interviews %}
+        <div class="activity-item">
+            <div class="activity-icon">🎤</div>
+            <div class="activity-content">
+                <div class="activity-title">{{ interview.role_type|title }} Interview</div>
+                <div class="activity-time">Score: {{ interview.score }}% • {{ interview.created_at|timesince }} ago</div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="activity-item">
+            <div class="activity-icon">🚀</div>
+            <div class="activity-content">
+                <div class="activity-title">Ready to start your first mock interview?</div>
+                <div class="activity-time">Click "Start Mock Interview" above to begin practicing</div>
+            </div>
+        </div>
+    {% endif %}
+    
+    {% if recent_interviews|length > 0 %}
+    <div class="text-center mt-4">
+        <a href="{% url 'interview_history' %}" class="btn btn-outline-primary">View All Interviews</a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Quick Tips -->
+<div class="card fade-in-on-scroll mt-4">
+    <div class="card-body">
+        <h5 class="card-title">💡 Quick Tips for Better Interview Performance</h5>
+        <div class="row">
+            <div class="col-md-4">
+                <h6>🗣️ Speak Clearly</h6>
+                <p class="small text-muted">Articulate your thoughts clearly and maintain a steady pace when responding.</p>
+            </div>
+            <div class="col-md-4">
+                <h6>📝 Structure Answers</h6>
+                <p class="small text-muted">Use the STAR method (Situation, Task, Action, Result) for behavioral questions.</p>
+            </div>
+            <div class="col-md-4">
+                <h6>🔄 Practice Regularly</h6>
+                <p class="small text-muted">Regular practice sessions help build confidence and improve your interview skills.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Add click handler for available option cards
+    $('.option-card.available').on('click', function() {
+        if ($(this).find('a').length > 0) {
+            window.location.href = $(this).find('a').attr('href');
+        }
+    });
+
+    // Add hover effects for better UX
+    $('.option-card.available').on('mouseenter', function() {
+        $(this).find('.voice-wave').addClass('active');
+    }).on('mouseleave', function() {
+        $(this).find('.voice-wave').removeClass('active');
+    });
+
+    // Animate stats numbers on scroll
+    const animateStats = () => {
+        $('.stat-number').each(function() {
+            const $this = $(this);
+            const countTo = parseInt($this.text()) || 0;
+            
+            if (countTo > 0) {
+                $({ countNum: 0 }).animate({
+                    countNum: countTo
+                }, {
+                    duration: 2000,
+                    easing: 'swing',
+                    step: function() {
+                        $this.text(Math.floor(this.countNum));
+                    },
+                    complete: function() {
+                        $this.text(this.countNum);
+                    }
+                });
+            }
+        });
+    };
+
+    // Trigger stats animation when section comes into view
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateStats();
+                statsObserver.unobserve(entry.target);
+            }
+        });
+    });
+
+    const statsSection = document.querySelector('.stats-section');
+    if (statsSection) {
+        statsObserver.observe(statsSection);
+    }
+});
+</script>
+{% endblock %}

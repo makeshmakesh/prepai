@@ -1,0 +1,753 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AI Interview Session - PrepAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Override base background for dark theme compatibility */
+    html, body {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        color: #ffffff;
+    }
+
+    .content {
+        background: transparent;
+        max-width: 900px;
+    }
+
+    /* Interview Container */
+    .interview-container {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border-radius: 25px;
+        padding: 3rem;
+        margin: 2rem auto;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Interview Header */
+    .interview-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .interview-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: var(--secondary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .interview-subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .interview-meta {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-top: 1rem;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+    }
+
+    /* Status Indicator */
+    .status-indicator {
+        padding: 1rem 2rem;
+        margin: 1.5rem 0;
+        border-radius: 15px;
+        font-weight: 600;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .status-connecting {
+        background: rgba(251, 191, 36, 0.1);
+        color: #fbbf24;
+        border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .status-connected {
+        background: rgba(34, 197, 94, 0.1);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .status-error {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    /* Voice Controls */
+    .voice-controls {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin: 2rem 0;
+        flex-wrap: wrap;
+    }
+
+    .voice-btn {
+        background: var(--secondary-gradient);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        min-width: 150px;
+        justify-content: center;
+    }
+
+    .voice-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(240, 147, 251, 0.4);
+    }
+
+    .voice-btn:disabled {
+        background: rgba(108, 117, 125, 0.3);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .voice-btn.recording {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+
+    .voice-btn.secondary {
+        background: rgba(102, 126, 234, 0.2);
+        color: #667eea;
+        border: 2px solid rgba(102, 126, 234, 0.3);
+    }
+
+    .voice-btn.secondary:hover:not(:disabled) {
+        background: rgba(102, 126, 234, 0.3);
+        color: #667eea;
+    }
+
+    /* Volume Indicator */
+    .volume-section {
+        margin: 2rem 0;
+    }
+
+    .volume-label {
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .volume-indicator {
+        width: 100%;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+    }
+
+    .volume-bar {
+        height: 100%;
+        background: var(--secondary-gradient);
+        width: 0%;
+        transition: width 0.1s ease;
+        border-radius: 10px;
+    }
+
+    /* Activity Log */
+    .activity-log {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 1.5rem;
+        height: 300px;
+        overflow-y: auto;
+        font-family: 'Monaco', 'Menlo', monospace;
+        font-size: 0.9rem;
+        margin-top: 2rem;
+    }
+
+    .log-entry {
+        margin: 0.5rem 0;
+        padding: 0.5rem 0.8rem;
+        border-radius: 8px;
+        border-left: 3px solid transparent;
+        transition: all 0.2s ease;
+    }
+
+    .log-info {
+        background: rgba(102, 126, 234, 0.1);
+        border-left-color: #667eea;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .log-error {
+        background: rgba(239, 68, 68, 0.1);
+        border-left-color: #ef4444;
+        color: #fecaca;
+    }
+
+    .log-audio {
+        background: rgba(34, 197, 94, 0.1);
+        border-left-color: #22c55e;
+        color: #bbf7d0;
+    }
+
+    .log-timestamp {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.8rem;
+        margin-right: 0.5rem;
+    }
+
+    /* Interview Progress */
+    .interview-progress {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        text-align: center;
+    }
+
+    .progress-title {
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .progress-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+
+    .progress-stat {
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #f093fb;
+        display: block;
+    }
+
+    .stat-label {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        margin-top: 0.2rem;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .interview-container {
+            padding: 2rem 1.5rem;
+            margin: 1rem;
+        }
+
+        .interview-title {
+            font-size: 2rem;
+        }
+
+        .interview-meta {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .voice-controls {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .voice-btn {
+            width: 100%;
+            max-width: 250px;
+        }
+
+        .progress-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .progress-stats {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="interview-container fade-in-on-scroll">
+    <!-- Interview Header -->
+    <div class="interview-header">
+        <h1 class="interview-title">{{ template.title }}</h1>
+        <p class="interview-subtitle">{{ template.description }}</p>
+        <div class="interview-meta">
+            <div class="meta-item">
+                <span>🎯</span>
+                <span>{{ template.get_role_type_display }}</span>
+            </div>
+            <div class="meta-item">
+                <span>⏱️</span>
+                <span>{{ template.estimated_duration_minutes }} minutes</span>
+            </div>
+            <div class="meta-item">
+                <span>📊</span>
+                <span>{{ template.get_difficulty_display }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Indicator -->
+    <div id="status" class="status-indicator status-connecting">
+        🔄 Connecting to AI Interviewer...
+    </div>
+
+    <!-- Voice Controls -->
+    <div class="voice-controls">
+        <button id="startBtn" class="voice-btn" disabled>
+            <span>🎤</span>
+            Start Speaking
+        </button>
+        <button id="stopBtn" class="voice-btn" disabled>
+            <span>⏹️</span>
+            Stop Speaking
+        </button>
+        <button id="interruptBtn" class="voice-btn secondary" disabled>
+            <span>✋</span>
+            Interrupt
+        </button>
+    </div>
+
+    <!-- Microphone Volume -->
+    <div class="volume-section">
+        <label class="volume-label">Microphone Volume</label>
+        <div class="volume-indicator">
+            <div id="volumeBar" class="volume-bar"></div>
+        </div>
+    </div>
+
+    <!-- Interview Progress -->
+    <div class="interview-progress">
+        <div class="progress-title">Interview Progress</div>
+        <div class="progress-stats">
+            <div class="progress-stat">
+                <span id="questionCount" class="stat-value">0</span>
+                <span class="stat-label">Questions Asked</span>
+            </div>
+            <div class="progress-stat">
+                <span id="sessionTime" class="stat-value">00:00</span>
+                <span class="stat-label">Time Elapsed</span>
+            </div>
+            <div class="progress-stat">
+                <span id="responseCount" class="stat-value">0</span>
+                <span class="stat-label">Responses Given</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity Log -->
+    <div class="activity-log" id="logs">
+        <div class="log-entry log-info">
+            <span class="log-timestamp">{{ session.started_at|time:"H:i:s" }}</span>
+            Interview session initialized
+        </div>
+    </div>
+</div>
+
+<!-- End Interview Modal (for later implementation) -->
+<div class="modal fade" id="endInterviewModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">End Interview</h5>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to end the interview? Your progress will be saved.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Continue</button>
+                <button type="button" class="btn btn-primary" onclick="endInterview()">End Interview</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+class InterviewSession {
+    constructor() {
+        this.socket = null;
+        this.mediaRecorder = null;
+        this.audioStream = null;
+        this.audioContext = null;
+        this.playbackContext = null;
+        this.analyser = null;
+        this.isRecording = false;
+        this.isConnected = false;
+        this.SAMPLE_RATE = 24000;
+        this.sessionStartTime = new Date();
+        this.questionCount = 0;
+        this.responseCount = 0;
+
+        // Audio streaming queue
+        this.audioQueue = [];
+        this.isPlaying = false;
+
+        this.initializeElements();
+        this.connect();
+        this.startSessionTimer();
+    }
+
+    initializeElements() {
+        this.statusEl = document.getElementById('status');
+        this.startBtn = document.getElementById('startBtn');
+        this.stopBtn = document.getElementById('stopBtn');
+        this.interruptBtn = document.getElementById('interruptBtn');
+        this.logsEl = document.getElementById('logs');
+        this.volumeBar = document.getElementById('volumeBar');
+        this.questionCountEl = document.getElementById('questionCount');
+        this.sessionTimeEl = document.getElementById('sessionTime');
+        this.responseCountEl = document.getElementById('responseCount');
+
+        // Event listeners
+        this.startBtn.addEventListener('click', () => this.startRecording());
+        this.stopBtn.addEventListener('click', () => this.stopRecording());
+        this.interruptBtn.addEventListener('click', () => this.interrupt());
+    }
+
+    connect() {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${protocol}//${window.location.host}/ws/interview/{{ session.id }}/`;
+        
+        this.socket = new WebSocket(wsUrl);
+
+        this.socket.onopen = () => {
+            this.isConnected = true;
+            this.updateStatus('🟢 Connected - AI Interviewer Ready', 'connected');
+            this.startBtn.disabled = false;
+            this.interruptBtn.disabled = false;
+            this.logMessage('Connected to AI interviewer');
+        };
+
+        this.socket.onclose = () => {
+            this.isConnected = false;
+            this.updateStatus('🔴 Disconnected', 'error');
+            this.disableControls();
+            this.logMessage('Connection lost', 'error');
+        };
+
+        this.socket.onerror = (error) => {
+            this.updateStatus('🔴 Connection Error', 'error');
+            this.logMessage('Connection error occurred', 'error');
+        };
+
+        this.socket.onmessage = (event) => {
+            this.handleMessage(JSON.parse(event.data));
+        };
+    }
+
+    handleMessage(data) {
+        switch (data.type) {
+            case 'question':
+                this.questionCount++;
+                this.questionCountEl.textContent = this.questionCount;
+                this.logMessage(`Question ${this.questionCount}: ${data.content}`, 'info');
+                break;
+            case 'audio':
+                this.logMessage('Playing AI response', 'audio');
+                this.enqueueAudio(data.audio);
+                break;
+            case 'response_received':
+                this.responseCount++;
+                this.responseCountEl.textContent = this.responseCount;
+                this.logMessage('Response recorded successfully', 'info');
+                break;
+            case 'session_complete':
+                this.logMessage('Interview completed!', 'info');
+                this.handleSessionComplete(data);
+                break;
+            case 'error':
+                this.logMessage(`Error: ${data.message}`, 'error');
+                break;
+            default:
+                this.logMessage(`AI: ${data.message || 'Processing...'}`, 'info');
+        }
+    }
+
+    async startRecording() {
+        if (!this.isConnected) {
+            this.logMessage('Not connected to interviewer', 'error');
+            return;
+        }
+
+        try {
+            this.audioStream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    sampleRate: this.SAMPLE_RATE,
+                    channelCount: 1,
+                    echoCancellation: true,
+                    noiseSuppression: true
+                }
+            });
+
+            this.audioContext = new AudioContext({ sampleRate: this.SAMPLE_RATE });
+            const source = this.audioContext.createMediaStreamSource(this.audioStream);
+            
+            // Volume monitoring
+            this.analyser = this.audioContext.createAnalyser();
+            source.connect(this.analyser);
+
+            // Audio processing
+            const bufferSize = 4096;
+            const processor = this.audioContext.createScriptProcessor(bufferSize, 1, 1);
+            source.connect(processor);
+            processor.connect(this.audioContext.destination);
+
+            processor.onaudioprocess = (event) => {
+                if (!this.isRecording || !this.isConnected) return;
+
+                const inputData = event.inputBuffer.getChannelData(0);
+                const pcm16Data = new Int16Array(inputData.length);
+                
+                for (let i = 0; i < inputData.length; i++) {
+                    pcm16Data[i] = Math.round(Math.max(-1, Math.min(1, inputData[i])) * 32767);
+                }
+
+                const base64 = this.arrayBufferToBase64(pcm16Data.buffer);
+                this.socket.send(JSON.stringify({
+                    type: 'audio_data',
+                    audio: base64,
+                    format: 'pcm16',
+                    sample_rate: this.SAMPLE_RATE,
+                    channels: 1
+                }));
+            };
+
+            this.processor = processor;
+            this.isRecording = true;
+            this.monitorVolume();
+            
+            // Send start recording signal
+            this.socket.send(JSON.stringify({ type: 'start_recording' }));
+            
+            // Update UI
+            this.startBtn.disabled = true;
+            this.startBtn.textContent = '🎤 Listening...';
+            this.startBtn.classList.add('recording');
+            this.stopBtn.disabled = false;
+            
+            this.logMessage('Started recording your response');
+
+        } catch (error) {
+            this.logMessage(`Microphone error: ${error.message}`, 'error');
+        }
+    }
+
+    stopRecording() {
+        if (this.processor && this.isRecording) {
+            this.processor.disconnect();
+            this.processor = null;
+            this.isRecording = false;
+
+            if (this.audioStream) {
+                this.audioStream.getTracks().forEach(track => track.stop());
+            }
+
+            if (this.audioContext) {
+                this.audioContext.close();
+            }
+
+            if (this.isConnected) {
+                this.socket.send(JSON.stringify({ type: 'stop_recording' }));
+            }
+
+            // Update UI
+            this.startBtn.disabled = false;
+            this.startBtn.innerHTML = '<span>🎤</span>Start Speaking';
+            this.startBtn.classList.remove('recording');
+            this.stopBtn.disabled = true;
+            
+            this.logMessage('Stopped recording');
+        }
+    }
+
+    interrupt() {
+        if (this.isConnected) {
+            this.socket.send(JSON.stringify({ type: 'interrupt' }));
+            this.audioQueue = [];
+            this.logMessage('Interrupted AI response');
+        }
+    }
+
+    monitorVolume() {
+        if (!this.analyser || !this.isRecording) return;
+
+        const bufferLength = this.analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+
+        const checkVolume = () => {
+            if (!this.isRecording) return;
+
+            this.analyser.getByteFrequencyData(dataArray);
+            let sum = 0;
+            for (let i = 0; i < bufferLength; i++) {
+                sum += dataArray[i] * dataArray[i];
+            }
+            
+            const rms = Math.sqrt(sum / bufferLength);
+            const volume = (rms / 255) * 100;
+            this.volumeBar.style.width = volume + '%';
+            
+            requestAnimationFrame(checkVolume);
+        };
+        
+        checkVolume();
+    }
+
+    async enqueueAudio(base64Audio) {
+        const pcm16 = new Int16Array(this.base64ToArrayBuffer(base64Audio));
+        const float32 = new Float32Array(pcm16.length);
+        
+        for (let i = 0; i < pcm16.length; i++) {
+            float32[i] = pcm16[i] / 32768.0;
+        }
+        
+        this.audioQueue.push(float32);
+        
+        if (!this.isPlaying) {
+            this.playNextChunk();
+        }
+    }
+
+    async playNextChunk() {
+        if (this.audioQueue.length === 0) {
+            this.isPlaying = false;
+            return;
+        }
+
+        this.isPlaying = true;
+        const chunk = this.audioQueue.shift();
+
+        if (!this.playbackContext || this.playbackContext.state === 'closed') {
+            this.playbackContext = new AudioContext({ sampleRate: this.SAMPLE_RATE });
+        }
+
+        if (this.playbackContext.state === 'suspended') {
+            await this.playbackContext.resume();
+        }
+
+        const buffer = this.playbackContext.createBuffer(1, chunk.length, this.playbackContext.sampleRate);
+        buffer.copyToChannel(chunk, 0, 0);
+        
+        const source = this.playbackContext.createBufferSource();
+        source.buffer = buffer;
+        source.connect(this.playbackContext.destination);
+        source.onended = () => this.playNextChunk();
+        source.start();
+    }
+
+    startSessionTimer() {
+        setInterval(() => {
+            const elapsed = Math.floor((new Date() - this.sessionStartTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            this.sessionTimeEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }, 1000);
+    }
+
+    handleSessionComplete(data) {
+        this.disableControls();
+        this.updateStatus('✅ Interview Completed!', 'connected');
+        
+        // Redirect to results page after a short delay
+        setTimeout(() => {
+            window.location.href = `/interview/results/{{ session.id }}/`;
+        }, 3000);
+    }
+
+    disableControls() {
+        this.startBtn.disabled = true;
+        this.stopBtn.disabled = true;
+        this.interruptBtn.disabled = true;
+    }
+
+    updateStatus(message, type) {
+        this.statusEl.textContent = message;
+        this.statusEl.className = `status-indicator status-${type}`;
+    }
+
+    logMessage(message, type = 'info') {
+        const entry = document.createElement('div');
+        entry.className = `log-entry log-${type}`;
+        entry.innerHTML = `<span class="log-timestamp">${new Date().toLocaleTimeString()}</span>${message}`;
+        this.logsEl.appendChild(entry);
+        this.logsEl.scrollTop = this.logsEl.scrollHeight;
+
+        // Keep only last 50 entries
+        const entries = this.logsEl.children;
+        if (entries.length > 50) {
+            this.logsEl.removeChild(entries[0]);
+        }
+    }
+
+    // Utility methods
+    arrayBufferToBase64(buffer) {
+        let binary = '';
+        const bytes = new Uint8Array(buffer);
+        for (let i = 0; i < bytes.byteLength; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return btoa(binary);
+    }
+
+    base64ToArrayBuffer(base64) {
+        const binaryString = atob(base64);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        return bytes.buffer;
+    }
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    new InterviewSession();
+});
+
+// Handle page unload
+window.addEventListener('beforeunload', (event) => {
+    event.preventDefault();
+    event.returnValue = 'Are you sure you want to leave the interview?';
+});
+</script>
+{% endblock %}
