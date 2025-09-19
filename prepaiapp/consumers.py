@@ -56,6 +56,7 @@ class VoiceAgentConsumer(AsyncWebsocketConsumer):
         self.session: Optional[RealtimeSession] = None
         self.runner: Optional[RealtimeRunner] = None
         self.playback_tracker = RealtimePlaybackTracker()
+        self.processed_items = []
         self.agent = RealtimeAgent(
             name="Assistant",
             instructions=(
@@ -212,6 +213,8 @@ class VoiceAgentConsumer(AsyncWebsocketConsumer):
                         "interrupt_response": True,
                         "create_response": True,
                     },
+                    "input_audio_transcription": {"model": "whisper-1"},
+                    "output_audio_transcription": {"model": "whisper-1"},
                 },
             }
 
@@ -363,11 +366,135 @@ class VoiceAgentConsumer(AsyncWebsocketConsumer):
             logger.error(f"Error cleaning up session: {e}")
 
 
+# class InterviewConsumer(VoiceAgentConsumer):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.interview_session = None
+#         self.interview_template = None
+
+#     async def connect(self):
+#         # Get session ID from URL
+#         self.session_id = self.scope["url_route"]["kwargs"]["session_id"]
+
+#         # Load interview session and template
+#         await self.load_interview_context()
+
+#         if not self.interview_session:
+#             await self.close()
+#             return
+
+#         # Create agent with dynamic instructions
+#         self.agent = RealtimeAgent(
+#             name="AI Interviewer",
+#             instructions=self.get_interview_instructions(),
+#             tools=[],  # Add interview-specific tools if needed
+#         )
+
+#         await super().connect()
+
+#     @database_sync_to_async
+#     def load_interview_context(self):
+#         """Load interview session and template from database"""
+#         from .models import InterviewSession
+
+#         try:
+#             self.interview_session = InterviewSession.objects.select_related(
+#                 "template"
+#             ).get(id=self.session_id, user=self.scope["user"])
+#             self.interview_template = self.interview_session.template
+#             return True
+#         except InterviewSession.DoesNotExist:
+#             return False
+
+#     def get_interview_instructions(self):
+#         """Generate dynamic instructions based on interview template"""
+#         if not self.interview_template:
+#             return "You are an AI interviewer."
+
+#         base_instructions = f"""
+# You are an AI interviewer conducting a {self.interview_template.get_role_type_display()} interview.
+
+# Interview Details:
+# - Role: {self.interview_template.get_role_type_display()}
+# - Difficulty: {self.interview_template.get_difficulty_display()}
+# - Duration: {self.interview_template.estimated_duration_minutes} minutes
+# - Title: {self.interview_template.title}
+# - Description: {self.interview_template.description}
+
+# System Prompt:
+# {self.interview_template.system_prompt}
+
+# Instructions:
+# 1. **Introduction**
+#    - Greet the candidate politely and introduce yourself as the interviewer.
+#    - Explain the purpose of the interview, its structure, and the estimated duration.
+#    - Reassure the candidate that the process will be professional yet conversational.
+
+# 2. **Interview Flow**
+#    - Ask clear, relevant, and role-appropriate questions aligned with the provided system prompt.
+#    - Adjust difficulty and depth based on the candidate’s responses.
+#    - Use follow-up questions to explore reasoning, experiences, and problem-solving approaches in greater detail.
+#    - Keep the conversation structured but natural, avoiding rigid or scripted exchanges.
+
+# 3. **Tone and Style**
+#    - Be professional, supportive, and attentive throughout.
+#    - Respond only in **English**, using clear and polite language.
+#    - Maintain a balance between encouragement and thorough evaluation.
+
+# 4. **Time Management**
+#    - Keep track of pacing to ensure the interview aligns with the allotted duration.
+#    - Allow the candidate enough time to respond fully, while moving forward smoothly when needed.
+
+# 5. **Closing**
+#    - When sufficient insights have been gathered, begin wrapping up naturally.
+#    - Thank the candidate sincerely for their time and responses.
+#    - End with a polite and encouraging closing statement.
+
+# Begin by greeting the candidate, introducing yourself, and explaining the interview process.
+# """
+#         return base_instructions
+
+#     async def handle_message(self, data: Dict[str, Any]):
+#         """Override to add interview-specific message handling"""
+#         message_type = data.get("type")
+
+#         if message_type == "end_interview":
+#             await self.handle_end_interview()
+#         else:
+#             await super().handle_message(data)
+
+#     async def handle_end_interview(self):
+#         """Handle interview completion"""
+#         if self.interview_session:
+#             await self.update_session_status("completed")
+#             await self.send(
+#                 text_data=json.dumps(
+#                     {
+#                         "type": "session_complete",
+#                         "message": "Interview completed successfully",
+#                     }
+#                 )
+#             )
+
+#     @database_sync_to_async
+#     def update_session_status(self, status):
+#         """Update interview session status"""
+#         try:
+#             self.interview_session.status = status
+#             if status == "completed":
+#                 self.interview_session.completed_at = timezone.now()
+#             self.interview_session.save()
+#         except Exception as e:
+#             logger.error(f"Error updating session status: {e}")
+
+
 class InterviewConsumer(VoiceAgentConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.interview_session = None
         self.interview_template = None
+        self.current_transcript = []  # Store the complete transcript
+        self.last_processed_item_count = 0  # Track processed items to avoid duplicates
 
     async def connect(self):
         # Get session ID from URL
@@ -409,7 +536,7 @@ class InterviewConsumer(VoiceAgentConsumer):
             return "You are an AI interviewer."
 
         base_instructions = f"""
-You are an AI interviewer conducting a {self.interview_template.get_role_type_display()} interview.  
+You are an AI interviewer conducting a {self.interview_template.get_role_type_display()} interview.
 
 Interview Details:
 - Role: {self.interview_template.get_role_type_display()}
@@ -422,34 +549,143 @@ System Prompt:
 {self.interview_template.system_prompt}
 
 Instructions:
-1. **Introduction**  
-   - Greet the candidate politely and introduce yourself as the interviewer.  
-   - Explain the purpose of the interview, its structure, and the estimated duration.  
-   - Reassure the candidate that the process will be professional yet conversational.  
+1. **Introduction**
+   - Greet the candidate politely and introduce yourself as the interviewer.
+   - Explain the purpose of the interview, its structure, and the estimated duration.
+   - Reassure the candidate that the process will be professional yet conversational.
 
-2. **Interview Flow**  
-   - Ask clear, relevant, and role-appropriate questions aligned with the provided system prompt.  
-   - Adjust difficulty and depth based on the candidate’s responses.  
-   - Use follow-up questions to explore reasoning, experiences, and problem-solving approaches in greater detail.  
-   - Keep the conversation structured but natural, avoiding rigid or scripted exchanges.  
+2. **Interview Flow**
+   - Ask clear, relevant, and role-appropriate questions aligned with the provided system prompt.
+   - Adjust difficulty and depth based on the candidate's responses.
+   - Use follow-up questions to explore reasoning, experiences, and problem-solving approaches in greater detail.
+   - Keep the conversation structured but natural, avoiding rigid or scripted exchanges.
 
-3. **Tone and Style**  
-   - Be professional, supportive, and attentive throughout.  
-   - Respond only in **English**, using clear and polite language.  
-   - Maintain a balance between encouragement and thorough evaluation.  
+3. **Tone and Style**
+   - Be professional, supportive, and attentive throughout.
+   - Respond only in **English**, using clear and polite language.
+   - Maintain a balance between encouragement and thorough evaluation.
 
-4. **Time Management**  
-   - Keep track of pacing to ensure the interview aligns with the allotted duration.  
-   - Allow the candidate enough time to respond fully, while moving forward smoothly when needed.  
+4. **Time Management**
+   - Keep track of pacing to ensure the interview aligns with the allotted duration.
+   - Allow the candidate enough time to respond fully, while moving forward smoothly when needed.
 
-5. **Closing**  
-   - When sufficient insights have been gathered, begin wrapping up naturally.  
-   - Thank the candidate sincerely for their time and responses.  
-   - End with a polite and encouraging closing statement.  
+5. **Closing**
+   - When sufficient insights have been gathered, begin wrapping up naturally.
+   - Thank the candidate sincerely for their time and responses.
+   - End with a polite and encouraging closing statement.
 
 Begin by greeting the candidate, introducing yourself, and explaining the interview process.
 """
         return base_instructions
+
+    def extract_transcript_text(self, content_item):
+        """Extract transcript text from a content item"""
+        if hasattr(content_item, 'transcript') and content_item.transcript:
+            return content_item.transcript
+        elif hasattr(content_item, 'text') and content_item.text:
+            return content_item.text
+        return None
+
+    def format_history_item(self, history_item):
+        """Format a history item into transcript format"""
+        if not hasattr(history_item, 'role') or not hasattr(history_item, 'content'):
+            return None
+
+        role = history_item.role
+        content_parts = []
+        
+        for content_item in history_item.content:
+            transcript_text = self.extract_transcript_text(content_item)
+            if transcript_text:
+                content_parts.append(transcript_text)
+        
+        if content_parts:
+            full_content = " ".join(content_parts)
+            timestamp = timezone.now().strftime("%H:%M:%S")
+            
+            return {
+                "timestamp": timestamp,
+                "role": role,
+                "content": full_content,
+                "item_id": getattr(history_item, 'item_id', None)
+            }
+        
+        return None
+
+    def update_transcript(self, history):
+        """Update transcript with new history items, avoiding duplicates"""
+        if not history:
+            return
+
+        # Process only new items beyond what we've already processed
+        new_items = history[self.last_processed_item_count:]
+        
+        for history_item in new_items:
+            # Skip in-progress items to avoid partial transcripts
+            if hasattr(history_item, 'status') and history_item.status == 'in_progress':
+                continue
+                
+            formatted_item = self.format_history_item(history_item)
+            if formatted_item:
+                # Check if this item is already in our transcript (by item_id)
+                item_id = formatted_item.get('item_id')
+                if item_id:
+                    # Remove any existing item with same ID (for updates)
+                    self.current_transcript = [
+                        item for item in self.current_transcript 
+                        if item.get('item_id') != item_id
+                    ]
+                
+                self.current_transcript.append(formatted_item)
+        
+        # Update the count of processed items
+        # Only count completed items
+        completed_items = [
+            item for item in history 
+            if not (hasattr(item, 'status') and item.status == 'in_progress')
+        ]
+        self.last_processed_item_count = len(completed_items)
+
+    def generate_formatted_transcript(self):
+        """Generate a formatted transcript string"""
+        if not self.current_transcript:
+            return "No transcript available."
+
+        formatted_lines = []
+        formatted_lines.append("=== INTERVIEW TRANSCRIPT ===\n")
+        
+        for item in self.current_transcript:
+            role_display = "INTERVIEWER" if item['role'] == 'assistant' else "CANDIDATE"
+            formatted_lines.append(f"[{item['timestamp']}] {role_display}:")
+            formatted_lines.append(f"{item['content']}\n")
+        
+        formatted_lines.append("=== END OF TRANSCRIPT ===")
+        return "\n".join(formatted_lines)
+
+    async def _handle_session_event(self, event: RealtimeSessionEvent):
+        """Override to handle transcript updates"""
+        try:
+            # Handle history updates for transcript
+            if event.type == "history_updated":
+                if hasattr(event, 'history') and event.history:
+                    self.update_transcript(event.history)
+                    
+                    # Optionally send transcript update to client (for real-time display)
+                    await self.send(text_data=json.dumps({
+                        "type": "transcript_update",
+                        "transcript_length": len(self.current_transcript),
+                        "latest_items": self.current_transcript[-2:] if len(self.current_transcript) >= 2 else self.current_transcript
+                    }))
+                
+                # Don't pass to parent to avoid noise
+                return
+            
+            # Handle all other events normally
+            await super()._handle_session_event(event)
+            
+        except Exception as e:
+            logger.error(f"Error handling session event in InterviewConsumer: {e}")
+            await super()._handle_session_event(event)
 
     async def handle_message(self, data: Dict[str, Any]):
         """Override to add interview-specific message handling"""
@@ -457,21 +693,55 @@ Begin by greeting the candidate, introducing yourself, and explaining the interv
 
         if message_type == "end_interview":
             await self.handle_end_interview()
+        elif message_type == "get_transcript":
+            # Allow client to request current transcript
+            transcript = self.generate_formatted_transcript()
+            await self.send(text_data=json.dumps({
+                "type": "current_transcript",
+                "transcript": transcript
+            }))
         else:
             await super().handle_message(data)
 
     async def handle_end_interview(self):
-        """Handle interview completion"""
+        """Handle interview completion and save transcript"""
         if self.interview_session:
+            # Generate final transcript
+            final_transcript = self.generate_formatted_transcript()
+            
+            # Save transcript to database
+            await self.save_transcript_to_db(final_transcript)
+            
+            # Update session status
             await self.update_session_status("completed")
+            
             await self.send(
                 text_data=json.dumps(
                     {
                         "type": "session_complete",
                         "message": "Interview completed successfully",
+                        "transcript_saved": True,
+                        "transcript_length": len(self.current_transcript)
                     }
                 )
             )
+
+    @database_sync_to_async
+    def save_transcript_to_db(self, transcript):
+        """Save transcript to InterviewSession.transcript field"""
+        try:
+            # Refresh the session from DB to avoid stale data
+            self.interview_session.refresh_from_db()
+            
+            # Save transcript in the transcript field
+            self.interview_session.transcript = transcript
+            self.interview_session.save(update_fields=['transcript'])
+            
+            logger.info(f"Transcript saved for interview session {self.session_id}")
+            return True
+        except Exception as e:
+            logger.error(f"Error saving transcript to database: {e}")
+            return False
 
     @database_sync_to_async
     def update_session_status(self, status):
@@ -480,6 +750,18 @@ Begin by greeting the candidate, introducing yourself, and explaining the interv
             self.interview_session.status = status
             if status == "completed":
                 self.interview_session.completed_at = timezone.now()
-            self.interview_session.save()
+            self.interview_session.save(update_fields=['status', 'completed_at'])
         except Exception as e:
             logger.error(f"Error updating session status: {e}")
+
+    async def disconnect(self, close_code):
+        """Override disconnect to save transcript if interview was in progress"""
+        # If interview was in progress but not formally ended, still save transcript
+        if self.interview_session and self.current_transcript:
+            final_transcript = self.generate_formatted_transcript()
+            await self.save_transcript_to_db(final_transcript)
+            
+            # Update status to indicate unexpected disconnect
+            await self.update_session_status("disconnected")
+        
+        await super().disconnect(close_code)

@@ -344,6 +344,10 @@
             <span>✋</span>
             Interrupt
         </button>
+            <button id="endBtn" class="voice-btn secondary" disabled>
+        <span>🚪</span>
+        End Interview
+    </button>
     </div>
 
     <!-- Microphone Volume -->
@@ -359,16 +363,8 @@
         <div class="progress-title">Interview Progress</div>
         <div class="progress-stats">
             <div class="progress-stat">
-                <span id="questionCount" class="stat-value">0</span>
-                <span class="stat-label">Questions Asked</span>
-            </div>
-            <div class="progress-stat">
                 <span id="sessionTime" class="stat-value">00:00</span>
                 <span class="stat-label">Time Elapsed</span>
-            </div>
-            <div class="progress-stat">
-                <span id="responseCount" class="stat-value">0</span>
-                <span class="stat-label">Responses Given</span>
             </div>
         </div>
     </div>
@@ -437,11 +433,13 @@ class InterviewSession {
         this.questionCountEl = document.getElementById('questionCount');
         this.sessionTimeEl = document.getElementById('sessionTime');
         this.responseCountEl = document.getElementById('responseCount');
+        this.endBtn = document.getElementById('endBtn');
 
         // Event listeners
         this.startBtn.addEventListener('click', () => this.startRecording());
         this.stopBtn.addEventListener('click', () => this.stopRecording());
         this.interruptBtn.addEventListener('click', () => this.interrupt());
+        this.endBtn.addEventListener('click', () => this.endInterview());
     }
 
     connect() {
@@ -455,6 +453,7 @@ class InterviewSession {
             this.updateStatus('🟢 Connected - AI Interviewer Ready', 'connected');
             this.startBtn.disabled = false;
             this.interruptBtn.disabled = false;
+             this.endBtn.disabled = false;
             this.logMessage('Connected to AI interviewer');
         };
 
@@ -474,6 +473,15 @@ class InterviewSession {
             this.handleMessage(JSON.parse(event.data));
         };
     }
+
+    endInterview() {
+    if (confirm('Are you sure you want to end the interview? Your progress will be saved.')) {
+        if (this.isConnected) {
+            this.socket.send(JSON.stringify({ type: 'end_interview' }));
+        }
+        this.logMessage('Interview ended by user', 'info');
+    }
+}
 
     handleMessage(data) {
         switch (data.type) {
@@ -698,6 +706,7 @@ class InterviewSession {
         this.startBtn.disabled = true;
         this.stopBtn.disabled = true;
         this.interruptBtn.disabled = true;
+        this.endBtn.disabled = true;
     }
 
     updateStatus(message, type) {

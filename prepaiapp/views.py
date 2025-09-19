@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from .models import Profile, Course, InterviewTemplate, InterviewSession
-
+import os
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -18,6 +18,523 @@ from django.contrib.auth import authenticate, login, logout
 logger = logging.getLogger(__name__)
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+from django.core.cache import cache
+from openai import OpenAI
+import datetime
+class InterviewResultView(LoginRequiredMixin, View):
+    """
+    View to display interview results and feedback
+    """
+    login_url = "/login/"
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    
+    def get(self, request, session_id):
+        try:
+            # Get the interview session
+            session = get_object_or_404(
+                InterviewSession,
+                id=session_id,
+                user=request.user
+            )
+            # Check if we have transcript to analyze
+            if not session.transcript:
+                messages.warning(request, "Interview transcript not available yet.")
+                return redirect('interview_types')
+            
+            # Check cache first to avoid re-analysis
+            cache_key = f"interview_analysis_{session_id}"
+            analysis_results = cache.get(cache_key)
+            
+            if not analysis_results:
+                # Generate analysis using OpenAI
+                analysis_results = self.analyze_interview_transcript(session)
+                if analysis_results:
+                    # Cache for 1 hour
+                    cache.set(cache_key, analysis_results, 3600)
+            
+            if not analysis_results:
+                messages.error(request, "Unable to analyze interview results. Please try again.")
+                return redirect('interview_types')
+            
+            # Calculate session duration
+            session_duration = self.calculate_session_duration(session)
+            
+            # Parse conversation history from transcript
+            conversation_history = self.parse_conversation_history(session.transcript)
+            
+            context = {
+                'session': session,
+                'template': session.template,
+                'analysis': analysis_results,
+                # Main scores
+                'overall_score': analysis_results.get('overall_score', 0),
+                'confidence_level': analysis_results.get('confidence_level', 0),
+                'communication_score': analysis_results.get('communication_score', 0),
+                'engagement_score': analysis_results.get('engagement_score', 0),
+                'technical_accuracy': analysis_results.get('technical_accuracy', 0),
+                # Session metadata
+                'session_duration': session_duration,
+                # Skills assessment
+                'skills_assessment': self.format_skills_assessment(analysis_results.get('skills_assessment', [])),
+                # Feedback sections
+                'strengths': self.format_feedback_items(analysis_results.get('detailed_feedback', {}).get('strengths', [])),
+                'improvements': self.format_feedback_items(analysis_results.get('detailed_feedback', {}).get('areas_for_improvement', [])),
+                'recommendations': self.format_feedback_items(analysis_results.get('detailed_feedback', {}).get('recommendations', [])),
+                # Statistics
+                'total_questions': analysis_results.get('statistics', {}).get('questions_asked', 0),
+                'total_responses': analysis_results.get('statistics', {}).get('candidate_responses', 0),
+                'words_spoken': analysis_results.get('statistics', {}).get('words_spoken', 0),
+                'avg_response_time': self.extract_response_time_seconds(analysis_results.get('statistics', {}).get('avg_response_time', '0s')),
+                # Conversation history
+                'conversation_history': conversation_history,
+            }
+            print("Context for interview results:", context)  # Debug print
+            
+            return render(request, 'interview_results.html', context)
+            
+        except InterviewSession.DoesNotExist:
+            messages.error(request, "Interview session not found.")
+            return redirect('interview_types')
+        except Exception as e:
+            logger.error(f"Error in InterviewResultView: {e}")
+            messages.error(request, "An error occurred while loading results.")
+            return redirect('interview_types')
+
+    def analyze_interview_transcript(self, session):
+        """
+        Analyze interview transcript using OpenAI and return structured results
+        """
+        try:
+            transcript = session.transcript
+            template = session.template
+            
+            # Create analysis prompt
+            analysis_prompt = self.create_analysis_prompt(transcript, template)
+            
+            # Call OpenAI API
+            response = self.openai_client.chat.completions.create(
+                model="gpt-4",  # or "gpt-4-turbo" for faster response
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are an expert interview assessor. Analyze interview transcripts and provide detailed, constructive feedback in the exact JSON format requested."
+                    },
+                    {
+                        "role": "user", 
+                        "content": analysis_prompt
+                    }
+                ],
+                temperature=0.3,  # Lower temperature for more consistent analysis
+                max_tokens=2000
+            )
+            
+            # Parse the response
+            analysis_text = response.choices[0].message.content.strip()
+            
+            # Try to extract JSON from the response
+            analysis_results = self.parse_analysis_response(analysis_text)
+            
+            return analysis_results
+            
+        except Exception as e:
+            print(f"Error analyzing interview transcript: {e}")
+            return None
+
+    def create_analysis_prompt(self, transcript, template):
+        """
+        Create a detailed prompt for OpenAI analysis
+        """
+        prompt = f"""
+Please analyze the following interview transcript and provide a comprehensive assessment.
+
+**Interview Context:**
+- Role Type: {template.get_role_type_display()}
+- Difficulty Level: {template.get_difficulty_display()}
+- Duration: {template.estimated_duration_minutes} minutes
+- Interview Title: {template.title}
+- Description: {template.description}
+
+**Interview Transcript:**
+{transcript}
+
+**Analysis Requirements:**
+Please provide your analysis in the following JSON format only. Do not include any other text outside the JSON:
+
+{{
+    "overall_score": <number between 0-100>,
+    "confidence_level": <number between 0-100>,
+    "communication_score": <number between 0-100>,
+    "engagement_score": <number between 0-100>,
+    "technical_accuracy": <number between 0-100>,
+    "statistics": {{
+        "questions_asked": <number>,
+        "candidate_responses": <number>,
+        "words_spoken": <estimated number>,
+        "avg_response_time": "<time estimate like '15s'>"
+    }},
+    "detailed_feedback": {{
+        "strengths": [
+            "<strength 1>",
+            "<strength 2>",
+            "<strength 3>"
+        ],
+        "areas_for_improvement": [
+            "<area 1>",
+            "<area 2>",
+            "<area 3>"
+        ],
+        "recommendations": [
+            "<recommendation 1>",
+            "<recommendation 2>",
+            "<recommendation 3>"
+        ]
+    }},
+    "skills_assessment": [
+        {{
+            "skill": "<skill name>",
+            "score": <0-100>,
+            "description": "<brief assessment>"
+        }},
+        {{
+            "skill": "<skill name>",
+            "score": <0-100>,
+            "description": "<brief assessment>"
+        }}
+    ]
+}}
+
+**Scoring Criteria:**
+- **Overall Score**: Holistic assessment based on role requirements, communication, and technical competency
+- **Confidence Level**: Based on response clarity, voice tone, and engagement throughout the interview
+- **Communication**: Effectiveness of verbal communication, clarity, and professional presentation
+- **Engagement Score**: Level of interaction, enthusiasm, and active participation
+- **Technical Accuracy**: Correctness and depth of technical responses (if applicable)
+
+**Guidelines:**
+1. Be constructive and specific in feedback
+2. Provide actionable recommendations
+3. Consider the role type and difficulty level in your assessment
+4. Focus on both strengths and growth opportunities
+5. Ensure scores reflect realistic performance levels
+6. Base word count estimation on transcript length
+7. Estimate response times based on conversation flow
+
+Please ensure your response contains ONLY the JSON object with no additional formatting or explanation.
+"""
+        return prompt
+
+    def parse_analysis_response(self, analysis_text):
+        """
+        Parse the OpenAI response and extract JSON analysis
+        """
+        try:
+            # Try to find JSON in the response
+            start_idx = analysis_text.find('{')
+            end_idx = analysis_text.rfind('}') + 1
+            
+            if start_idx != -1 and end_idx != -1:
+                json_str = analysis_text[start_idx:end_idx]
+                analysis_data = json.loads(json_str)
+                
+                # Validate required fields
+                required_fields = [
+                    'overall_score', 'confidence_level', 'communication_score',
+                    'engagement_score', 'technical_accuracy', 'statistics',
+                    'detailed_feedback', 'skills_assessment'
+                ]
+                
+                for field in required_fields:
+                    if field not in analysis_data:
+                        logger.warning(f"Missing required field in analysis: {field}")
+                        return None
+                
+                return analysis_data
+            else:
+                logger.error("No JSON found in OpenAI response")
+                return None
+                
+        except json.JSONDecodeError as e:
+            logger.error(f"Error parsing JSON from OpenAI response: {e}")
+            logger.error(f"Response text: {analysis_text[:500]}...")
+            return None
+        except Exception as e:
+            logger.error(f"Unexpected error parsing analysis response: {e}")
+            return None
+
+    def get_fallback_analysis(self):
+        """
+        Provide fallback analysis if OpenAI fails
+        """
+    def calculate_session_duration(self, session):
+        """Calculate interview duration in minutes"""
+        try:
+            if session.completed_at and session.created_at:
+                duration = session.completed_at - session.created_at
+                return int(duration.total_seconds() / 60)
+            return session.template.estimated_duration_minutes
+        except:
+            return session.template.estimated_duration_minutes
+
+    def format_skills_assessment(self, skills_data):
+        """Format skills data for template"""
+        formatted_skills = []
+        for skill in skills_data:
+            formatted_skills.append({
+                'name': skill.get('skill', 'Unknown Skill'),
+                'score': skill.get('score', 0),
+                'feedback': skill.get('description', 'No feedback available')
+            })
+        return formatted_skills
+
+    def format_feedback_items(self, feedback_list):
+        """Format feedback items with titles and descriptions"""
+        formatted_items = []
+        for i, feedback in enumerate(feedback_list, 1):
+            if isinstance(feedback, str):
+                # Simple string feedback
+                formatted_items.append({
+                    'title': f'Point {i}',
+                    'description': feedback
+                })
+            elif isinstance(feedback, dict):
+                # Structured feedback
+                formatted_items.append({
+                    'title': feedback.get('title', f'Point {i}'),
+                    'description': feedback.get('description', str(feedback))
+                })
+        return formatted_items
+
+    def extract_response_time_seconds(self, time_str):
+        """Extract numeric seconds from time string like '15s' or '2m 30s'"""
+        try:
+            if not time_str:
+                return 0
+            
+            time_str = str(time_str).lower()
+            total_seconds = 0
+            
+            # Extract minutes
+            if 'm' in time_str:
+                minutes_part = time_str.split('m')[0]
+                if minutes_part.strip().isdigit():
+                    total_seconds += int(minutes_part.strip()) * 60
+            
+            # Extract seconds
+            if 's' in time_str:
+                seconds_part = time_str.split('s')[0]
+                if 'm' in time_str:
+                    # Get seconds after minutes (e.g., "2m 30s" -> "30")
+                    seconds_part = time_str.split('m')[1].replace('s', '').strip()
+                else:
+                    # Just seconds (e.g., "15s" -> "15")
+                    seconds_part = seconds_part.strip()
+                
+                if seconds_part.isdigit():
+                    total_seconds += int(seconds_part)
+            
+            return total_seconds
+        except:
+            return 0
+
+    def parse_conversation_history(self, transcript):
+        """Parse transcript into conversation history for template"""
+        if not transcript:
+            return []
+        
+        conversation_history = []
+        lines = transcript.split('\n')
+        current_item = None
+        
+        for line in lines:
+            line = line.strip()
+            if not line or line.startswith('==='):
+                continue
+                
+            # Check for speaker indicators
+            if line.startswith('[') and ']' in line:
+                # New speaker entry like "[14:30:15] INTERVIEWER:" or "[14:30:45] CANDIDATE:"
+                try:
+                    # Extract timestamp and speaker
+                    timestamp_end = line.index(']')
+                    timestamp_str = line[1:timestamp_end]
+                    remainder = line[timestamp_end + 1:].strip()
+                    
+                    if ':' in remainder:
+                        speaker = remainder.split(':')[0].strip()
+                        content_start = remainder.index(':') + 1
+                        content = remainder[content_start:].strip()
+                        
+                        # Map speaker to role
+                        role = 'assistant' if 'INTERVIEWER' in speaker.upper() else 'user'
+                        
+                        # Save previous item
+                        if current_item:
+                            conversation_history.append(current_item)
+                        
+                        # Create new item
+                        current_item = {
+                            'role': role,
+                            'content': content,
+                            'timestamp': self.parse_timestamp(timestamp_str)
+                        }
+                    
+                except (ValueError, IndexError):
+                    # If parsing fails, treat as continuation of current content
+                    if current_item:
+                        current_item['content'] += ' ' + line
+                    
+            else:
+                # Continuation of current speaker's content
+                if current_item:
+                    if current_item['content']:
+                        current_item['content'] += ' ' + line
+                    else:
+                        current_item['content'] = line
+        
+        # Add the last item
+        if current_item:
+            conversation_history.append(current_item)
+        
+        return conversation_history
+
+    def parse_timestamp(self, timestamp_str):
+        """Parse timestamp string to datetime object"""
+        from datetime import datetime, time
+        try:
+            # Parse time like "14:30:15"
+            time_parts = timestamp_str.split(':')
+            if len(time_parts) == 3:
+                hour, minute, second = map(int, time_parts)
+                return time(hour, minute, second)
+            elif len(time_parts) == 2:
+                hour, minute = map(int, time_parts)
+                return time(hour, minute, 0)
+        except:
+            pass
+        
+        # Return current time as fallback
+        return datetime.now().time()
+
+    def update_session_feedback(self, session, context):
+        """
+        Save the complete context data to session feedback field
+        """
+        try:
+            # Create a clean copy of context without Django objects
+            feedback_data = {
+                'analysis_timestamp': datetime.now().isoformat(),
+                'scores': {
+                    'overall_score': context.get('overall_score', 0),
+                    'confidence_level': context.get('confidence_level', 0),
+                    'communication_score': context.get('communication_score', 0),
+                    'engagement_score': context.get('engagement_score', 0),
+                    'technical_accuracy': context.get('technical_accuracy', 0),
+                },
+                'session_duration': context.get('session_duration', 0),
+                'skills_assessment': context.get('skills_assessment', []),
+                'strengths': context.get('strengths', []),
+                'improvements': context.get('improvements', []),
+                'recommendations': context.get('recommendations', []),
+                'statistics': {
+                    'total_questions': context.get('total_questions', 0),
+                    'total_responses': context.get('total_responses', 0),
+                    'words_spoken': context.get('words_spoken', 0),
+                    'avg_response_time': context.get('avg_response_time', 0),
+                },
+                'conversation_history': context.get('conversation_history', []),
+                'template_info': {
+                    'title': session.template.title,
+                    'role_type': session.template.get_role_type_display(),
+                    'difficulty': session.template.get_difficulty_display(),
+                },
+            }
+            
+            # Save to feedback field
+            session.feedback = json.dumps(feedback_data, indent=2)
+            session.save(update_fields=['feedback'])
+            
+            logger.info(f"Context data saved to session {session.id} feedback field")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error saving context to session feedback: {e}")
+            return False
+
+    def get_fallback_analysis(self):
+        """
+        Provide fallback analysis if OpenAI fails
+        """
+        return {
+            "overall_score": 75,
+            "confidence_level": 70,
+            "communication_score": 80,
+            "engagement_score": 75,
+            "technical_accuracy": 70,
+            "statistics": {
+                "questions_asked": 5,
+                "candidate_responses": 5,
+                "words_spoken": 500,
+                "avg_response_time": "20s"
+            },
+            "detailed_feedback": {
+                "strengths": [
+                    "Good communication skills demonstrated",
+                    "Professional demeanor throughout interview",
+                    "Attempted to answer all questions"
+                ],
+                "areas_for_improvement": [
+                    "Could provide more specific examples",
+                    "Consider elaborating on technical details",
+                    "Practice structuring responses more clearly"
+                ],
+                "recommendations": [
+                    "Practice common interview questions",
+                    "Prepare specific examples from experience", 
+                    "Work on concise yet comprehensive answers"
+                ]
+            },
+            "skills_assessment": [
+                {
+                    "skill": "Communication",
+                    "score": 80,
+                    "description": "Clear verbal communication"
+                },
+                {
+                    "skill": "Problem Solving",
+                    "score": 70,
+                    "description": "Good analytical approach"
+                }
+            ]
+        }
+# class InterviewResultView(LoginRequiredMixin, View):
+#     """
+#     View to display interview results and feedback
+#     """
+#     login_url = "/login/"
+    
+#     def get(self, request, session_id):
+#         try:
+#             # Get the interview session
+#             session = get_object_or_404(
+#                 InterviewSession,
+#                 id=session_id,
+#                 user=request.user
+#             )
+            
+            
+#             context = {
+#                 'session': session,
+#                 'template': session.template,
+#             }
+            
+#             return render(request, 'interview_results.html', context)
+            
+#         except InterviewSession.DoesNotExist:
+#             messages.error(request, "Interview session not found.")
+#             return redirect('interview_types')
 class StartInterviewView(LoginRequiredMixin, View):
     """
     Start a new interview session
@@ -59,6 +576,7 @@ class StartInterviewView(LoginRequiredMixin, View):
             messages.error(request, "Interview template not found or inactive.")
             return redirect('interview_types')
         except Exception as e:
+            print(f"Error starting interview session: {e}")
             messages.error(request, "Failed to start interview session. Please try again.")
             return redirect('interview_types')
 

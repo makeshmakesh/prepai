@@ -98,6 +98,14 @@
         background: #f8f9fa;
         position: relative;
     }
+    .option-card.available .option-title {
+    color: #2d3748 !important;
+}
+
+.option-card.disabled .option-title {
+    color: #4a5568 !important; /* Slightly lighter for disabled state */
+}
+
 
     .option-card.disabled::after {
         content: '';
@@ -130,14 +138,14 @@
         box-shadow: 0 15px 30px rgba(108, 117, 125, 0.2);
     }
 
-    .option-title {
-        font-size: 2rem;
-        font-weight: 800;
-        margin-bottom: 1rem;
-        color: var(--text-primary);
-        position: relative;
-        z-index: 2;
-    }
+.option-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: #2d3748 !important; /* Dark gray for better contrast */
+    position: relative;
+    z-index: 2;
+}
 
     .option-description {
         font-size: 1.1rem;
@@ -263,7 +271,7 @@
 
     .activity-title {
         font-weight: 600;
-        color: var(--text-primary);
+        color: #2d3748 !important;
         margin-bottom: 0.25rem;
     }
 

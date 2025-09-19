@@ -1,0 +1,763 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Interview Results - PrepAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Override base background for dark theme compatibility */
+    html, body {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        color: #ffffff;
+    }
+
+    .content {
+        background: transparent;
+        max-width: 1100px;
+    }
+
+    /* Results Container */
+    .results-container {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border-radius: 25px;
+        padding: 3rem;
+        margin: 2rem auto;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Results Header */
+    .results-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        position: relative;
+    }
+
+    .completion-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        color: white;
+        padding: 0.8rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        animation: fadeInScale 0.6s ease-out;
+    }
+
+    @keyframes fadeInScale {
+        0% {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .results-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: var(--secondary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .results-subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .interview-meta {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+    }
+
+    /* Score Section */
+    .score-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+    }
+
+    .score-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .score-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .score-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--secondary-gradient);
+        border-radius: 20px 20px 0 0;
+    }
+
+    .score-value {
+        font-size: 3rem;
+        font-weight: 900;
+        background: var(--secondary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .score-label {
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .score-description {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    /* Progress Bars */
+    .progress-section {
+        margin: 3rem 0;
+    }
+
+    .section-title-w {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: rgba(247, 241, 241, 0.9);
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .skill-item {
+        margin: 1.5rem 0;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .skill-header {
+        display: flex;
+        justify-content: between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .skill-name {
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.1rem;
+    }
+
+    .skill-score {
+        font-weight: 700;
+        color: #f093fb;
+        font-size: 1.1rem;
+    }
+
+    .progress-bar-container {
+        width: 100%;
+        height: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: var(--secondary-gradient);
+        border-radius: 10px;
+        transition: width 2s ease-out;
+        position: relative;
+    }
+
+    .progress-bar::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    .skill-feedback {
+        margin-top: 1rem;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    /* Detailed Feedback */
+    .feedback-section {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 2.5rem;
+        margin: 3rem 0;
+    }
+
+    .feedback-tabs {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .tab-button {
+        background: transparent;
+        border: none;
+        color: rgba(255, 255, 255, 0.6);
+        padding: 1rem 2rem;
+        font-weight: 600;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .tab-button.active {
+        color: #f093fb;
+        border-bottom-color: #f093fb;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+        animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .feedback-item {
+        margin: 2rem 0;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 15px;
+        border-left: 4px solid transparent;
+    }
+
+    .feedback-item.strength {
+        border-left-color: #22c55e;
+    }
+
+    .feedback-item.improvement {
+        border-left-color: #fbbf24;
+    }
+
+    .feedback-item.critical {
+        border-left-color: #ef4444;
+    }
+
+    .feedback-title {
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .feedback-text {
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.6;
+    }
+
+    /* Session Stats */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 3rem 0;
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #f093fb;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+    }
+
+    /* Action Buttons */
+    .action-section {
+        text-align: center;
+        margin: 3rem 0;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        background: var(--secondary-gradient);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        min-width: 180px;
+        justify-content: center;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(240, 147, 251, 0.4);
+        text-decoration: none;
+        color: white;
+    }
+
+    .action-btn.secondary {
+        background: rgba(102, 126, 234, 0.2);
+        color: #667eea;
+        border: 2px solid rgba(102, 126, 234, 0.3);
+    }
+
+    .action-btn.secondary:hover {
+        background: rgba(102, 126, 234, 0.3);
+        color: #667eea;
+        box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Conversation History */
+    .conversation-section {
+        margin: 3rem 0;
+    }
+
+    .conversation-list {
+        max-height: 400px;
+        overflow-y: auto;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 15px;
+        padding: 1.5rem;
+    }
+
+    .conversation-item {
+        margin: 1rem 0;
+        padding: 1rem;
+        border-radius: 12px;
+        border-left: 3px solid transparent;
+    }
+
+    .conversation-item.interviewer {
+        background: rgba(102, 126, 234, 0.1);
+        border-left-color: #667eea;
+    }
+
+    .conversation-item.candidate {
+        background: rgba(240, 147, 251, 0.1);
+        border-left-color: #f093fb;
+        margin-left: 2rem;
+    }
+
+    .conversation-speaker {
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        opacity: 0.8;
+    }
+
+    .conversation-text {
+        line-height: 1.5;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .conversation-time {
+        font-size: 0.8rem;
+        opacity: 0.6;
+        margin-top: 0.5rem;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .results-container {
+            padding: 2rem 1.5rem;
+            margin: 1rem;
+        }
+
+        .results-title {
+            font-size: 2rem;
+        }
+
+        .interview-meta {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .score-section {
+            grid-template-columns: 1fr;
+        }
+
+        .feedback-tabs {
+            flex-direction: column;
+        }
+
+        .tab-button {
+            padding: 0.8rem 1rem;
+            text-align: center;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .action-btn {
+            width: 100%;
+            max-width: 250px;
+        }
+
+        .conversation-item.candidate {
+            margin-left: 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="results-container fade-in-on-scroll">
+    <!-- Results Header -->
+    <div class="results-header">
+        <div class="completion-badge">
+            ✅ Interview Completed!
+        </div>
+        <h1 class="results-title">{{ session.template.title }}</h1>
+        <p class="results-subtitle">{{ session.template.description }}</p>
+        <div class="interview-meta">
+            <div class="meta-item">
+                <span>🎯</span>
+                <span>{{ session.template.get_role_type_display }}</span>
+            </div>
+            <div class="meta-item">
+                <span>⏱️</span>
+                <span>{{ session_duration }} minutes</span>
+            </div>
+            <div class="meta-item">
+                <span>📅</span>
+                <span>{{ session.completed_at|date:"M j, Y" }}</span>
+            </div>
+            <div class="meta-item">
+                <span>📊</span>
+                <span>{{ session.template.get_difficulty_display }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overall Score Section -->
+    <div class="score-section">
+        <div class="score-card">
+            <span class="score-value">{{ overall_score|floatformat:0 }}%</span>
+            <div class="score-label">Overall Score</div>
+            <div class="score-description">
+                {% if overall_score >= 90 %}
+                    Excellent performance! You demonstrated exceptional skills.
+                {% elif overall_score >= 80 %}
+                    Great job! Strong performance with minor areas for improvement.
+                {% elif overall_score >= 70 %}
+                    Good performance with several strengths identified.
+                {% elif overall_score >= 60 %}
+                    Satisfactory performance with room for development.
+                {% else %}
+                    Additional preparation recommended before similar interviews.
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="score-card">
+            <span class="score-value">{{ confidence_level|floatformat:0 }}%</span>
+            <div class="score-label">Confidence Level</div>
+            <div class="score-description">
+                Based on response clarity, voice tone, and engagement throughout the interview.
+            </div>
+        </div>
+        
+        <div class="score-card">
+            <span class="score-value">{{ communication_score|floatformat:0 }}%</span>
+            <div class="score-label">Communication</div>
+            <div class="score-description">
+                Effectiveness of verbal communication, clarity, and professional presentation.
+            </div>
+        </div>
+    </div>
+
+    <!-- Skills Assessment -->
+    <div class="progress-section">
+        <h2 class="section-title-w">Skills Assessment</h2>
+        
+        {% for skill in skills_assessment %}
+        <div class="skill-item">
+            <div class="skill-header">
+                <span class="skill-name">{{ skill.name }}</span>
+                <span class="skill-score">{{ skill.score }}%</span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" style="width: {{ skill.score }}%"></div>
+            </div>
+            <div class="skill-feedback">{{ skill.feedback }}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Detailed Feedback -->
+    <div class="feedback-section">
+        <h2 class="section-title-w">Detailed Feedback</h2>
+        
+        <div class="feedback-tabs">
+            <button class="tab-button active" onclick="showTab('strengths')">Strengths</button>
+            <button class="tab-button" onclick="showTab('improvements')">Areas for Improvement</button>
+            <button class="tab-button" onclick="showTab('recommendations')">Recommendations</button>
+        </div>
+
+        <div id="strengths" class="tab-content active">
+            {% for strength in strengths %}
+            <div class="feedback-item strength">
+                <div class="feedback-title">{{ strength.title }}</div>
+                <div class="feedback-text">{{ strength.description }}</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div id="improvements" class="tab-content">
+            {% for improvement in improvements %}
+            <div class="feedback-item improvement">
+                <div class="feedback-title">{{ improvement.title }}</div>
+                <div class="feedback-text">{{ improvement.description }}</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div id="recommendations" class="tab-content">
+            {% for recommendation in recommendations %}
+            <div class="feedback-item">
+                <div class="feedback-title">{{ recommendation.title }}</div>
+                <div class="feedback-text">{{ recommendation.description }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Session Statistics -->
+    <div class="stats-section">
+        <h2 class="section-title-w">Interview Statistics</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number">{{ total_questions }}</span>
+                <span class="stat-label">Questions Asked</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ total_responses }}</span>
+                <span class="stat-label">Your Responses</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ avg_response_time }}s</span>
+                <span class="stat-label">Avg Response Time</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ words_spoken }}</span>
+                <span class="stat-label">Words Spoken</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ engagement_score }}%</span>
+                <span class="stat-label">Engagement Score</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ technical_accuracy }}%</span>
+                <span class="stat-label">Technical Accuracy</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conversation History -->
+    <div class="conversation-section">
+        <h2 class="section-title-w">Interview Transcript</h2>
+        <div class="conversation-list" id="conversationList">
+            {% for interaction in conversation_history %}
+            <div class="conversation-item {% if interaction.role == 'assistant' %}interviewer{% else %}candidate{% endif %}">
+                <div class="conversation-speaker">
+                    {% if interaction.role == 'assistant' %}
+                        AI Interviewer
+                    {% else %}
+                        You
+                    {% endif %}
+                </div>
+                <div class="conversation-text">{{ interaction.content }}</div>
+                <div class="conversation-time">{{ interaction.timestamp|time:"H:i:s" }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-section">
+        <div class="action-buttons">
+            <a href="{% url 'interview_types' %}" class="action-btn">
+                <span>🏠</span>
+                Back to Dashboard
+            </a>
+            <a href="#" class="action-btn secondary">
+                <span>🔄</span>
+                Retake Interview
+            </a>
+            <button class="action-btn secondary" onclick="downloadResults()">
+                <span>📄</span>
+                Download PDF
+            </button>
+            <button class="action-btn secondary" onclick="shareResults()">
+                <span>🔗</span>
+                Share Results
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Tab functionality
+function showTab(tabName) {
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    // Remove active class from all tab buttons
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+    });
+    
+    // Show selected tab content
+    document.getElementById(tabName).classList.add('active');
+    
+    // Add active class to clicked button
+    event.target.classList.add('active');
+}
+
+// Animate progress bars on load
+document.addEventListener('DOMContentLoaded', () => {
+    const progressBars = document.querySelectorAll('.progress-bar');
+    
+    setTimeout(() => {
+        progressBars.forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.width = width;
+            }, 100);
+        });
+    }, 500);
+});
+
+// Download results as PDF
+function downloadResults() {
+    // This would integrate with a PDF generation service
+    alert('PDF download functionality would be implemented here');
+}
+
+// Share results
+function shareResults() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'My Interview Results - PrepAI',
+            text: 'Check out my interview results from PrepAI!',
+            url: window.location.href
+        });
+    } else {
+        // Fallback - copy URL to clipboard
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            alert('Results URL copied to clipboard!');
+        });
+    }
+}
+
+// Smooth scroll for any internal links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

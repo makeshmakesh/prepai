@@ -65,8 +65,8 @@ class InterviewSession(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='in_progress')
-    score = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
-    feedback = models.TextField(blank=True)
+    feedback = models.JSONField(blank=True, default=dict)
+    transcript = models.TextField(blank=True)
     
     # Timestamps
     started_at = models.DateTimeField(auto_now_add=True)
