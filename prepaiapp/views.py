@@ -92,6 +92,7 @@ class InterviewResultView(LoginRequiredMixin, View):
                 'conversation_history': conversation_history,
             }
             print("Context for interview results:", context)  # Debug print
+            self.update_session_feedback(session, context)
             
             return render(request, 'interview_results.html', context)
             
