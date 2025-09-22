@@ -342,7 +342,29 @@
 </div>
 
 <div class="main-options fade-in-on-scroll">
-    <!-- AI Interview Practice - Available -->
+    <div class="option-card available" onclick="location.href='{% url 'voice_roleplay' %}'">
+        <div class="option-icon">🎭</div>
+        <h2 class="option-title">AI Roleplay</h2>
+        <p class="option-description">Engage with diverse AI characters in immersive voice conversations to build confidence and communication skills.</p>
+        
+        <ul class="option-features">
+            <li>Diverse AI characters</li>
+            <li>Immersive scenarios</li>
+            <li>Natural voice interactions</li>
+            <li>Character-specific personalities</li>
+            <li>Session transcripts & analysis</li>
+        </ul>
+        
+        <a href="{% url 'voice_roleplay' %}" class="btn btn-primary">
+            Start Roleplay
+            <div class="voice-wave">
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+            </div>
+        </a>
+    </div>
     <div class="option-card available" onclick="location.href='{% url 'interview_types' %}'">
         <div class="option-icon">🎤</div>
         <h2 class="option-title">AI Mock Interviews</h2>

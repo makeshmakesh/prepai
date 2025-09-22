@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PrepAI - AI-Powered Mock Interview Platform</title>
+    <title>PrepAI - AI Roleplay & Interview Platform</title>
     <style>
         * {
             margin: 0;
@@ -105,7 +105,7 @@
         }
 
         .logo::before {
-            content: '🎤';
+            content: '🎭';
             font-size: 1.5rem;
         }
 
@@ -203,6 +203,11 @@
             border-color: transparent;
         }
 
+        .cta-button.secondary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+        }
+
         .cta-button:hover {
             background: rgba(255, 255, 255, 0.3);
             transform: translateY(-3px);
@@ -211,6 +216,10 @@
 
         .cta-button.primary:hover {
             background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+        }
+
+        .cta-button.secondary:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
         }
 
         @keyframes fadeInUp {
@@ -395,8 +404,8 @@
             line-height: 1.7;
         }
 
-        /* Interview types section */
-        .interview-types {
+        /* Experience types section */
+        .experience-types {
             padding: 6rem 0;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -446,6 +455,17 @@
         .coming-soon {
             display: inline-block;
             background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .available {
+            display: inline-block;
+            background: rgba(34, 197, 94, 0.3);
+            color: #22c55e;
             padding: 0.5rem 1rem;
             border-radius: 20px;
             font-size: 0.9rem;
@@ -747,7 +767,7 @@
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
                 <li><a href="#how-it-works">How it Works</a></li>
-                <li><a href="#interview-types">Interview Types</a></li>
+                <li><a href="#experience-types">Experiences</a></li>
                 <li><a href="#early-access">Early Access</a></li>
             </ul>
         </nav>
@@ -757,12 +777,12 @@
         <div class="particles"></div>
         <div class="container">
             <div class="hero-content">
-                <h1>AI-Powered Mock Interview Platform</h1>
-                <p class="subtitle">Practice with Confidence, Nail Your Dream Job</p>
-                <p>Experience realistic AI-powered mock interviews that adapt to your responses. Get instant feedback, detailed scoring, and personalized improvement suggestions - all through natural voice conversations.</p>
+                <h1>AI Roleplay & Interview Platform</h1>
+                <p class="subtitle">Master Conversations, Ace Interviews, Build Confidence</p>
+                <p>Experience immersive AI-powered roleplay scenarios and mock interviews through natural voice conversations. Practice with AI characters, get instant feedback, and build the confidence you need to succeed.</p>
                 <div class="cta-buttons">
-                    <a href="#early-access" class="cta-button primary">🎤 Start Mock Interview</a>
-                    <a href="#how-it-works" class="cta-button">📊 See How It Works</a>
+                    <a href="#early-access" class="cta-button primary">🎭 Try AI Roleplay</a>
+                    <a href="#early-access" class="cta-button secondary">🎤 Practice Interviews</a>
                 </div>
             </div>
         </div>
@@ -770,44 +790,44 @@
 
     <section class="features" id="features">
         <div class="container">
-            <h2 class="section-title fade-in-on-scroll">Revolutionary Interview Practice</h2>
-            <p class="section-subtitle fade-in-on-scroll">Experience realistic AI interviews that feel like talking to a real interviewer</p>
+            <h2 class="section-title fade-in-on-scroll">Revolutionary AI Conversation Training</h2>
+            <p class="section-subtitle fade-in-on-scroll">Build confidence through immersive roleplay and realistic interview practice</p>
             
             <div class="features-grid">
                 <div class="feature-card fade-in-on-scroll">
-                    <div class="feature-icon">🎯</div>
-                    <h3>Role-Specific Questions</h3>
-                    <p>Get tailored questions for Software Engineering, Data Science, Product Management, Marketing, and more. Each question set is curated by industry experts.</p>
+                    <div class="feature-icon">🎭</div>
+                    <h3>AI Roleplay Characters</h3>
+                    <p>Engage with diverse AI personalities in various scenarios. From difficult customer situations to workplace negotiations, practice real-world conversations safely.</p>
                 </div>
                 
                 <div class="feature-card fade-in-on-scroll">
                     <div class="feature-icon">🎙️</div>
-                    <h3>Natural Voice Conversations</h3>
-                    <p>Practice with our AI interviewer through natural voice interactions. No typing required - just speak naturally as you would in a real interview.</p>
+                    <h3>Natural Voice Interactions</h3>
+                    <p>Speak naturally with AI characters and interviewers. No typing required - experience authentic voice-based conversations that feel completely natural.</p>
+                </div>
+                
+                <div class="feature-card fade-in-on-scroll">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Scenario-Based Learning</h3>
+                    <p>Practice specific situations from job interviews to customer service encounters. Each scenario is designed to build particular skills and confidence.</p>
                 </div>
                 
                 <div class="feature-card fade-in-on-scroll">
                     <div class="feature-icon">🧠</div>
-                    <h3>Intelligent Follow-ups</h3>
-                    <p>Our AI asks relevant follow-up questions based on your responses, creating a dynamic interview experience that mirrors real hiring scenarios.</p>
+                    <h3>Adaptive AI Responses</h3>
+                    <p>AI characters respond intelligently to your conversation style, creating dynamic interactions that adapt to your responses and learning needs.</p>
                 </div>
                 
                 <div class="feature-card fade-in-on-scroll">
                     <div class="feature-icon">📊</div>
-                    <h3>Instant Detailed Feedback</h3>
-                    <p>Receive comprehensive scoring on communication skills, technical knowledge, problem-solving approach, and confidence level immediately after each session.</p>
+                    <h3>Instant Performance Feedback</h3>
+                    <p>Get detailed analysis of your communication skills, confidence level, and areas for improvement after each roleplay or interview session.</p>
                 </div>
                 
                 <div class="feature-card fade-in-on-scroll">
                     <div class="feature-icon">📈</div>
                     <h3>Progress Tracking</h3>
-                    <p>Monitor your improvement over multiple sessions. Track weak areas and see how your interview skills develop with detailed analytics.</p>
-                </div>
-                
-                <div class="feature-card fade-in-on-scroll">
-                    <div class="feature-icon">🎯</div>
-                    <h3>Personalized Recommendations</h3>
-                    <p>Get specific action items and practice suggestions based on your performance. Focus on areas that need the most improvement.</p>
+                    <p>Monitor your communication improvements over time. See how your confidence and skills develop through detailed analytics and session history.</p>
                 </div>
             </div>
         </div>
@@ -815,14 +835,14 @@
 
     <section class="how-it-works" id="how-it-works">
         <div class="container">
-            <h2 class="section-title fade-in-on-scroll">Your Interview Practice Journey</h2>
-            <p class="section-subtitle fade-in-on-scroll">Simple, effective, and tailored to your career goals</p>
+            <h2 class="section-title fade-in-on-scroll">Your AI Conversation Journey</h2>
+            <p class="section-subtitle fade-in-on-scroll">Simple steps to master any conversation scenario</p>
             
             <div class="flow-container">
                 <div class="flow-step fade-in-on-scroll">
                     <div class="step-content">
-                        <h3>Select Your Role & Level</h3>
-                        <p>Choose from various job roles and experience levels. Whether you're a fresh graduate or an experienced professional, we have interview scenarios tailored for you.</p>
+                        <h3>Choose Your Experience</h3>
+                        <p>Select from AI roleplay characters or interview scenarios. Whether you want to practice difficult conversations or ace your next job interview, we have the perfect AI companion.</p>
                     </div>
                     <div class="step-visual">
                         <div class="step-number">1</div>
@@ -832,19 +852,19 @@
 
                 <div class="flow-step fade-in-on-scroll">
                     <div class="step-content">
-                        <h3>Start Your AI Interview</h3>
-                        <p>Begin your mock interview session with our AI interviewer. Experience realistic questions, natural conversation flow, and adaptive follow-ups.</p>
+                        <h3>Start Your AI Conversation</h3>
+                        <p>Begin talking with your chosen AI character or interviewer. Each AI has unique personalities, speaking styles, and scenario-specific knowledge.</p>
                     </div>
                     <div class="step-visual">
                         <div class="step-number">2</div>
-                        <div class="step-icon">🎤</div>
+                        <div class="step-icon">🎭</div>
                     </div>
                 </div>
 
                 <div class="flow-step fade-in-on-scroll">
                     <div class="step-content">
-                        <h3>Answer Questions Naturally</h3>
-                        <p>Respond to questions using voice or text. Our AI analyzes your answers in real-time, understanding context, depth, and communication style.</p>
+                        <h3>Engage Naturally</h3>
+                        <p>Have authentic voice conversations. The AI responds to your tone, pace, and content, creating realistic interactions that build real-world communication skills.</p>
                     </div>
                     <div class="step-visual">
                         <div class="step-number">3</div>
@@ -854,8 +874,8 @@
 
                 <div class="flow-step fade-in-on-scroll">
                     <div class="step-content">
-                        <h3>Get Instant Detailed Feedback</h3>
-                        <p>Receive comprehensive analysis of your performance including scores, strengths, improvement areas, and specific recommendations for your next practice session.</p>
+                        <h3>Receive Detailed Analysis</h3>
+                        <p>Get comprehensive feedback on your communication style, confidence, clarity, and effectiveness. Learn exactly what to improve for better real-world conversations.</p>
                     </div>
                     <div class="step-visual">
                         <div class="step-number">4</div>
@@ -865,8 +885,8 @@
 
                 <div class="flow-step fade-in-on-scroll">
                     <div class="step-content">
-                        <h3>Improve & Practice Again</h3>
-                        <p>Use the feedback to improve your interview skills. Practice multiple times with different question sets until you feel confident and interview-ready.</p>
+                        <h3>Build Confidence & Repeat</h3>
+                        <p>Practice with different characters and scenarios. Each session builds your communication confidence and prepares you for real-world success.</p>
                     </div>
                     <div class="step-visual">
                         <div class="step-number">5</div>
@@ -877,15 +897,15 @@
         </div>
     </section>
 
-    <section class="interview-types" id="interview-types">
+    <section class="experience-types" id="experience-types">
         <div class="container">
-            <h2 class="section-title fade-in-on-scroll">Interview Types Available</h2>
-            <p class="section-subtitle fade-in-on-scroll">Practice for any role with specialized question sets</p>
+            <h2 class="section-title fade-in-on-scroll">AI Experiences Available</h2>
+            <p class="section-subtitle fade-in-on-scroll">Practice any conversation scenario with specialized AI characters</p>
             
             <div class="types-grid">
                 <div class="type-card fade-in-on-scroll">
-                    <div class="type-icon">💻</div>
-                    <h3>Software Engineering
+                    <div class="type-icon">🎭</div>
+                    <h3>AI Roleplay Characters
                         <div class="voice-wave">
                             <div class="wave-bar"></div>
                             <div class="wave-bar"></div>
@@ -893,47 +913,48 @@
                             <div class="wave-bar"></div>
                         </div>
                     </h3>
-                    <p>Technical questions, coding challenges, system design, and behavioral questions for software development roles at all levels.</p>
+                    <p>Practice with diverse AI personalities including difficult customers, team members, negotiation partners, and social scenarios. Each character has unique traits and conversation styles.</p>
+                    <div class="available">Available Now</div>
+                </div>
+                
+                <div class="type-card fade-in-on-scroll">
+                    <div class="type-icon">💻</div>
+                    <h3>Technical Interview Practice</h3>
+                    <p>Mock interviews for software engineering, data science, and technical roles. Practice coding discussions, system design, and technical problem-solving with AI interviewers.</p>
+                    <div class="coming-soon">Coming Soon</div>
                 </div>
                 
                 <div class="type-card fade-in-on-scroll">
                     <div class="type-icon">📊</div>
-                    <h3>Data Science & Analytics</h3>
-                    <p>Statistical concepts, machine learning, data interpretation, and case studies specifically designed for data-focused positions.</p>
+                    <h3>Business Interview Scenarios</h3>
+                    <p>Practice product management, consulting, marketing, and general business interviews with AI interviewers specialized in each domain.</p>
                     <div class="coming-soon">Coming Soon</div>
                 </div>
                 
                 <div class="type-card fade-in-on-scroll">
-                    <div class="type-icon">📱</div>
-                    <h3>Product Management</h3>
-                    <p>Product strategy, user research, metrics analysis, and stakeholder management questions for PM roles.</p>
+                    <div class="type-icon">🎯</div>
+                    <h3>Sales & Customer Service</h3>
+                    <p>Practice handling difficult customers, sales negotiations, customer support scenarios, and complaint resolution with specialized AI characters.</p>
                     <div class="coming-soon">Coming Soon</div>
                 </div>
                 
                 <div class="type-card fade-in-on-scroll">
-                    <div class="type-icon">📈</div>
-                    <h3>Marketing & Growth</h3>
-                    <p>Campaign strategy, growth metrics, customer acquisition, and creative problem-solving for marketing professionals.</p>
-                    <div class="coming-soon">Coming Soon</div>
-                </div>
-                
-                <div class="type-card fade-in-on-scroll">
-                    <div class="type-icon">💼</div>
-                    <h3>Business & Consulting</h3>
-                    <p>Case studies, business strategy, market analysis, and client interaction scenarios for consulting and business roles.</p>
+                    <div class="type-icon">👥</div>
+                    <h3>Social & Networking</h3>
+                    <p>Build confidence in networking events, small talk, professional meetups, and social interactions with AI conversation partners.</p>
                     <div class="coming-soon">Coming Soon</div>
                 </div>
                 
                 <div class="type-card fade-in-on-scroll">
                     <div class="type-icon">🎓</div>
-                    <h3>Entry Level & Internships</h3>
-                    <p>Foundational questions, internship-specific scenarios, and general professional skills assessment for new graduates.</p>
+                    <h3>Academic & Presentation</h3>
+                    <p>Practice presentations, academic defenses, conference talks, and public speaking scenarios with supportive AI audiences and feedback.</p>
                     <div class="coming-soon">Coming Soon</div>
                 </div>
             </div>
             
             <div style="text-align: center; margin-top: 3rem;">
-                <p style="font-size: 1.1rem; opacity: 0.9;">More interview types and learning courses coming soon!</p>
+                <p style="font-size: 1.1rem; opacity: 0.9;">More AI characters and scenarios being added regularly!</p>
             </div>
         </div>
     </section>
@@ -941,50 +962,50 @@
     <section class="early-access" id="early-access">
         <div class="container">
             <div class="early-access-content">
-                <h2 class="section-title fade-in-on-scroll">Get Early Access to AI Mock Interviews</h2>
-                <p class="section-subtitle fade-in-on-scroll">Join the first batch of users to experience next-generation interview preparation</p>
+                <h2 class="section-title fade-in-on-scroll">Start Your AI Conversation Journey</h2>
+                <p class="section-subtitle fade-in-on-scroll">Join the first users to experience next-generation AI roleplay and interview training</p>
                 
                 <div class="signup-form fade-in-on-scroll">
                     <form id="earlyAccessForm" class="form-container">
                         <div class="form-group">
                             <input type="email" id="email" placeholder="Enter your email address" required>
                             <button type="submit" class="signup-btn">
-                                <span class="btn-text">Get Early Access</span>
+                                <span class="btn-text">Get Started</span>
                                 <span class="btn-loading" style="display: none;">Joining...</span>
                             </button>
                         </div>
-                        <p class="form-note">Join 200+ professionals already on the waitlist</p>
+                        <p class="form-note">Join 300+ users already building confidence with AI</p>
                     </form>
                 </div>
 
                 <div class="benefits-grid">
                     <div class="benefit-item fade-in-on-scroll">
-                        <div class="benefit-icon">⚡</div>
-                        <h4>First Access</h4>
-                        <p>Be among the first to practice with AI mock interviews</p>
+                        <div class="benefit-icon">🎭</div>
+                        <h4>Unlimited Roleplay</h4>
+                        <p>Practice with diverse AI characters in any scenario</p>
+                    </div>
+                    <div class="benefit-item fade-in-on-scroll">
+                        <div class="benefit-icon">🎤</div>
+                        <h4>Mock Interviews</h4>
+                        <p>Ace your next interview with AI practice sessions</p>
+                    </div>
+                    <div class="benefit-item fade-in-on-scroll">
+                        <div class="benefit-icon">📊</div>
+                        <h4>Detailed Feedback</h4>
+                        <p>Get specific insights to improve your communication</p>
                     </div>
                     <div class="benefit-item fade-in-on-scroll">
                         <div class="benefit-icon">💰</div>
                         <h4>Early Bird Pricing</h4>
                         <p>50% off lifetime access for early adopters</p>
                     </div>
-                    <div class="benefit-item fade-in-on-scroll">
-                        <div class="benefit-icon">🎯</div>
-                        <h4>Priority Support</h4>
-                        <p>Direct access to our team and product development</p>
-                    </div>
-                    <div class="benefit-item fade-in-on-scroll">
-                        <div class="benefit-icon">🎤</div>
-                        <h4>Free Mock Interviews</h4>
-                        <p>Unlimited practice sessions during beta period</p>
-                    </div>
                 </div>
 
                 <div class="success-message" id="successMessage" style="display: none;">
                     <div class="success-content">
                         <div class="success-icon">✨</div>
-                        <h3>You're on the list!</h3>
-                        <p>We'll notify you as soon as PrepAI launches with your exclusive early access to AI mock interviews.</p>
+                        <h3>Welcome to PrepAI!</h3>
+                        <p>You're all set! We'll notify you as soon as your AI roleplay and interview platform is ready.</p>
                     </div>
                 </div>
             </div>
@@ -996,23 +1017,23 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>PrepAI</h3>
-                    <p>The future of interview preparation through AI-powered mock interviews. Practice with confidence, nail your dream job.</p>
+                    <p>The future of conversation training through AI-powered roleplay and interviews. Build confidence, master any scenario.</p>
                 </div>
                 
                 <div class="footer-section">
-                    <h3>Interview Practice</h3>
-                    <a href="#">AI Mock Interviews</a><br>
-                    <a href="#">Voice Interaction</a><br>
-                    <a href="#">Instant Feedback</a><br>
-                    <a href="#">Progress Tracking</a>
+                    <h3>AI Experiences</h3>
+                    <a href="#">Roleplay Characters</a><br>
+                    <a href="#">Mock Interviews</a><br>
+                    <a href="#">Voice Training</a><br>
+                    <a href="#">Confidence Building</a>
                 </div>
                 
                 <div class="footer-section">
-                    <h3>Job Roles</h3>
-                    <a href="#">Software Engineering</a><br>
-                    <a href="#">Data Science</a><br>
-                    <a href="#">Product Management</a><br>
-                    <a href="#">+ More Coming Soon</a>
+                    <h3>Practice Areas</h3>
+                    <a href="#">Job Interviews</a><br>
+                    <a href="#">Customer Service</a><br>
+                    <a href="#">Sales Training</a><br>
+                    <a href="#">Social Skills</a>
                 </div>
                 
                 <div class="footer-section">
@@ -1022,7 +1043,7 @@
                 </div>
             </div>
             
-            <p>&copy; 2025 PrepAI. Revolutionizing interview preparation through AI. All rights reserved.</p>
+            <p>&copy; 2025 PrepAI. Revolutionizing conversation training through AI roleplay. All rights reserved.</p>
         </div>
     </footer>
 
