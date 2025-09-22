@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.auth.models import User
-from .models import Profile, Course, InterviewTemplate, InterviewSession, Transaction
+from .models import Profile, Course, InterviewTemplate, InterviewSession, Transaction, RolePlayBots, RoleplaySession
 import os
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -23,6 +23,102 @@ from openai import OpenAI
 from datetime import datetime, time
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
+
+class RolePlaySessionView(LoginRequiredMixin, View):
+    """
+    Display the actual roleplay session interface
+    """
+    login_url = "/login/"
+    
+    def get(self, request, session_id):
+        try:
+            # Get the interview session
+            session = get_object_or_404(
+                RoleplaySession,
+                id=session_id,
+                user=request.user
+            )
+            
+            # Only allow access to in-progress sessions
+            if session.status not in ['in_progress', 'pending']:
+                messages.info(request, "This Roleplay session has already been completed.")
+                return redirect('voice_roleplay', session_id=session.id)
+            
+            context = {
+                'session': session,
+                'bot': session.bot,
+            }
+            
+            return render(request, 'roleplay_session.html', context)
+            
+        except InterviewSession.DoesNotExist:
+            messages.error(request, "Interview session not found.")
+            return redirect('voice_roleplay')
+class RolePlayStartView(LoginRequiredMixin, View):
+    """
+    Start a new interview session
+    """
+    login_url = "/login/"
+    
+    def get(self, request, bot_id):
+        try:
+            # Get the interview template
+            role_play_bot = get_object_or_404(
+                RolePlayBots, 
+                id=bot_id, 
+                is_active=True
+            )
+            profile = Profile.objects.get(user=request.user)
+            if not profile.has_credit(required=role_play_bot.custom_configuration.get("required_minimum_credits", 10)):
+                messages.error(request, "You don’t have enough credits. Please top up.")
+                return redirect("purchase_credits")  # redirect to your top-up page
+            # Check if user has an ongoing session for this bot
+            ongoing_session = RoleplaySession.objects.filter(
+                user=request.user,
+                bot=role_play_bot,
+                status='in_progress'
+            ).first()
+            
+            if ongoing_session:
+                # Redirect to existing session
+                return redirect('roleplay_session', session_id=ongoing_session.id)
+            profile.deduct_credits(used=role_play_bot.custom_configuration.get("required_minimum_credits", 10))
+            # Create new interview session
+            session = RoleplaySession.objects.create(
+                bot=role_play_bot,
+                user=request.user,
+                status='in_progress',
+                started_at=timezone.now()
+            )
+            context = {
+                'session': session,
+                'bot': session.bot,
+            }
+            
+            # Redirect to roleplay_session session page
+            return redirect('roleplay_session', session_id=session.id, context=context)
+            
+        except RolePlayBots.DoesNotExist:
+            messages.error(request, "Roleplay bot not found or inactive.")
+            return redirect('voice_roleplay')
+        except Exception as e:
+            print(f"Error starting Roleplay session: {e}")
+            messages.error(request, "Failed to start Roleplay session. Please try again.")
+            return redirect('voice_roleplay')
+class VoiceRolePlayView(LoginRequiredMixin, View):
+    """
+    View to display voice roleplay options
+    """
+    login_url = "/login/"
+    
+    def get(self, request):
+        # Fetch roleplay templates (assuming they are a subset of InterviewTemplate)
+        roleplay_bots = RolePlayBots.objects.filter(is_active=True)
+        
+        context = {
+            'roleplay_bots': roleplay_bots,
+        }
+        return render(request, 'voice_roleplay_list.html', context)
 
 class ProfileView(LoginRequiredMixin, View):
     """
@@ -677,7 +773,7 @@ class StartInterviewView(LoginRequiredMixin, View):
                 is_active=True
             )
             profile = Profile.objects.get(user=request.user)
-            if not profile.has_minutes(required=template.estimated_duration_minutes):
+            if not profile.has_credit(required=template.estimated_duration_minutes):
                 messages.error(request, "You don’t have enough credits. Please top up.")
                 return redirect("purchase_credits")  # redirect to your top-up page
             # Check if user has an ongoing session for this template
@@ -690,7 +786,7 @@ class StartInterviewView(LoginRequiredMixin, View):
             if ongoing_session:
                 # Redirect to existing session
                 return redirect('interview_session', session_id=ongoing_session.id)
-            profile.deduct_minutes(used=template.estimated_duration_minutes)
+            profile.deduct_credits(used=template.estimated_duration_minutes)
             # Create new interview session
             session = InterviewSession.objects.create(
                 template=template,

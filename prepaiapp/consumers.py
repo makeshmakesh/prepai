@@ -580,36 +580,36 @@ Begin by greeting the candidate, introducing yourself, and explaining the interv
 
     def extract_transcript_text(self, content_item):
         """Extract transcript text from a content item"""
-        if hasattr(content_item, 'transcript') and content_item.transcript:
+        if hasattr(content_item, "transcript") and content_item.transcript:
             return content_item.transcript
-        elif hasattr(content_item, 'text') and content_item.text:
+        elif hasattr(content_item, "text") and content_item.text:
             return content_item.text
         return None
 
     def format_history_item(self, history_item):
         """Format a history item into transcript format"""
-        if not hasattr(history_item, 'role') or not hasattr(history_item, 'content'):
+        if not hasattr(history_item, "role") or not hasattr(history_item, "content"):
             return None
 
         role = history_item.role
         content_parts = []
-        
+
         for content_item in history_item.content:
             transcript_text = self.extract_transcript_text(content_item)
             if transcript_text:
                 content_parts.append(transcript_text)
-        
+
         if content_parts:
             full_content = " ".join(content_parts)
             timestamp = timezone.now().strftime("%H:%M:%S")
-            
+
             return {
                 "timestamp": timestamp,
                 "role": role,
                 "content": full_content,
-                "item_id": getattr(history_item, 'item_id', None)
+                "item_id": getattr(history_item, "item_id", None),
             }
-        
+
         return None
 
     def update_transcript(self, history):
@@ -618,31 +618,33 @@ Begin by greeting the candidate, introducing yourself, and explaining the interv
             return
 
         # Process only new items beyond what we've already processed
-        new_items = history[self.last_processed_item_count:]
-        
+        new_items = history[self.last_processed_item_count :]
+
         for history_item in new_items:
             # Skip in-progress items to avoid partial transcripts
-            if hasattr(history_item, 'status') and history_item.status == 'in_progress':
+            if hasattr(history_item, "status") and history_item.status == "in_progress":
                 continue
-                
+
             formatted_item = self.format_history_item(history_item)
             if formatted_item:
                 # Check if this item is already in our transcript (by item_id)
-                item_id = formatted_item.get('item_id')
+                item_id = formatted_item.get("item_id")
                 if item_id:
                     # Remove any existing item with same ID (for updates)
                     self.current_transcript = [
-                        item for item in self.current_transcript 
-                        if item.get('item_id') != item_id
+                        item
+                        for item in self.current_transcript
+                        if item.get("item_id") != item_id
                     ]
-                
+
                 self.current_transcript.append(formatted_item)
-        
+
         # Update the count of processed items
         # Only count completed items
         completed_items = [
-            item for item in history 
-            if not (hasattr(item, 'status') and item.status == 'in_progress')
+            item
+            for item in history
+            if not (hasattr(item, "status") and item.status == "in_progress")
         ]
         self.last_processed_item_count = len(completed_items)
 
@@ -653,12 +655,12 @@ Begin by greeting the candidate, introducing yourself, and explaining the interv
 
         formatted_lines = []
         formatted_lines.append("=== INTERVIEW TRANSCRIPT ===\n")
-        
+
         for item in self.current_transcript:
-            role_display = "INTERVIEWER" if item['role'] == 'assistant' else "CANDIDATE"
+            role_display = "INTERVIEWER" if item["role"] == "assistant" else "CANDIDATE"
             formatted_lines.append(f"[{item['timestamp']}] {role_display}:")
             formatted_lines.append(f"{item['content']}\n")
-        
+
         formatted_lines.append("=== END OF TRANSCRIPT ===")
         return "\n".join(formatted_lines)
 
@@ -667,22 +669,30 @@ Begin by greeting the candidate, introducing yourself, and explaining the interv
         try:
             # Handle history updates for transcript
             if event.type == "history_updated":
-                if hasattr(event, 'history') and event.history:
+                if hasattr(event, "history") and event.history:
                     self.update_transcript(event.history)
-                    
+
                     # Optionally send transcript update to client (for real-time display)
-                    await self.send(text_data=json.dumps({
-                        "type": "transcript_update",
-                        "transcript_length": len(self.current_transcript),
-                        "latest_items": self.current_transcript[-2:] if len(self.current_transcript) >= 2 else self.current_transcript
-                    }))
-                
+                    await self.send(
+                        text_data=json.dumps(
+                            {
+                                "type": "transcript_update",
+                                "transcript_length": len(self.current_transcript),
+                                "latest_items": (
+                                    self.current_transcript[-2:]
+                                    if len(self.current_transcript) >= 2
+                                    else self.current_transcript
+                                ),
+                            }
+                        )
+                    )
+
                 # Don't pass to parent to avoid noise
                 return
-            
+
             # Handle all other events normally
             await super()._handle_session_event(event)
-            
+
         except Exception as e:
             logger.error(f"Error handling session event in InterviewConsumer: {e}")
             await super()._handle_session_event(event)
@@ -696,10 +706,11 @@ Begin by greeting the candidate, introducing yourself, and explaining the interv
         elif message_type == "get_transcript":
             # Allow client to request current transcript
             transcript = self.generate_formatted_transcript()
-            await self.send(text_data=json.dumps({
-                "type": "current_transcript",
-                "transcript": transcript
-            }))
+            await self.send(
+                text_data=json.dumps(
+                    {"type": "current_transcript", "transcript": transcript}
+                )
+            )
         else:
             await super().handle_message(data)
 
@@ -708,20 +719,20 @@ Begin by greeting the candidate, introducing yourself, and explaining the interv
         if self.interview_session:
             # Generate final transcript
             final_transcript = self.generate_formatted_transcript()
-            
+
             # Save transcript to database
             await self.save_transcript_to_db(final_transcript)
-            
+
             # Update session status
             await self.update_session_status("completed")
-            
+
             await self.send(
                 text_data=json.dumps(
                     {
                         "type": "session_complete",
                         "message": "Interview completed successfully",
                         "transcript_saved": True,
-                        "transcript_length": len(self.current_transcript)
+                        "transcript_length": len(self.current_transcript),
                     }
                 )
             )
@@ -732,11 +743,11 @@ Begin by greeting the candidate, introducing yourself, and explaining the interv
         try:
             # Refresh the session from DB to avoid stale data
             self.interview_session.refresh_from_db()
-            
+
             # Save transcript in the transcript field
             self.interview_session.transcript = transcript
-            self.interview_session.save(update_fields=['transcript'])
-            
+            self.interview_session.save(update_fields=["transcript"])
+
             logger.info(f"Transcript saved for interview session {self.session_id}")
             return True
         except Exception as e:
@@ -750,7 +761,7 @@ Begin by greeting the candidate, introducing yourself, and explaining the interv
             self.interview_session.status = status
             if status == "completed":
                 self.interview_session.completed_at = timezone.now()
-            self.interview_session.save(update_fields=['status', 'completed_at'])
+            self.interview_session.save(update_fields=["status", "completed_at"])
         except Exception as e:
             logger.error(f"Error updating session status: {e}")
 
@@ -760,8 +771,399 @@ Begin by greeting the candidate, introducing yourself, and explaining the interv
         if self.interview_session and self.current_transcript:
             final_transcript = self.generate_formatted_transcript()
             await self.save_transcript_to_db(final_transcript)
-            
+
             # Update status to indicate unexpected disconnect
             await self.update_session_status("disconnected")
-        
+
+        await super().disconnect(close_code)
+
+
+class RoleplayConsumer(VoiceAgentConsumer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.roleplay_bot = None
+        self.roleplay_session = None
+        self.current_transcript = []  # Store the complete transcript
+        self.last_processed_item_count = 0  # Track processed items to avoid duplicates
+        self.session_start_time = None
+
+    async def connect(self):
+        # Get bot ID from URL
+        self.bot_id = self.scope["url_route"]["kwargs"]["session_id"]
+
+        # Load roleplay bot and create session
+        await self.load_roleplay_context()
+
+        if not self.roleplay_bot:
+            await self.close()
+            return
+
+        # Create agent with dynamic instructions from bot
+        self.agent = RealtimeAgent(
+            name=self.roleplay_bot.name,
+            instructions=self.get_roleplay_instructions(),
+            tools=[],  # Add roleplay-specific tools if needed
+        )
+
+        self.session_start_time = timezone.now()
+        await super().connect()
+
+    @database_sync_to_async
+    def load_roleplay_context(self):
+        """Load roleplay bot and create session record"""
+        from .models import RolePlayBots, RoleplaySession
+
+        try:
+            # Load the roleplay bot
+            self.roleplay_bot = RolePlayBots.objects.get(id=self.bot_id, is_active=True)
+
+            # Create a new roleplay session record
+            self.roleplay_session = RoleplaySession.objects.create(
+                user=self.scope["user"],
+                bot=self.roleplay_bot,
+                status="in_progress",
+                started_at=timezone.now(),
+            )
+
+            return True
+        except RolePlayBots.DoesNotExist:
+            logger.error(f"Roleplay bot {self.bot_id} not found or inactive")
+            return False
+        except Exception as e:
+            logger.error(f"Error loading roleplay context: {e}")
+            return False
+
+    def get_roleplay_instructions(self):
+        """Generate dynamic instructions based on roleplay bot configuration"""
+        if not self.roleplay_bot:
+            return "You are an AI assistant."
+
+        # Get custom configuration if available
+        custom_config = self.roleplay_bot.custom_configuration or {}
+
+        # Extract configuration parameters
+        conversation_style = custom_config.get("conversation_style", "natural")
+        response_length = custom_config.get("response_length", "medium")
+        personality_traits = custom_config.get("personality_traits", ["Confident",
+        "Strategic thinker",
+        "Charismatic",
+        "Results-oriented",
+        "Approachable",
+        "Brand-conscious"])
+
+        # Build personality description
+        personality_desc = ""
+        if personality_traits:
+            personality_desc = (
+                f"Your personality traits include: {', '.join(personality_traits)}."
+            )
+
+        base_instructions = f"""
+You are {self.roleplay_bot.name}, an AI-powered **roleplay character**.  
+Your purpose is to embody this character fully, engaging the user in a natural, immersive, and scenario-driven roleplay experience. Never reveal that you are an AI or step outside the role.
+
+# Character Profile
+- **Identity**: {self.roleplay_bot.name}  
+- **Description**: {self.roleplay_bot.description}  
+- **Scenario Context**: {self.roleplay_bot.scenario_description}  
+- **System Behavior Directives**: {self.roleplay_bot.system_prompt}  
+- **Personality & Traits**: {personality_desc}  
+
+# Roleplay Instructions
+
+## 1. Character Consistency
+- Stay completely in character as **{self.roleplay_bot.name}** at all times.  
+- Embody the listed personality traits and motivations.  
+- Respond and improvise naturally as the character would, based on the scenario context.  
+
+## 2. Communication Style
+- **Style**: {conversation_style}  
+- **Response Length**: {response_length} (short = 1–2 sentences, medium = 2–4 sentences, long = 4–6 sentences)  
+- Always communicate in **English only**.  
+- Keep dialogue fluid, believable, and immersive — avoid robotic or overly structured replies.  
+
+## 3. Roleplay Engagement
+- React authentically to user input within the bounds of the scenario.  
+- Ask questions, make observations, or introduce new developments to keep the conversation flowing.  
+- Balance responsiveness with initiative: do not only react, also **push the story forward**.  
+
+## 4. Boundaries
+- Keep all content safe, appropriate, and respectful.  
+- If the user tries to break character or derail the scenario, gently **redirect them back into the roleplay**.  
+- Maintain professional boundaries while still being creative and engaging.  
+
+## 5. Flow of the Session
+- **Start**: Immediately begin speaking as {self.roleplay_bot.name} in the scenario context. No meta-commentary, disclaimers, or out-of-character notes.  
+- **Middle**: Stay adaptive, immersive, and dynamic — always roleplaying as if the world and situation are real.  
+- **End**: If the user signals the roleplay should end, close the interaction gracefully in character.  
+
+---
+
+**Begin the roleplay now as {self.roleplay_bot.name}, fully immersed in the described scenario.**
+"""
+        return base_instructions
+
+    def extract_transcript_text(self, content_item):
+        """Extract transcript text from a content item"""
+        if hasattr(content_item, "transcript") and content_item.transcript:
+            return content_item.transcript
+        elif hasattr(content_item, "text") and content_item.text:
+            return content_item.text
+        return None
+
+    def format_history_item(self, history_item):
+        """Format a history item into transcript format"""
+        if not hasattr(history_item, "role") or not hasattr(history_item, "content"):
+            return None
+
+        role = history_item.role
+        content_parts = []
+
+        for content_item in history_item.content:
+            transcript_text = self.extract_transcript_text(content_item)
+            if transcript_text:
+                content_parts.append(transcript_text)
+
+        if content_parts:
+            full_content = " ".join(content_parts)
+            timestamp = timezone.now().strftime("%H:%M:%S")
+
+            # Use character name for assistant role
+            role_display = self.roleplay_bot.name if role == "assistant" else "USER"
+
+            return {
+                "timestamp": timestamp,
+                "role": role,
+                "role_display": role_display,
+                "content": full_content,
+                "item_id": getattr(history_item, "item_id", None),
+            }
+
+        return None
+
+    def update_transcript(self, history):
+        """Update transcript with new history items, avoiding duplicates"""
+        if not history:
+            return
+
+        # Process only new items beyond what we've already processed
+        new_items = history[self.last_processed_item_count :]
+
+        for history_item in new_items:
+            # Skip in-progress items to avoid partial transcripts
+            if hasattr(history_item, "status") and history_item.status == "in_progress":
+                continue
+
+            formatted_item = self.format_history_item(history_item)
+            if formatted_item:
+                # Check if this item is already in our transcript (by item_id)
+                item_id = formatted_item.get("item_id")
+                if item_id:
+                    # Remove any existing item with same ID (for updates)
+                    self.current_transcript = [
+                        item
+                        for item in self.current_transcript
+                        if item.get("item_id") != item_id
+                    ]
+
+                self.current_transcript.append(formatted_item)
+
+        # Update the count of processed items
+        completed_items = [
+            item
+            for item in history
+            if not (hasattr(item, "status") and item.status == "in_progress")
+        ]
+        self.last_processed_item_count = len(completed_items)
+
+    def generate_formatted_transcript(self):
+        """Generate a formatted transcript string"""
+        if not self.current_transcript:
+            return "No conversation transcript available."
+
+        formatted_lines = []
+        formatted_lines.append(f"=== ROLEPLAY SESSION: {self.roleplay_bot.name} ===")
+        formatted_lines.append(f"Scenario: {self.roleplay_bot.scenario_description}")
+        formatted_lines.append(
+            f"Started: {self.session_start_time.strftime('%Y-%m-%d %H:%M:%S') if self.session_start_time else 'Unknown'}"
+        )
+        formatted_lines.append("=" * 50)
+        formatted_lines.append("")
+
+        for item in self.current_transcript:
+            formatted_lines.append(f"[{item['timestamp']}] {item['role_display']}:")
+            formatted_lines.append(f"{item['content']}")
+            formatted_lines.append("")
+
+        formatted_lines.append("=" * 50)
+        formatted_lines.append("=== END OF ROLEPLAY SESSION ===")
+        return "\n".join(formatted_lines)
+
+    async def _handle_session_event(self, event: RealtimeSessionEvent):
+        """Override to handle transcript updates and roleplay-specific events"""
+        try:
+            # Handle history updates for transcript
+            if event.type == "history_updated":
+                if hasattr(event, "history") and event.history:
+                    self.update_transcript(event.history)
+
+                    # Send transcript update to client for real-time display
+                    latest_items = (
+                        self.current_transcript[-2:]
+                        if len(self.current_transcript) >= 2
+                        else self.current_transcript
+                    )
+                    await self.send(
+                        text_data=json.dumps(
+                            {
+                                "type": "roleplay_transcript_update",
+                                "bot_name": self.roleplay_bot.name,
+                                "transcript_length": len(self.current_transcript),
+                                "latest_items": latest_items,
+                            }
+                        )
+                    )
+
+                return  # Don't pass to parent to avoid noise
+
+            # Handle all other events normally, but with roleplay context
+            if event.type == "agent_start":
+                await self.send(
+                    text_data=json.dumps(
+                        {
+                            "type": "roleplay_start",
+                            "bot_name": self.roleplay_bot.name,
+                            "scenario": self.roleplay_bot.scenario_description,
+                        }
+                    )
+                )
+                return
+
+            # Handle other events normally
+            await super()._handle_session_event(event)
+
+        except Exception as e:
+            logger.error(f"Error handling session event in RoleplayConsumer: {e}")
+            await super()._handle_session_event(event)
+
+    async def handle_message(self, data: Dict[str, Any]):
+        """Override to add roleplay-specific message handling"""
+        message_type = data.get("type")
+
+        if message_type == "end_roleplay":
+            await self.handle_end_roleplay()
+        elif message_type == "get_roleplay_transcript":
+            # Allow client to request current transcript
+            transcript = self.generate_formatted_transcript()
+            await self.send(
+                text_data=json.dumps(
+                    {
+                        "type": "current_roleplay_transcript",
+                        "bot_name": self.roleplay_bot.name,
+                        "transcript": transcript,
+                    }
+                )
+            )
+        elif message_type == "get_roleplay_info":
+            # Send current roleplay session info
+            await self.send(
+                text_data=json.dumps(
+                    {
+                        "type": "roleplay_info",
+                        "bot": {
+                            "id": self.roleplay_bot.id,
+                            "name": self.roleplay_bot.name,
+                            "description": self.roleplay_bot.description,
+                            "scenario": self.roleplay_bot.scenario_description,
+                        },
+                        "session_duration": (
+                            str(timezone.now() - self.session_start_time)
+                            if self.session_start_time
+                            else "Unknown"
+                        ),
+                    }
+                )
+            )
+        else:
+            await super().handle_message(data)
+
+    async def handle_end_roleplay(self):
+        """Handle roleplay completion and save transcript"""
+        if self.roleplay_session:
+            # Generate final transcript
+            final_transcript = self.generate_formatted_transcript()
+
+            # Calculate session duration
+            duration_seconds = 0
+            if self.session_start_time:
+                duration = timezone.now() - self.session_start_time
+                duration_seconds = int(duration.total_seconds())
+
+            # Save transcript and duration to database
+            await self.save_roleplay_session_data(final_transcript, duration_seconds)
+
+            # Update session status
+            await self.update_session_status("completed")
+
+            await self.send(
+                text_data=json.dumps(
+                    {
+                        "type": "roleplay_complete",
+                        "message": f"Roleplay with {self.roleplay_bot.name} completed successfully",
+                        "bot_name": self.roleplay_bot.name,
+                        "transcript_saved": True,
+                        "transcript_length": len(self.current_transcript),
+                        "duration_seconds": duration_seconds,
+                    }
+                )
+            )
+
+    @database_sync_to_async
+    def save_roleplay_session_data(self, transcript, duration_seconds):
+        """Save transcript and session data to RoleplaySession"""
+        try:
+            # Refresh the session from DB to avoid stale data
+            self.roleplay_session.refresh_from_db()
+
+            # Save transcript and duration
+            self.roleplay_session.transcript = transcript
+            self.roleplay_session.duration_seconds = duration_seconds
+            self.roleplay_session.save(update_fields=["transcript", "duration_seconds"])
+
+            logger.info(
+                f"Roleplay session data saved for bot {self.roleplay_bot.name}, session {self.roleplay_session.id}"
+            )
+            return True
+        except Exception as e:
+            logger.error(f"Error saving roleplay session data: {e}")
+            return False
+
+    @database_sync_to_async
+    def update_session_status(self, status):
+        """Update roleplay session status"""
+        try:
+            self.roleplay_session.status = status
+            if status == "completed":
+                self.roleplay_session.completed_at = timezone.now()
+            self.roleplay_session.save(update_fields=["status", "completed_at"])
+        except Exception as e:
+            logger.error(f"Error updating roleplay session status: {e}")
+
+    async def disconnect(self, close_code):
+        """Override disconnect to save transcript if roleplay was in progress"""
+        # If roleplay was in progress but not formally ended, still save transcript
+        if self.roleplay_session and self.current_transcript:
+            final_transcript = self.generate_formatted_transcript()
+
+            # Calculate duration
+            duration_seconds = 0
+            if self.session_start_time:
+                duration = timezone.now() - self.session_start_time
+                duration_seconds = int(duration.total_seconds())
+
+            await self.save_roleplay_session_data(final_transcript, duration_seconds)
+
+            # Update status to indicate unexpected disconnect
+            await self.update_session_status("disconnected")
+
         await super().disconnect(close_code)

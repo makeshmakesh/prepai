@@ -4,9 +4,11 @@ from django.utils.html import format_html
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from .models import (
-    EarlyAccessEmail, Course, Subtopic, InterviewTemplate, InterviewSession, Profile, Transaction
+    EarlyAccessEmail, Course, Subtopic, InterviewTemplate, InterviewSession, Profile, Transaction, RolePlayBots, RoleplaySession
 )
-
+@admin.register(RoleplaySession)
+class RolePlaySrssionAdmin(admin.ModelAdmin):
+    pass
 
 @admin.register(EarlyAccessEmail)
 class EarlyAccessEmailAdmin(admin.ModelAdmin):
@@ -15,6 +17,9 @@ class EarlyAccessEmailAdmin(admin.ModelAdmin):
     
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
+    pass
+@admin.register(RolePlayBots)
+class RolePlayBotsAdmin(admin.ModelAdmin):
     pass
 
 @admin.register(Transaction)

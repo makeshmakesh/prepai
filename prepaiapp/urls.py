@@ -19,6 +19,7 @@ urlpatterns = [
     path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
     path("courses/", views.CourseView.as_view(), name="courses"),
     path("interview_types/", views.InterviewView.as_view(), name="interview_types"),
+    path("voice_roleplay/", views.VoiceRolePlayView.as_view(), name="voice_roleplay"),
     path("interview_history/", views.InterviewHistoryView.as_view(), name="interview_history"),
     path("purchase_credits/", views.PurchaseCredits.as_view(), name="purchase_credits"),
     path("profile/", views.ProfileView.as_view(), name="profile"),
@@ -44,6 +45,16 @@ urlpatterns = [
         "interview/results/<uuid:session_id>/",
         views.InterviewResultView.as_view(),
         name="interview_results",
+    ),
+    path(
+        "roleplay/start/<uuid:bot_id>/",
+        views.RolePlayStartView.as_view(),
+        name="start_roleplay",
+    ),
+    path(
+        "roleplay/session/<uuid:session_id>/",
+        views.RolePlaySessionView.as_view(),
+        name="roleplay_session",
     ),
 ]
 # # Wire up our API using automatic URL routing.
