@@ -349,24 +349,6 @@
             <div class="stat-value">{{ user.profile.credits|default:0 }}</div>
             <div class="stat-label">Available Credits</div>
         </div>
-
-        <div class="stat-card">
-            <span class="stat-icon">🎯</span>
-            <div class="stat-value">{{ user.interview_sessions.count|default:0 }}</div>
-            <div class="stat-label">Interviews Completed</div>
-        </div>
-
-        <div class="stat-card">
-            <span class="stat-icon">📚</span>
-            <div class="stat-value">{{ user.course_enrollments.count|default:0 }}</div>
-            <div class="stat-label">Courses Enrolled</div>
-        </div>
-
-        <div class="stat-card">
-            <span class="stat-icon">⭐</span>
-            <div class="stat-value">{{ user.profile.total_score|default:0 }}%</div>
-            <div class="stat-label">Average Score</div>
-        </div>
     </div>
 
     <!-- Profile Sections -->
@@ -435,7 +417,7 @@
             </div>
         </div>
 
-        <!-- Achievements -->
+        {% comment %} <!-- Achievements -->
         <div class="profile-section">
             <div class="section-header">
                 <h2 class="section-title">Achievements</h2>
@@ -458,12 +440,7 @@
                     <span class="badge">⭐ High Achiever</span>
                 {% endif %}
             </div>
-            
-            {% if not user.interview_sessions.count %}
-                <div class="text-center" style="padding: 2rem; color: var(--text-secondary);">
-                    Complete your first interview to start earning achievements!
-                </div>
-            {% endif %}
+        
         </div>
 
         <!-- Recent Activity -->
@@ -487,7 +464,7 @@
                     No activity yet. Start your first interview to see activity here!
                 </div>
             {% endif %}
-        </div>
+        </div> {% endcomment %}
     </div>
 </div>
 

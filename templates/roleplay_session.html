@@ -647,7 +647,7 @@ class RoleplaySession {
 
     connect() {
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const wsUrl = `${protocol}//${window.location.host}/ws/roleplay/{{ bot.id }}/`;
+        const wsUrl = `${protocol}//${window.location.host}/ws/roleplay/{{ session.id }}/`;
         
         this.socket = new WebSocket(wsUrl);
 

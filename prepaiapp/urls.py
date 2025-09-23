@@ -19,11 +19,17 @@ urlpatterns = [
     path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
     path("courses/", views.CourseView.as_view(), name="courses"),
     path("interview_types/", views.InterviewView.as_view(), name="interview_types"),
+    path("marketplace/", views.MarketplaceView.as_view(), name="marketplace"),
     path("voice_roleplay/", views.VoiceRolePlayView.as_view(), name="voice_roleplay"),
     path("interview_history/", views.InterviewHistoryView.as_view(), name="interview_history"),
     path("purchase_credits/", views.PurchaseCredits.as_view(), name="purchase_credits"),
     path("profile/", views.ProfileView.as_view(), name="profile"),
     path('process-purchase/', views.process_purchase, name='process_purchase'),
+    path("create_roleplay_bot/", views.CreateRolePlayBotView.as_view(), name="create_roleplay_bot"),
+    path("my-roleplay-bots/", views.MyRolePlayBotView.as_view(), name="my-roleplay-bots"),
+    path("edit-roleplay-bot/<uuid:bot_id>/", views.EditRolePlayBotView.as_view(), name="edit-roleplay-bot"),
+    path("delete-roleplay-bot/<uuid:bot_id>/", views.DeleteRolePlayBotView.as_view(), name="delete-roleplay-bot"),
+    
     path('purchase/confirmation/<uuid:transaction_id>/', views.purchase_confirmation, name='purchase_confirmation'),
     path('transaction-status/<uuid:transaction_id>/', views.transaction_status, name='transaction_status'),
     path(

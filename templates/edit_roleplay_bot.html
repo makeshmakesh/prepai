@@ -1,0 +1,709 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit {{ bot.name }} | PrepAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 25px;
+        padding: 3rem;
+        box-shadow: var(--shadow-medium);
+        position: relative;
+        overflow: hidden;
+    }
+    .modal-title {
+        color: black
+    }
+
+    .form-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--primary-gradient);
+        border-radius: 25px 25px 0 0;
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .form-header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-header p {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .bot-preview {
+        background: rgba(102, 126, 234, 0.05);
+        border: 2px solid rgba(102, 126, 234, 0.1);
+        border-radius: 20px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .bot-preview-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--primary-gradient);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        flex-shrink: 0;
+    }
+
+    .bot-preview-avatar img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .bot-preview-info h3 {
+        margin: 0 0 0.5rem 0;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    .bot-preview-info p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .form-group {
+        margin-bottom: 2rem;
+        position: relative;
+    }
+
+    .form-group label {
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .label-icon {
+        font-size: 1.2rem;
+    }
+
+    .form-control {
+        border-radius: 15px;
+        border: 2px solid rgba(102, 126, 234, 0.2);
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: rgba(248, 250, 252, 0.5);
+        width: 100%;
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.15);
+        background: white;
+        outline: none;
+    }
+
+    .form-control::placeholder {
+        color: #a0aec0;
+        font-style: italic;
+    }
+
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .system-prompt-textarea {
+        min-height: 180px;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .help-text {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: rgba(102, 126, 234, 0.05);
+        padding: 1rem 1.5rem;
+        border-radius: 15px;
+        border: 2px solid rgba(102, 126, 234, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .checkbox-group:hover {
+        background: rgba(102, 126, 234, 0.08);
+        border-color: rgba(102, 126, 234, 0.2);
+    }
+
+    .checkbox-group input[type="checkbox"] {
+        width: 1.2rem;
+        height: 1.2rem;
+        accent-color: #667eea;
+        cursor: pointer;
+    }
+
+    .checkbox-group label {
+        margin: 0;
+        font-weight: 600;
+        cursor: pointer;
+        flex: 1;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 3rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-update {
+        background: var(--primary-gradient);
+        color: white;
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+        border-radius: 25px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-update::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: all 0.6s ease;
+    }
+
+    .btn-update:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .btn-update:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-update span {
+        position: relative;
+        z-index: 2;
+    }
+
+    .btn-delete {
+        background: transparent;
+        color: #f5576c;
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border: 2px solid rgba(245, 87, 108, 0.3);
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-delete:hover {
+        background: rgba(245, 87, 108, 0.1);
+        border-color: #f5576c;
+        transform: translateY(-2px);
+    }
+
+    .btn-cancel {
+        background: transparent;
+        color: var(--text-secondary);
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border: 2px solid rgba(102, 126, 234, 0.2);
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-cancel:hover {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        border-color: #667eea;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .advanced-section {
+        margin-top: 2rem;
+        padding: 2rem;
+        background: rgba(102, 126, 234, 0.05);
+        border-radius: 20px;
+        border: 1px solid rgba(102, 126, 234, 0.1);
+    }
+
+    .advanced-toggle {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        transition: color 0.3s ease;
+    }
+
+    .advanced-toggle:hover {
+        color: #667eea;
+    }
+
+    .advanced-toggle .toggle-icon {
+        transition: transform 0.3s ease;
+        font-size: 1.2rem;
+    }
+
+    .advanced-toggle.collapsed .toggle-icon {
+        transform: rotate(-90deg);
+    }
+
+    .advanced-content {
+        display: block;
+    }
+
+    .advanced-content.collapsed {
+        display: none;
+    }
+
+    .character-count {
+        position: absolute;
+        bottom: 0.5rem;
+        right: 1rem;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        background: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group.has-counter {
+        position: relative;
+    }
+
+    .last-updated {
+        text-align: center;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+        .form-container {
+            margin: 1rem;
+            padding: 2rem 1.5rem;
+        }
+
+        .form-header h1 {
+            font-size: 2rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-update,
+        .btn-delete,
+        .btn-cancel {
+            width: 100%;
+            justify-content: center;
+            max-width: 300px;
+        }
+
+        .bot-preview {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-container fade-in">
+    <div class="form-header">
+        <h1>Edit Roleplay Bot</h1>
+        <p>Update your AI companion's personality, behavior, and settings</p>
+    </div>
+
+    <!-- Bot Preview -->
+    <div class="bot-preview">
+        <div class="bot-preview-avatar">
+            {% if bot.avatar_url %}
+                <img src="{{ bot.avatar_url }}" alt="{{ bot.name }} avatar">
+            {% else %}
+                🤖
+            {% endif %}
+        </div>
+        <div class="bot-preview-info">
+            <h3>{{ bot.name }}</h3>
+            <p>Created {{ bot.created_at|date:"M d, Y" }} • Last updated {{ bot.updated_at|timesince }} ago</p>
+        </div>
+    </div>
+
+    <form method="post" class="roleplay-bot-form">
+        {% csrf_token %}
+        
+        <!-- Basic Information -->
+        <div class="form-group">
+            <label for="name">
+                <span class="label-icon">🎯</span>
+                Bot Name
+            </label>
+            <input type="text" 
+                   id="name" 
+                   name="name" 
+                   class="form-control" 
+                   value="{{ bot.name }}"
+                   required
+                   maxlength="200">
+            <div class="help-text">Choose a memorable name that reflects your bot's purpose</div>
+        </div>
+
+                <div class="form-group">
+            <label for="voice">
+                <span class="label-icon">🎵</span>
+                Voice Selection
+            </label>
+            <select id="voice" name="voice" style="width: 100%; padding: 10px; font-size: 16px;">
+                <option value="alloy" {% if bot.voice == "alloy" %}selected{% endif %}>Alloy (Male, Default)</option>
+                <option value="ash" {% if bot.voice == "ash" %}selected{% endif %}>Ash (Male)</option>
+                <option value="ballad" {% if bot.voice == "ballad" %}selected{% endif %}>Ballad (Female)</option>
+                <option value="coral" {% if bot.voice == "coral" %}selected{% endif %}>Coral (Female)</option>
+                <option value="echo" {% if bot.voice == "echo" %}selected{% endif %}>Echo (Male)</option>
+                <option value="fable" {% if bot.voice == "fable" %}selected{% endif %}>Fable (Female)</option>
+                <option value="nova" {% if bot.voice == "nova" %}selected{% endif %}>Nova (Female)</option>
+                <option value="onyx" {% if bot.voice == "onyx" %}selected{% endif %}>Onyx (Male)</option>
+                <option value="sage" {% if bot.voice == "sage" %}selected{% endif %}>Sage (Male)</option>
+                <option value="shimmer" {% if bot.voice == "shimmer" %}selected{% endif %}>Shimmer (Female)</option>
+            </select>
+            <div class="help-text">Choose the voice that will be used for speech during roleplay sessions</div>
+        </div>
+
+        <div class="form-group">
+            <label for="description">
+                <span class="label-icon">📝</span>
+                Description
+            </label>
+            <textarea id="description" 
+                      name="description" 
+                      class="form-control" 
+                      rows="4">{{ bot.description|default:"" }}</textarea>
+            <div class="help-text">Explain your bot's purpose, target audience, and key features</div>
+        </div>
+
+        <div class="form-group">
+            <label for="avatar_url">
+                <span class="label-icon">🖼️</span>
+                Avatar Image URL
+            </label>
+            <input type="url" 
+                   id="avatar_url" 
+                   name="avatar_url" 
+                   class="form-control" 
+                   value="{{ bot.avatar_url|default:"" }}"
+                   placeholder="https://example.com/avatar.jpg">
+            <div class="help-text">Optional: Add an avatar image to personalize your bot</div>
+        </div>
+
+        <!-- System Prompt -->
+        <div class="form-group has-counter">
+            <label for="system_prompt">
+                <span class="label-icon">🧠</span>
+                System Prompt
+            </label>
+            <textarea id="system_prompt" 
+                      name="system_prompt" 
+                      class="form-control system-prompt-textarea" 
+                      required>{{ bot.system_prompt }}</textarea>
+            <div class="character-count" id="system-prompt-count">0 characters</div>
+            <div class="help-text">Define your bot's personality, expertise, and conversation style. Be specific and detailed.</div>
+        </div>
+
+        <!-- Active Status -->
+        <div class="form-group">
+            <div class="checkbox-group">
+                <input type="checkbox" 
+                       id="is_active" 
+                       name="is_active" 
+                       {% if bot.is_active %}checked{% endif %}>
+                <label for="is_active">
+                    <span class="label-icon">✅</span>
+                    Make bot active and available for use
+                </label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" 
+                       id="is_public" 
+                       name="is_public" 
+                       {% if bot.is_public %}checked{% endif %}>
+                <label for="is_public">
+                    <span class="label-icon">✅</span>
+                    Make bot publicly visible in the marketplace
+                </label>
+            </div>
+        </div>
+
+        {% comment %} <!-- Advanced Settings -->
+        <div class="advanced-section">
+            <div class="advanced-toggle" onclick="toggleAdvanced()">
+                <span class="toggle-icon">▼</span>
+                <span>⚙️ Advanced Settings</span>
+            </div>
+            
+            <div class="advanced-content" id="advanced-content">
+                <div class="form-group has-counter">
+                    <label for="feedback_prompt">
+                        <span class="label-icon">💬</span>
+                        Feedback Prompt
+                    </label>
+                    <textarea id="feedback_prompt" 
+                              name="feedback_prompt" 
+                              class="form-control" 
+                              rows="4">{{ bot.feedback_prompt|default:"" }}</textarea>
+                    <div class="character-count" id="feedback-prompt-count">0 characters</div>
+                    <div class="help-text">Optional: Define how your bot should provide feedback to users</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="order">
+                        <span class="label-icon">📊</span>
+                        Display Order
+                    </label>
+                    <input type="number" 
+                           id="order" 
+                           name="order" 
+                           class="form-control" 
+                           value="{{ bot.order }}"
+                           min="0"
+                           max="999">
+                    <div class="help-text">Lower numbers appear first in the list (0 = highest priority)</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="custom_configuration">
+                        <span class="label-icon">🔧</span>
+                        Custom Configuration (JSON)
+                    </label>
+                    <textarea id="custom_configuration" 
+                              name="custom_configuration" 
+                              class="form-control system-prompt-textarea" 
+                              rows="6">{% if bot.custom_configuration %}{{ bot.custom_configuration|safe }}{% endif %}</textarea>
+                    <div class="help-text">Optional: Add custom configuration in JSON format for advanced features</div>
+                </div>
+            </div>
+        </div> {% endcomment %}
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <button type="submit" class="btn-update">
+                <span>💾 Update Bot</span>
+            </button>
+            <button type="button" class="btn-delete" onclick="confirmDelete()">
+                <span>🗑️ Delete Bot</span>
+            </button>
+            <a href="{% url 'my-roleplay-bots' %}" class="btn-cancel">
+                <span>↩️ Cancel</span>
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Roleplay Bot</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="text-dark">Are you sure you want to delete <strong>"{{ bot.name }}"</strong>?</p>
+                <p class="text-danger">This action cannot be undone. All conversation history and settings will be permanently lost.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <form method="post" action="{% url 'delete-roleplay-bot' bot.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete Forever</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Character count for textareas
+    function updateCharacterCount(textarea, countElement) {
+        const count = textarea.val().length;
+        countElement.text(count + ' characters');
+        
+        // Color coding based on length
+        if (count > 1000) {
+            countElement.css('color', '#22c55e'); // Green for good length
+        } else if (count > 500) {
+            countElement.css('color', '#fbbf24'); // Yellow for moderate
+        } else {
+            countElement.css('color', '#94a3b8'); // Gray for short
+        }
+    }
+
+    // Set up character counting
+    $('#system_prompt').on('input', function() {
+        updateCharacterCount($(this), $('#system-prompt-count'));
+    });
+
+    $('#feedback_prompt').on('input', function() {
+        updateCharacterCount($(this), $('#feedback-prompt-count'));
+    });
+
+    // Initialize character counts
+    updateCharacterCount($('#system_prompt'), $('#system-prompt-count'));
+    updateCharacterCount($('#feedback_prompt'), $('#feedback-prompt-count'));
+
+    // Form validation
+    $('.roleplay-bot-form').on('submit', function(e) {
+        const systemPrompt = $('#system_prompt').val().trim();
+        const botName = $('#name').val().trim();
+
+        if (!systemPrompt) {
+            e.preventDefault();
+            alert('System prompt is required to update your bot.');
+            $('#system_prompt').focus();
+            return false;
+        }
+
+        if (systemPrompt.length < 50) {
+            e.preventDefault();
+            alert('System prompt should be more detailed (at least 50 characters) to create an effective bot.');
+            $('#system_prompt').focus();
+            return false;
+        }
+
+        if (!botName) {
+            e.preventDefault();
+            alert('Bot name is required.');
+            $('#name').focus();
+            return false;
+        }
+
+        // Validate JSON if provided
+        const customConfig = $('#custom_configuration').val().trim();
+        if (customConfig) {
+            try {
+                JSON.parse(customConfig);
+            } catch (e) {
+                e.preventDefault();
+                alert('Custom configuration must be valid JSON format.');
+                $('#custom_configuration').focus();
+                return false;
+            }
+        }
+
+        // Show loading state
+        const submitBtn = $('.btn-update');
+        const originalText = submitBtn.html();
+        submitBtn.html('<span>🔄 Updating Bot...</span>').prop('disabled', true);
+        
+        // Reset button after 5 seconds if form doesn't submit
+        setTimeout(() => {
+            submitBtn.html(originalText).prop('disabled', false);
+        }, 5000);
+    });
+
+    // Auto-resize textareas
+    $('textarea').each(function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight + 10) + 'px';
+    }).on('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight + 10) + 'px';
+    });
+});
+
+// Advanced settings toggle
+function toggleAdvanced() {
+    const toggle = $('.advanced-toggle');
+    const content = $('#advanced-content');
+    const icon = toggle.find('.toggle-icon');
+    
+    if (toggle.hasClass('collapsed')) {
+        toggle.removeClass('collapsed');
+        content.removeClass('collapsed');
+        icon.text('▼');
+    } else {
+        toggle.addClass('collapsed');
+        content.addClass('collapsed');
+        icon.text('▶');
+    }
+}
+
+// Delete confirmation
+function confirmDelete() {
+    $('#deleteModal').modal('show');
+}
+</script>
+{% endblock %}

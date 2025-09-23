@@ -46,66 +46,151 @@
         }
 
         /* Header/Navbar */
-        .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            box-shadow: var(--shadow-light);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
+.navbar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    padding: 0.75rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
 
-        .navbar-brand {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--text-primary) !important;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+.navbar-brand {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-primary) !important;
+    text-decoration: none !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+}
 
-        .navbar-brand::before {
-            content: '🎓';
-            font-size: 1.5rem;
-        }
+.navbar-brand:hover {
+    color: var(--text-primary) !important;
+    text-decoration: none !important;
+}
 
-        .navbar-nav .nav-link {
-            color: var(--text-primary) !important;
-            font-weight: 500;
-            margin: 0 1rem;
-            transition: all 0.3s ease;
-            position: relative;
-        }
+.navbar-nav {
+    align-items: center;
+}
 
-        .navbar-nav .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--secondary-gradient);
-            transition: width 0.3s ease;
-        }
+.navbar-nav .nav-item {
+    margin: 0 0.5rem;
+}
 
-        .navbar-nav .nav-link:hover::after {
-            width: 100%;
-        }
+.navbar-nav .nav-link {
+    color: var(--text-primary) !important;
+    font-weight: 500;
+    padding: 0.75rem 1rem !important;
+    transition: all 0.3s ease;
+    position: relative;
+    border-radius: 8px;
+}
 
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--primary-gradient);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
+.navbar-nav .nav-link:hover {
+    color: #667eea !important;
+    background: rgba(102, 126, 234, 0.1);
+    text-decoration: none;
+}
+
+.navbar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--secondary-gradient);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.navbar-nav .nav-link:hover::after {
+    width: 80%;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--primary-gradient);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-right: 1rem;
+    transition: all 0.3s ease;
+}
+
+.user-profile:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.user-profile a {
+    color: white !important;
+    text-decoration: none !important;
+}
+
+.user-profile a:hover {
+    color: white !important;
+    text-decoration: none !important;
+}
+
+.navbar-toggler {
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.navbar-toggler:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+.navbar-toggler-icon {
+    background-image: none;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    display: block;
+}
+
+.navbar-toggler-icon::before,
+.navbar-toggler-icon::after,
+.navbar-toggler-icon {
+    background: var(--text-primary);
+    height: 2px;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.navbar-toggler-icon::before,
+.navbar-toggler-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+}
+
+.navbar-toggler-icon::before {
+    top: -6px;
+}
+
+.navbar-toggler-icon::after {
+    bottom: -6px;
+}
+
 
         /* Button Styles */
         .btn {
@@ -672,35 +757,31 @@ body:has([style*="background: linear-gradient(135deg, #1a1a1a"]) .navbar-toggler
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'voice_roleplay' %}">Voice Roleplay</a>
                         </li>
-
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'interview_types' %}">AI Interview</a>
+                            <a class="nav-link" href="{% url 'marketplace' %}">Marketplace</a>
                         </li>
-                                <li class="nav-item">
-            <a class="nav-link" href="{% url 'interview_history' %}">My Interviews</a>
-        </li>
-                                <li class="nav-item">
-                            <a class="nav-link" href="{% url 'courses' %}">Courses</a>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'purchase_credits' %}">Credits</a>
                         </li>
                     {% endif %}
                 </ul>
 
-                <div class="navbar-nav ml-auto">
-                    {% if user.is_authenticated %}
-                        <div class="user-profile mr-3">
-                  <a href="{% url 'profile' %}" class="" style="text-decoration: none; color: white;">
-                        👤 {{ user.username|title }}
-                    </a>
-                        </div>
-                        <form method="post" action="{% url 'logout' %}" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-outline-danger">Logout</button>
-                        </form>
-                    {% else %}
-                        <a href="{% url 'login' %}" class="btn btn-primary mr-2">Login</a>
-                        <a href="{% url 'signup' %}" class="btn btn-outline-primary">Register</a>
-                    {% endif %}
-                </div>
+<div class="navbar-nav ml-auto d-flex align-items-center">
+    {% if user.is_authenticated %}
+        <div class="user-profile">
+            <a href="{% url 'profile' %}">
+                👤 {{ user.username|title }}
+            </a>
+        </div>
+        <form method="post" action="{% url 'logout' %}" style="display: inline; margin: 0;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger">Logout</button>
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}" class="btn btn-primary mr-2">Login</a>
+        <a href="{% url 'signup' %}" class="btn btn-outline-primary">Register</a>
+    {% endif %}
+</div>
             </div>
         </div>
     </nav>
@@ -734,30 +815,29 @@ body:has([style*="background: linear-gradient(135deg, #1a1a1a"]) .navbar-toggler
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>PrepAI</h3>
-                    <p>Revolutionizing education through AI-powered voice learning. Experience personalized, interactive learning like never before.</p>
+                    <p>Create, share, and monetize AI roleplay bots. Practice interviews, sales calls, or niche conversations with realistic voice AI.</p>
                 </div>
                 
-                <div class="footer-section">
-                    <h3>Learning Features</h3>
-                    <a href="#">Voice Teaching</a><br>
-                    <a href="#">Smart Assessment</a><br>
-                    <a href="#">Progress Tracking</a><br>
-                    <a href="#">Custom Content</a>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Topics</h3>
-                    <a href="#">Programming</a><br>
-                    <a href="#">Data Science</a><br>
-                    <a href="#">Web Development</a><br>
-                    <a href="#">Upload Custom</a>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Support</h3>
-                    <p>Email: support@prepai.online</p>
-                    <p>Contact: founder@prepai.online</p>
-                </div>
+<div class="footer-section">
+    <h3>Core Features</h3>
+    <a href="#">Custom Personalities</a><br>
+    <a href="#">Voice Roleplay</a><br>
+    <a href="#">Monetization Options</a>
+  </div>
+
+  <div class="footer-section">
+    <h3>Use Cases</h3>
+    <a href="#">Mock Interviews</a><br>
+    <a href="#">Sales Training</a><br>
+    <a href="#">Language Practice</a><br>
+    <a href="#">Custom scenario</a>
+  </div>
+
+  <div class="footer-section">
+    <h3>Support</h3>
+    <p>Email: support@prepai.online</p>
+    <p>Contact: founder@prepai.online</p>
+  </div>
             </div>
             
             <div class="text-center">

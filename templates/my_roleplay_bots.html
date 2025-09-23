@@ -1,0 +1,468 @@
+{% extends 'base.html' %}
+
+{% block title %}My AI Roleplay Bots | PrepAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .bots-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .bots-header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+        color: black
+    }
+
+    .bots-header p {
+        color: var(--text-secondary);
+        font-size: 1.2rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .bots-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .bot-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--shadow-light);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: 2px solid transparent;
+    }
+
+    .bot-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .bot-card:hover::before {
+        left: 100%;
+    }
+
+    .bot-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-medium);
+        border-color: rgba(102, 126, 234, 0.2);
+    }
+
+    .bot-card.inactive {
+        opacity: 0.7;
+        border-color: rgba(245, 87, 108, 0.3);
+    }
+
+    .bot-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--primary-gradient);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        margin-bottom: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .bot-avatar img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .bot-info {
+        flex: 1;
+    }
+
+    .bot-name {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: black;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .bot-status {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .bot-status.active {
+        background: rgba(34, 197, 94, 0.1);
+        color: #22c55e;
+    }
+
+    .bot-status.inactive {
+        background: rgba(245, 87, 108, 0.1);
+        color: #f5576c;
+    }
+
+    .bot-description {
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .bot-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+
+    .bot-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .bot-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-start {
+        background: var(--secondary-gradient);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 20px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        flex: 1;
+        justify-content: center;
+        min-width: 120px;
+    }
+
+    .btn-start:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(240, 147, 251, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-edit {
+        background: transparent;
+        color: #667eea;
+        border: 2px solid rgba(102, 126, 234, 0.3);
+        padding: 0.75rem 1.5rem;
+        border-radius: 20px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        flex: 1;
+        justify-content: center;
+        min-width: 120px;
+    }
+
+    .btn-edit:hover {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        border-color: #667eea;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 25px;
+        box-shadow: var(--shadow-light);
+    }
+
+    .empty-state-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        opacity: 0.7;
+    }
+
+    .empty-state h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .btn-create-first {
+        background: var(--secondary-gradient);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1.1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-create-first:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(240, 147, 251, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .stats-bar {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .stat-item {
+        background: white;
+        padding: 1.5rem 2rem;
+        border-radius: 15px;
+        box-shadow: var(--shadow-light);
+        flex: 1;
+        min-width: 200px;
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 800;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        display: block;
+    }
+
+    .stat-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+        .bots-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .bots-header h1 {
+            font-size: 2rem;
+        }
+
+        .bot-actions {
+            flex-direction: column;
+        }
+
+        .btn-start,
+        .btn-edit {
+            flex: none;
+        }
+
+        .stats-bar {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            min-width: auto;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="bots-header fade-in">
+    <h1>🤖 My AI Roleplay Bots</h1>
+    <p>Manage and interact with your custom AI roleplay companions</p>
+</div>
+
+<!-- Stats Bar -->
+<div class="stats-bar fade-in-on-scroll">
+    <div class="stat-item">
+        <span class="stat-number">{{ total_bots|default:0 }}</span>
+        <span class="stat-label">Total Bots</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-number">{{ active_bots|default:0 }}</span>
+        <span class="stat-label">Active Bots</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-number">{{ total_sessions|default:0 }}</span>
+        <span class="stat-label">Total Sessions</span>
+    </div>
+</div>
+
+{% if bots %}
+<!-- Bots Grid -->
+<div class="bots-grid fade-in-on-scroll">
+    {% for bot in bots %}
+    <div class="bot-card {% if not bot.is_active %}inactive{% endif %}">
+        <div class="bot-avatar">
+            {% if bot.avatar_url %}
+                <img src="{{ bot.avatar_url }}" alt="{{ bot.name }} avatar">
+            {% else %}
+                🤖
+            {% endif %}
+        </div>
+        
+        <div class="bot-info">
+            <div class="bot-name">
+                {{ bot.name }}
+                <span class="bot-status {% if bot.is_active %}active{% else %}inactive{% endif %}">
+                    {% if bot.is_active %}Active{% else %}Inactive{% endif %}
+                </span>
+            </div>
+            
+            {% if bot.description %}
+            <div class="bot-description">
+                {{ bot.description }}
+            </div>
+            {% endif %}
+            
+            <div class="bot-meta">
+                <span>📅 Created {{ bot.created_at|date:"M d, Y" }}</span>
+                <span>🔄 Updated {{ bot.updated_at|timesince }} ago</span>
+            </div>
+            
+            <div class="bot-actions">
+                {% if bot.is_active %}
+                    <a href="{% url 'start_roleplay' bot.id %}" class="btn-start">
+                        🚀 Start Roleplay
+                    </a>
+                    <a href="{% url 'start_roleplay' bot.id %}" class="btn-start">
+                        🔗 Share Roleplay
+                    </a>
+                {% else %}
+                    <button class="btn-start" style="opacity: 0.5; cursor: not-allowed;" disabled>
+                        ⏸️ Inactive
+                    </button>
+                {% endif %}
+                <a href="{% url 'edit-roleplay-bot' bot.id %}" class="btn-edit">
+                    ✏️ Edit
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<!-- Empty State -->
+<div class="empty-state fade-in-on-scroll">
+    <div class="empty-state-icon">🤖</div>
+    <h3>No Roleplay Bots Yet</h3>
+    <p>Create your first AI roleplay bot to get started with personalized conversation experiences.</p>
+    <a href="{% url 'create_roleplay_bot' %}" class="btn-create-first">
+        🚀 Create Your First Bot
+    </a>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Add hover effects to bot cards
+    $('.bot-card').hover(
+        function() {
+            if (!$(this).hasClass('inactive')) {
+                $(this).find('.bot-avatar').css('transform', 'scale(1.05)');
+            }
+        },
+        function() {
+            $(this).find('.bot-avatar').css('transform', 'scale(1)');
+        }
+    );
+
+    // Animate stats on scroll
+    $('.stat-number').each(function() {
+        const $this = $(this);
+        const finalNumber = parseInt($this.text()) || 0;
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateNumber($this, finalNumber);
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+        
+        observer.observe(this);
+    });
+
+    function animateNumber($element, target) {
+        let current = 0;
+        const increment = target / 30;
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            $element.text(Math.floor(current));
+        }, 50);
+    }
+
+    // Add confirmation for inactive bot actions
+    $('.btn-start[disabled]').on('click', function(e) {
+        e.preventDefault();
+        alert('This bot is currently inactive. Please edit the bot to activate it first.');
+    });
+});
+</script>
+{% endblock %}

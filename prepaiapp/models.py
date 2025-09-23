@@ -332,45 +332,71 @@ class Transaction(models.Model):
 
 
 class RolePlayBots(models.Model):
+    VOICE_CHOICES = [
+        ("alloy", "Alloy (Male, Default)"),
+        ("ash", "Ash (Male)"),
+        ("ballad", "Ballad (Female)"),
+        ("coral", "Coral (Female)"),
+        ("echo", "Echo (Male)"),
+        ("fable", "Fable (Female)"),
+        ("nova", "Nova (Female)"),
+        ("onyx", "Onyx (Male)"),
+        ("sage", "Sage (Male)"),
+        ("shimmer", "Shimmer (Female)"),
+    ]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
     avatar_url = models.URLField(blank=True, null=True)
-    system_prompt = models.TextField(help_text="System prompt defining the bot's behavior")
-    feedback_prompt = models.TextField(blank=True, null=True, help_text="Prompt for gathering user feedback")
-    scenario_description = models.TextField(help_text="Description of the role-play scenario")
+    system_prompt = models.TextField(
+        help_text="System prompt defining the bot's behavior"
+    )
+    feedback_prompt = models.TextField(
+        blank=True, null=True, help_text="Prompt for gathering user feedback"
+    )
     custom_configuration = models.JSONField(
         blank=True, null=True, help_text="Additional configuration parameters"
     )
+    voice = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text="Voice setting for TTS",
+        default="alloy",
+        choices=VOICE_CHOICES,
+    )
     is_active = models.BooleanField(default=True)
+    is_public = models.BooleanField(default=True)
     order = models.PositiveIntegerField(default=0, help_text="Display order")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+
     def __str__(self):
         return f"{self.name}"
-    
+
 
 class RoleplaySession(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     bot = models.ForeignKey(RolePlayBots, on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, choices=[
-        ('in_progress', 'In Progress'),
-        ('completed', 'Completed'),
-        ('disconnected', 'Disconnected'),
-    ])
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ("in_progress", "In Progress"),
+            ("completed", "Completed"),
+            ("disconnected", "Disconnected"),
+        ],
+    )
     transcript = models.TextField(blank=True)
     feedback = models.JSONField(blank=True, default=dict)
     duration_seconds = models.IntegerField(default=0)
     started_at = models.DateTimeField()
     completed_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    
-    
+
     class Meta:
         ordering = ["-started_at"]
 
     def __str__(self):
         return f"{self.user.username} - {self.bot.name}"
-    

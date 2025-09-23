@@ -23,6 +23,164 @@ from openai import OpenAI
 from datetime import datetime, time
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
+class EditRolePlayBotView(LoginRequiredMixin, View):
+        def get(self, request, bot_id):
+            bot = get_object_or_404(RolePlayBots, id=bot_id, created_by=request.user)
+            context = {
+                'bot': bot,
+            }
+            return render(request, 'edit_roleplay_bot.html', context)
+        
+        def post(self, request, bot_id):
+            bot = get_object_or_404(RolePlayBots, id=bot_id, created_by=request.user)
+            
+            try:
+                # Get form data
+                name = request.POST.get('name', '').strip()
+                description = request.POST.get('description', '').strip()
+                avatar_url = request.POST.get('avatar_url', '').strip()
+                system_prompt = request.POST.get('system_prompt', '').strip()
+                feedback_prompt = request.POST.get('feedback_prompt', '').strip()
+                custom_configuration = request.POST.get('custom_configuration', '').strip()
+                order = request.POST.get('order', 0)
+                is_active = request.POST.get('is_active') == 'on'
+                is_public = request.POST.get('is_public') == 'on'
+                voice = request.POST.get('voice', 'alloy').strip()
+
+                # Validation
+                if not name:
+                    messages.error(request, 'Bot name is required.')
+                    return render(request, 'edit_roleplay_bot.html', {'bot': bot})
+                
+                if not system_prompt:
+                    messages.error(request, 'System prompt is required.')
+                    return render(request, 'edit_roleplay_bot.html', {'bot': bot})
+                
+                if len(system_prompt) < 50:
+                    messages.error(request, 'System prompt should be more detailed (at least 50 characters).')
+                    return render(request, 'edit_roleplay_bot.html', {'bot': bot})
+
+                # Validate JSON if provided
+                if custom_configuration:
+                    try:
+                        json.loads(custom_configuration)
+                    except json.JSONDecodeError:
+                        messages.error(request, 'Custom configuration must be valid JSON format.')
+                        return render(request, 'edit_roleplay_bot.html', {'bot': bot})
+
+                # Validate order
+                try:
+                    order = int(order)
+                    if order < 0:
+                        order = 0
+                except (ValueError, TypeError):
+                    order = 0
+
+                # Update bot
+                bot.name = name
+                bot.description = description if description else None
+                bot.avatar_url = avatar_url if avatar_url else None
+                bot.system_prompt = system_prompt
+                bot.is_active = is_active
+                bot.is_public = is_public
+                bot.voice = voice if voice else "alloy"
+                
+                bot.save()
+                
+                messages.success(request, f'"{bot.name}" has been updated successfully!')
+                return redirect('my-roleplay-bots')
+                
+            except Exception as e:
+                messages.error(request, f'An error occurred while updating the bot: {str(e)}')
+                return render(request, 'edit_roleplay_bot.html', {'bot': bot})
+            
+class DeleteRolePlayBotView(LoginRequiredMixin, View):
+    def post(self, request, bot_id):
+        bot = get_object_or_404(RolePlayBots, id=bot_id, created_by=request.user)
+        bot_name = bot.name
+        
+        try:
+            bot.delete()
+            messages.success(request, f'"{bot_name}" has been deleted successfully!')
+        except Exception as e:
+            messages.error(request, f'An error occurred while deleting the bot: {str(e)}')
+        
+        return redirect('my-roleplay-bots')
+
+    def get(self, request, bot_id):
+        # Redirect GET requests to the edit page
+        return redirect('edit-roleplay-bot', bot_id=bot_id)
+
+class MyRolePlayBotView(LoginRequiredMixin, View):
+    """
+    View to display user's created roleplay bots
+    """
+    login_url = "/login/"
+    
+    def get(self, request):
+        # Fetch roleplay templates (assuming they are a subset of InterviewTemplate)
+        roleplay_bots = RolePlayBots.objects.filter(created_by=request.user).order_by('order', '-created_at')
+        
+        context = {
+            'bots': roleplay_bots,
+            "total_bots" : roleplay_bots.count(),
+            "active_bots" : roleplay_bots.filter(is_active=True).count(),
+            "total_sessions" : RoleplaySession.objects.filter(user=request.user).count(),
+        }
+        return render(request, 'my_roleplay_bots.html', context)
+class CreateRolePlayBotView(LoginRequiredMixin, View):
+    def post(self, request):
+        name = request.POST.get('name')
+        avatar_url = request.POST.get('avatar_url')
+        system_prompt = request.POST.get('system_prompt')
+        description = request.POST.get('description')
+        feedback_prompt = request.POST.get('feedback_prompt')
+        is_active = request.POST.get('is_active') == 'on'
+        is_public = request.POST.get('is_public') == 'on'
+        # scenario_description = request.POST.get('scenario_description') --- IGNORE ---
+        custom_configuration = {
+            "temperature": float(request.POST.get('temperature', 0.7)),
+            "max_tokens": int(request.POST.get('max_tokens', 150)),
+            "top_p": float(request.POST.get('top_p', 1.0)),
+            "frequency_penalty": float(request.POST.get('frequency_penalty', 0.0)),
+            "presence_penalty": float(request.POST.get('presence_penalty', 0.0)),
+            "required_minimum_credits": int(request.POST.get('required_minimum_credits', 10)),
+        }
+        
+        if not name or not system_prompt:
+            messages.error(request, "Name and System Prompt are required.")
+            return redirect('create_roleplay_bot')
+        
+        try:
+            bot = RolePlayBots.objects.create(
+                name=name,
+                description=description,
+                avatar_url=avatar_url,
+                system_prompt=system_prompt,
+                feedback_prompt=feedback_prompt,
+                custom_configuration=custom_configuration,
+                created_by=request.user,
+                is_active=is_active,
+                is_public=is_public,
+            )
+            messages.success(request, f"Roleplay Bot '{bot.name}' created successfully!")
+            return redirect('voice_roleplay')
+        except Exception as e:
+            logger.error(f"Error creating Roleplay Bot: {e}")
+            messages.error(request, "An error occurred while creating the bot. Please try again.")
+            return redirect('create_roleplay_bot')
+    def get(self, request):
+        return render(request, 'create_roleplay_bot.html')
+class MarketplaceView(LoginRequiredMixin, View):
+    """
+    View to display the marketplace of interview templates
+    """
+    login_url = "/login/"
+    
+    def get(self, request):
+        context = {
+        }
+        return render(request, 'marketplace.html', context)
 
 class RolePlaySessionView(LoginRequiredMixin, View):
     """
@@ -90,13 +248,8 @@ class RolePlayStartView(LoginRequiredMixin, View):
                 status='in_progress',
                 started_at=timezone.now()
             )
-            context = {
-                'session': session,
-                'bot': session.bot,
-            }
-            
             # Redirect to roleplay_session session page
-            return redirect('roleplay_session', session_id=session.id, context=context)
+            return redirect('roleplay_session', session_id=session.id)
             
         except RolePlayBots.DoesNotExist:
             messages.error(request, "Roleplay bot not found or inactive.")
@@ -113,7 +266,7 @@ class VoiceRolePlayView(LoginRequiredMixin, View):
     
     def get(self, request):
         # Fetch roleplay templates (assuming they are a subset of InterviewTemplate)
-        roleplay_bots = RolePlayBots.objects.filter(is_active=True)
+        roleplay_bots = RolePlayBots.objects.filter(is_active=True, is_public=True).order_by('order', '-created_at')
         
         context = {
             'roleplay_bots': roleplay_bots,
