@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PrepAI - AI Roleplay & Interview Platform</title>
+    <title>PrepAI - AI Roleplay Bot Marketplace</title>
     <style>
         * {
             margin: 0;
@@ -105,7 +105,7 @@
         }
 
         .logo::before {
-            content: '🎭';
+            content: '🤖';
             font-size: 1.5rem;
         }
 
@@ -404,21 +404,21 @@
             line-height: 1.7;
         }
 
-        /* Experience types section */
-        .experience-types {
+        /* Creator vs User sections */
+        .dual-audience {
             padding: 6rem 0;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
 
-        .types-grid {
+        .audience-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 3rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
             margin-top: 4rem;
         }
 
-        .type-card {
+        .audience-card {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -428,49 +428,103 @@
             transition: all 0.3s ease;
         }
 
-        .type-card:hover {
+        .audience-card:hover {
             transform: translateY(-10px);
             background: rgba(255, 255, 255, 0.15);
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
         }
 
-        .type-icon {
+        .audience-icon {
             font-size: 4rem;
             margin-bottom: 1.5rem;
             display: block;
         }
 
-        .type-card h3 {
-            font-size: 1.8rem;
+        .audience-card h3 {
+            font-size: 2.2rem;
             font-weight: 700;
             margin-bottom: 1rem;
         }
 
-        .type-card p {
+        .audience-card p {
             opacity: 0.9;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .feature-list li {
+            padding: 0.5rem 0;
+            opacity: 0.9;
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .feature-list li::before {
+            content: '✨';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+        }
+
+        /* Bot categories section */
+        .bot-categories {
+            padding: 6rem 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .category-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .category-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .category-card p {
+            color: #666;
             line-height: 1.7;
             margin-bottom: 1.5rem;
         }
 
-        .coming-soon {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
+        .bot-examples {
+            color: #888;
             font-size: 0.9rem;
-            font-weight: 600;
-            margin-top: 1rem;
-        }
-
-        .available {
-            display: inline-block;
-            background: rgba(34, 197, 94, 0.3);
-            color: #22c55e;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-top: 1rem;
+            font-style: italic;
         }
 
         /* Early Access Section */
@@ -580,39 +634,6 @@
             margin-top: 1rem;
         }
 
-        .benefits-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .benefit-item {
-            text-align: center;
-            padding: 2rem 1.5rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .benefit-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        .benefit-item h4 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .benefit-item p {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.95rem;
-        }
-
         .success-message {
             position: absolute;
             top: 50%;
@@ -689,18 +710,18 @@
                 padding-top: 120px;
             }
             
-            .features-grid, .types-grid {
+            .features-grid, .categories-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .audience-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
             }
             
             .form-group {
                 flex-direction: column;
                 gap: 1rem;
-            }
-            
-            .benefits-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
             }
             
             .early-access {
@@ -758,6 +779,17 @@
             0%, 40%, 100% { transform: scaleY(0.4); }
             20% { transform: scaleY(1); }
         }
+
+        .earnings-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -765,10 +797,10 @@
         <nav class="container">
             <a href="#" class="logo">PrepAI</a>
             <ul class="nav-links">
-                <li><a href="#features">Features</a></li>
+                <li><a href="#features">Marketplace</a></li>
                 <li><a href="#how-it-works">How it Works</a></li>
-                <li><a href="#experience-types">Experiences</a></li>
-                <li><a href="#early-access">Early Access</a></li>
+                <li><a href="#bot-categories">Bot Categories</a></li>
+                <li><a href="#early-access">Join Now</a></li>
             </ul>
         </nav>
     </header>
@@ -777,12 +809,12 @@
         <div class="particles"></div>
         <div class="container">
             <div class="hero-content">
-                <h1>AI Roleplay & Interview Platform</h1>
-                <p class="subtitle">Master Conversations, Ace Interviews, Build Confidence</p>
-                <p>Experience immersive AI-powered roleplay scenarios and mock interviews through natural voice conversations. Practice with AI characters, get instant feedback, and build the confidence you need to succeed.</p>
+                <h1>AI Roleplay Bot Marketplace</h1>
+                <p class="subtitle">Create, Share, Play & Earn with AI Roleplay Bots</p>
+                <p>The ultimate platform where creators build unique AI roleplay characters and players discover endless conversational experiences. From interview practice to fantasy adventures - create any bot, monetize your creativity, and explore infinite possibilities.</p>
                 <div class="cta-buttons">
-                    <a href="#early-access" class="cta-button primary">🎭 Try AI Roleplay</a>
-                    <a href="#early-access" class="cta-button secondary">🎤 Practice Interviews</a>
+                    <a href="#early-access" class="cta-button primary">🎭 Explore Bots</a>
+                    <a href="#early-access" class="cta-button secondary">💰 Start Creating</a>
                 </div>
             </div>
         </div>
@@ -790,44 +822,87 @@
 
     <section class="features" id="features">
         <div class="container">
-            <h2 class="section-title fade-in-on-scroll">Revolutionary AI Conversation Training</h2>
-            <p class="section-subtitle fade-in-on-scroll">Build confidence through immersive roleplay and realistic interview practice</p>
+            <h2 class="section-title fade-in-on-scroll">The Complete AI Roleplay Ecosystem</h2>
+            <p class="section-subtitle fade-in-on-scroll">A thriving marketplace where creativity meets conversation</p>
             
             <div class="features-grid">
                 <div class="feature-card fade-in-on-scroll">
-                    <div class="feature-icon">🎭</div>
-                    <h3>AI Roleplay Characters</h3>
-                    <p>Engage with diverse AI personalities in various scenarios. From difficult customer situations to workplace negotiations, practice real-world conversations safely.</p>
+                    <div class="feature-icon">🤖</div>
+                    <h3>Unlimited AI Characters</h3>
+                    <p>Discover thousands of unique AI roleplay bots created by talented creators worldwide. From professional scenarios to fantasy characters - find the perfect conversation partner.</p>
                 </div>
                 
                 <div class="feature-card fade-in-on-scroll">
                     <div class="feature-icon">🎙️</div>
-                    <h3>Natural Voice Interactions</h3>
-                    <p>Speak naturally with AI characters and interviewers. No typing required - experience authentic voice-based conversations that feel completely natural.</p>
+                    <h3>Voice-First Interactions</h3>
+                    <p>Experience natural voice conversations with AI bots. Each character has distinct speaking styles, personalities, and conversational patterns that feel completely authentic.</p>
                 </div>
                 
                 <div class="feature-card fade-in-on-scroll">
-                    <div class="feature-icon">🎯</div>
-                    <h3>Scenario-Based Learning</h3>
-                    <p>Practice specific situations from job interviews to customer service encounters. Each scenario is designed to build particular skills and confidence.</p>
+                    <div class="feature-icon">💰</div>
+                    <h3>Creator Monetization</h3>
+                    <p>Turn your creativity into income. Creators earn from bot usage, premium features, and exclusive character access. Build once, earn continuously.</p>
                 </div>
                 
                 <div class="feature-card fade-in-on-scroll">
-                    <div class="feature-icon">🧠</div>
-                    <h3>Adaptive AI Responses</h3>
-                    <p>AI characters respond intelligently to your conversation style, creating dynamic interactions that adapt to your responses and learning needs.</p>
+                    <div class="feature-icon">🎨</div>
+                    <h3>Easy Bot Creation</h3>
+                    <p>Intuitive bot builder with personality customization, scenario scripting, and voice personality selection. No coding required - just pure creativity.</p>
+                </div>
+                
+                <div class="feature-card fade-in-on-scroll">
+                    <div class="feature-icon">🏪</div>
+                    <h3>Marketplace Discovery</h3>
+                    <p>Browse, rate, and review bots by category, popularity, or creator. Find trending characters and discover hidden gems in our vibrant community marketplace.</p>
                 </div>
                 
                 <div class="feature-card fade-in-on-scroll">
                     <div class="feature-icon">📊</div>
-                    <h3>Instant Performance Feedback</h3>
-                    <p>Get detailed analysis of your communication skills, confidence level, and areas for improvement after each roleplay or interview session.</p>
+                    <h3>Analytics & Insights</h3>
+                    <p>Creators get detailed analytics on bot performance, user engagement, and earnings. Players track their conversation history and favorite characters.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="dual-audience" id="audiences">
+        <div class="container">
+            <h2 class="section-title fade-in-on-scroll">Two Paths, Endless Possibilities</h2>
+            <p class="section-subtitle fade-in-on-scroll">Whether you're here to create or play, we've got you covered</p>
+            
+            <div class="audience-grid">
+                <div class="audience-card fade-in-on-scroll">
+                    <div class="audience-icon">🎨</div>
+                    <h3>For Creators</h3>
+                    <p>Turn your storytelling and character creation skills into a thriving business</p>
+                    
+                    <ul class="feature-list">
+                        <li>Build AI bots with unique personalities</li>
+                        <li>Monetize through usage and subscriptions</li>
+                        <li>Access creator tools and analytics</li>
+                        <li>Join a supportive creator community</li>
+                        <li>Earn passive income from popular bots</li>
+                        <li>Get featured in marketplace highlights</li>
+                    </ul>
+                    
+                    <div class="earnings-badge">Earn $100-$5000+ monthly</div>
                 </div>
                 
-                <div class="feature-card fade-in-on-scroll">
-                    <div class="feature-icon">📈</div>
-                    <h3>Progress Tracking</h3>
-                    <p>Monitor your communication improvements over time. See how your confidence and skills develop through detailed analytics and session history.</p>
+                <div class="audience-card fade-in-on-scroll">
+                    <div class="audience-icon">🎮</div>
+                    <h3>For Players</h3>
+                    <p>Discover and interact with incredible AI characters across every imaginable scenario</p>
+                    
+                    <ul class="feature-list">
+                        <li>Chat with thousands of unique AI bots</li>
+                        <li>Practice conversations and skills</li>
+                        <li>Explore fantasy and roleplay scenarios</li>
+                        <li>Get personalized recommendations</li>
+                        <li>Rate and review your experiences</li>
+                        <li>Build conversation streaks and achievements</li>
+                    </ul>
+                    
+                    <div class="earnings-badge">Free & Premium Options</div>
                 </div>
             </div>
         </div>
@@ -835,36 +910,36 @@
 
     <section class="how-it-works" id="how-it-works">
         <div class="container">
-            <h2 class="section-title fade-in-on-scroll">Your AI Conversation Journey</h2>
-            <p class="section-subtitle fade-in-on-scroll">Simple steps to master any conversation scenario</p>
+            <h2 class="section-title fade-in-on-scroll">How the Marketplace Works</h2>
+            <p class="section-subtitle fade-in-on-scroll">From creation to conversation in simple steps</p>
             
             <div class="flow-container">
                 <div class="flow-step fade-in-on-scroll">
                     <div class="step-content">
-                        <h3>Choose Your Experience</h3>
-                        <p>Select from AI roleplay characters or interview scenarios. Whether you want to practice difficult conversations or ace your next job interview, we have the perfect AI companion.</p>
+                        <h3>Browse & Discover</h3>
+                        <p>Explore our vast marketplace of AI roleplay bots. Filter by category, rating, popularity, or specific use cases like interview practice, language learning, or entertainment.</p>
                     </div>
                     <div class="step-visual">
                         <div class="step-number">1</div>
-                        <div class="step-icon">🎯</div>
+                        <div class="step-icon">🔍</div>
                     </div>
                 </div>
 
                 <div class="flow-step fade-in-on-scroll">
                     <div class="step-content">
-                        <h3>Start Your AI Conversation</h3>
-                        <p>Begin talking with your chosen AI character or interviewer. Each AI has unique personalities, speaking styles, and scenario-specific knowledge.</p>
+                        <h3>Select Your Bot</h3>
+                        <p>Choose an AI character that matches your needs. Read reviews, check creator profiles, and preview bot personalities before starting your conversation.</p>
                     </div>
                     <div class="step-visual">
                         <div class="step-number">2</div>
-                        <div class="step-icon">🎭</div>
+                        <div class="step-icon">🤖</div>
                     </div>
                 </div>
 
                 <div class="flow-step fade-in-on-scroll">
                     <div class="step-content">
-                        <h3>Engage Naturally</h3>
-                        <p>Have authentic voice conversations. The AI responds to your tone, pace, and content, creating realistic interactions that build real-world communication skills.</p>
+                        <h3>Start Conversing</h3>
+                        <p>Begin natural voice conversations with your selected AI bot. Each character responds authentically according to their personality, background, and scenario setup.</p>
                     </div>
                     <div class="step-visual">
                         <div class="step-number">3</div>
@@ -874,87 +949,80 @@
 
                 <div class="flow-step fade-in-on-scroll">
                     <div class="step-content">
-                        <h3>Receive Detailed Analysis</h3>
-                        <p>Get comprehensive feedback on your communication style, confidence, clarity, and effectiveness. Learn exactly what to improve for better real-world conversations.</p>
+                        <h3>Create Your Own</h3>
+                        <p>Ready to build? Use our intuitive creator tools to design unique AI characters. Set personalities, define conversation styles, and publish to the marketplace.</p>
                     </div>
                     <div class="step-visual">
                         <div class="step-number">4</div>
-                        <div class="step-icon">📊</div>
+                        <div class="step-icon">🎨</div>
                     </div>
                 </div>
 
                 <div class="flow-step fade-in-on-scroll">
                     <div class="step-content">
-                        <h3>Build Confidence & Repeat</h3>
-                        <p>Practice with different characters and scenarios. Each session builds your communication confidence and prepares you for real-world success.</p>
+                        <h3>Earn & Grow</h3>
+                        <p>Watch your creations gain popularity and generate income. Successful creators build entire portfolios of AI characters and develop loyal followings.</p>
                     </div>
                     <div class="step-visual">
                         <div class="step-number">5</div>
-                        <div class="step-icon">🚀</div>
+                        <div class="step-icon">💰</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="experience-types" id="experience-types">
+    <section class="bot-categories" id="bot-categories">
         <div class="container">
-            <h2 class="section-title fade-in-on-scroll">AI Experiences Available</h2>
-            <p class="section-subtitle fade-in-on-scroll">Practice any conversation scenario with specialized AI characters</p>
+            <h2 class="section-title fade-in-on-scroll">Explore Bot Categories</h2>
+            <p class="section-subtitle fade-in-on-scroll">Every conversation you can imagine, powered by AI</p>
             
-            <div class="types-grid">
-                <div class="type-card fade-in-on-scroll">
-                    <div class="type-icon">🎭</div>
-                    <h3>AI Roleplay Characters
-                        <div class="voice-wave">
-                            <div class="wave-bar"></div>
-                            <div class="wave-bar"></div>
-                            <div class="wave-bar"></div>
-                            <div class="wave-bar"></div>
-                        </div>
-                    </h3>
-                    <p>Practice with diverse AI personalities including difficult customers, team members, negotiation partners, and social scenarios. Each character has unique traits and conversation styles.</p>
-                    <div class="available">Available Now</div>
+            <div class="categories-grid">
+                <div class="category-card fade-in-on-scroll">
+                    <div class="category-icon">💼</div>
+                    <h3>Professional & Career</h3>
+                    <p>Practice job interviews, networking conversations, sales pitches, and professional scenarios.</p>
+                    <div class="bot-examples">Interview Coach, HR Manager, Sales Trainer</div>
                 </div>
                 
-                <div class="type-card fade-in-on-scroll">
-                    <div class="type-icon">💻</div>
-                    <h3>Technical Interview Practice</h3>
-                    <p>Mock interviews for software engineering, data science, and technical roles. Practice coding discussions, system design, and technical problem-solving with AI interviewers.</p>
-                    <div class="coming-soon">Coming Soon</div>
+                <div class="category-card fade-in-on-scroll">
+                    <div class="category-icon">🎭</div>
+                    <h3>Entertainment & Fantasy</h3>
+                    <p>Immerse yourself in fictional worlds with characters from various genres and storylines.</p>
+                    <div class="bot-examples">Fantasy Knight, Space Explorer, Mystery Detective</div>
                 </div>
                 
-                <div class="type-card fade-in-on-scroll">
-                    <div class="type-icon">📊</div>
-                    <h3>Business Interview Scenarios</h3>
-                    <p>Practice product management, consulting, marketing, and general business interviews with AI interviewers specialized in each domain.</p>
-                    <div class="coming-soon">Coming Soon</div>
+                <div class="category-card fade-in-on-scroll">
+                    <div class="category-icon">🎓</div>
+                    <h3>Education & Learning</h3>
+                    <p>Learn languages, practice presentations, get tutoring help, or explore academic topics.</p>
+                    <div class="bot-examples">Language Tutor, Study Buddy, Debate Partner</div>
                 </div>
                 
-                <div class="type-card fade-in-on-scroll">
-                    <div class="type-icon">🎯</div>
-                    <h3>Sales & Customer Service</h3>
-                    <p>Practice handling difficult customers, sales negotiations, customer support scenarios, and complaint resolution with specialized AI characters.</p>
-                    <div class="coming-soon">Coming Soon</div>
+                <div class="category-card fade-in-on-scroll">
+                    <div class="category-icon">🏥</div>
+                    <h3>Health & Wellness</h3>
+                    <p>Practice medical scenarios, fitness coaching, mental health conversations, and wellness guidance.</p>
+                    <div class="bot-examples">Therapist Trainer, Fitness Coach, Medical Scenario</div>
                 </div>
                 
-                <div class="type-card fade-in-on-scroll">
-                    <div class="type-icon">👥</div>
-                    <h3>Social & Networking</h3>
-                    <p>Build confidence in networking events, small talk, professional meetups, and social interactions with AI conversation partners.</p>
-                    <div class="coming-soon">Coming Soon</div>
+                <div class="category-card fade-in-on-scroll">
+                    <div class="category-icon">🎮</div>
+                    <h3>Gaming & Adventure</h3>
+                    <p>Interactive storytelling, text-based adventures, and gaming companion experiences.</p>
+                    <div class="bot-examples">Dungeon Master, Adventure Guide, Game NPC</div>
                 </div>
                 
-                <div class="type-card fade-in-on-scroll">
-                    <div class="type-icon">🎓</div>
-                    <h3>Academic & Presentation</h3>
-                    <p>Practice presentations, academic defenses, conference talks, and public speaking scenarios with supportive AI audiences and feedback.</p>
-                    <div class="coming-soon">Coming Soon</div>
+                <div class="category-card fade-in-on-scroll">
+                    <div class="category-icon">💝</div>
+                    <h3>Social & Relationships</h3>
+                    <p>Practice social interactions, dating conversations, family discussions, and friendship scenarios.</p>
+                    <div class="bot-examples">Dating Coach, Family Mediator, Social Trainer</div>
                 </div>
             </div>
             
             <div style="text-align: center; margin-top: 3rem;">
-                <p style="font-size: 1.1rem; opacity: 0.9;">More AI characters and scenarios being added regularly!</p>
+                <p style="font-size: 1.1rem; color: #666;">Thousands more categories and bots created daily by our community!</p>
             </div>
         </div>
     </section>
@@ -962,50 +1030,27 @@
     <section class="early-access" id="early-access">
         <div class="container">
             <div class="early-access-content">
-                <h2 class="section-title fade-in-on-scroll">Start Your AI Conversation Journey</h2>
-                <p class="section-subtitle fade-in-on-scroll">Join the first users to experience next-generation AI roleplay and interview training</p>
+                <h2 class="section-title fade-in-on-scroll">Join the AI Roleplay Revolution</h2>
+                <p class="section-subtitle fade-in-on-scroll">Be among the first creators and players in the ultimate AI conversation marketplace</p>
                 
                 <div class="signup-form fade-in-on-scroll">
                     <form id="earlyAccessForm" class="form-container">
                         <div class="form-group">
                             <input type="email" id="email" placeholder="Enter your email address" required>
                             <button type="submit" class="signup-btn">
-                                <span class="btn-text">Get Started</span>
+                                <span class="btn-text">Join Marketplace</span>
                                 <span class="btn-loading" style="display: none;">Joining...</span>
                             </button>
                         </div>
-                        <p class="form-note">Join 300+ users already building confidence with AI</p>
+                        <p class="form-note">Join 1,200+ creators and players building the future of AI roleplay</p>
                     </form>
-                </div>
-
-                <div class="benefits-grid">
-                    <div class="benefit-item fade-in-on-scroll">
-                        <div class="benefit-icon">🎭</div>
-                        <h4>Unlimited Roleplay</h4>
-                        <p>Practice with diverse AI characters in any scenario</p>
-                    </div>
-                    <div class="benefit-item fade-in-on-scroll">
-                        <div class="benefit-icon">🎤</div>
-                        <h4>Mock Interviews</h4>
-                        <p>Ace your next interview with AI practice sessions</p>
-                    </div>
-                    <div class="benefit-item fade-in-on-scroll">
-                        <div class="benefit-icon">📊</div>
-                        <h4>Detailed Feedback</h4>
-                        <p>Get specific insights to improve your communication</p>
-                    </div>
-                    <div class="benefit-item fade-in-on-scroll">
-                        <div class="benefit-icon">💰</div>
-                        <h4>Early Bird Pricing</h4>
-                        <p>50% off lifetime access for early adopters</p>
-                    </div>
                 </div>
 
                 <div class="success-message" id="successMessage" style="display: none;">
                     <div class="success-content">
-                        <div class="success-icon">✨</div>
+                        <div class="success-icon">🎉</div>
                         <h3>Welcome to PrepAI!</h3>
-                        <p>You're all set! We'll notify you as soon as your AI roleplay and interview platform is ready.</p>
+                        <p>You're in! We'll notify you when the marketplace launches with exclusive early access benefits.</p>
                     </div>
                 </div>
             </div>
@@ -1016,34 +1061,34 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>PrepAI</h3>
-                    <p>The future of conversation training through AI-powered roleplay and interviews. Build confidence, master any scenario.</p>
+                    <h3>PrepAI Marketplace</h3>
+                    <p>The world's first AI roleplay bot marketplace. Where creativity meets conversation and creators earn from their imagination.</p>
                 </div>
                 
                 <div class="footer-section">
-                    <h3>AI Experiences</h3>
-                    <a href="#">Roleplay Characters</a><br>
-                    <a href="#">Mock Interviews</a><br>
-                    <a href="#">Voice Training</a><br>
-                    <a href="#">Confidence Building</a>
+                    <h3>For Creators</h3>
+                    <a href="#">Bot Builder Tools</a><br>
+                    <a href="#">Creator Dashboard</a><br>
+                    <a href="#">Monetization Guide</a><br>
+                    <a href="#">Community Forum</a>
                 </div>
                 
                 <div class="footer-section">
-                    <h3>Practice Areas</h3>
-                    <a href="#">Job Interviews</a><br>
-                    <a href="#">Customer Service</a><br>
-                    <a href="#">Sales Training</a><br>
-                    <a href="#">Social Skills</a>
+                    <h3>For Players</h3>
+                    <a href="#">Browse Bots</a><br>
+                    <a href="#">Top Rated</a><br>
+                    <a href="#">New Releases</a><br>
+                    <a href="#">My Conversations</a>
                 </div>
                 
                 <div class="footer-section">
-                    <h3>Contact</h3>
-                    <p>Email: founder@prepai.online</p>
+                    <h3>Support</h3>
+                    <p>Founder: founder@prepai.online</p>
                     <p>Support: support@prepai.online</p>
                 </div>
             </div>
             
-            <p>&copy; 2025 PrepAI. Revolutionizing conversation training through AI roleplay. All rights reserved.</p>
+            <p>&copy; 2025 PrepAI. The ultimate AI roleplay bot marketplace. All rights reserved.</p>
         </div>
     </footer>
 
