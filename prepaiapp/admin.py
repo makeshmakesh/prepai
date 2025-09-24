@@ -4,10 +4,16 @@ from django.utils.html import format_html
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from .models import (
-    EarlyAccessEmail, Course, Subtopic, InterviewTemplate, InterviewSession, Profile, Transaction, RolePlayBots, RoleplaySession
+    EarlyAccessEmail, Course, Subtopic, InterviewTemplate, InterviewSession, Profile, Transaction, RolePlayBots, RoleplaySession, RolePlayShare, MyInvitedRolePlayShare
 )
 @admin.register(RoleplaySession)
-class RolePlaySrssionAdmin(admin.ModelAdmin):
+class RolePlaySessionAdmin(admin.ModelAdmin):
+    pass
+@admin.register(MyInvitedRolePlayShare)
+class MyInvitedRolePlayShareAdmin(admin.ModelAdmin):
+    pass
+@admin.register(RolePlayShare)
+class RolePlayShareAdmin(admin.ModelAdmin):
     pass
 
 @admin.register(EarlyAccessEmail)

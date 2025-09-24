@@ -14,6 +14,7 @@ urlpatterns = [
     path("topic/", views.topic, name="topic"),
     path("sub-topic/", views.sub_topic, name="sub_topic"),
     path("login/", views.LoginView.as_view(), name="login"),
+    path("accounts/login/", views.LoginView.as_view(), name="login"),
     path("signup/", views.SignupView.as_view(), name="signup"),
     path("logout/", views.LogoutView.as_view(), name="logout"),
     path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
@@ -28,6 +29,8 @@ urlpatterns = [
     path("create_roleplay_bot/", views.CreateRolePlayBotView.as_view(), name="create_roleplay_bot"),
     path("my-roleplay-bots/", views.MyRolePlayBotView.as_view(), name="my-roleplay-bots"),
     path("edit-roleplay-bot/<uuid:bot_id>/", views.EditRolePlayBotView.as_view(), name="edit-roleplay-bot"),
+    path("share-roleplay-bot/<uuid:bot_id>/", views.ShareRolePlayBotView.as_view(), name="share-roleplay-bot"),
+    path("roleplay/share/<uuid:share_id>/", views.ShareRolePlayStartView.as_view(), name="share-roleplay-bot-public"),
     path("delete-roleplay-bot/<uuid:bot_id>/", views.DeleteRolePlayBotView.as_view(), name="delete-roleplay-bot"),
     
     path('purchase/confirmation/<uuid:transaction_id>/', views.purchase_confirmation, name='purchase_confirmation'),

@@ -377,6 +377,9 @@
                         <a href="{% url 'start_roleplay' bot.id %}" class="btn-start-roleplay">
                             🎤 Start Roleplay
                         </a>
+                        <a href="{% url 'share-roleplay-bot' bot.id %}" class="btn-start-roleplay">
+                        🔗 Share Roleplay
+                        </a>
                     {% else %}
                         <button class="btn-start-roleplay" disabled style="opacity: 0.6; cursor: not-allowed;">
                             🚫 Currently Unavailable

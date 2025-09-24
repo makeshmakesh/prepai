@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.auth.models import User
-from .models import Profile, Course, InterviewTemplate, InterviewSession, Transaction, RolePlayBots, RoleplaySession
+from .models import Profile, Course, InterviewTemplate, InterviewSession, Transaction, RolePlayBots, RoleplaySession, RolePlayShare, MyInvitedRolePlayShare
 import os
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -23,7 +23,39 @@ from openai import OpenAI
 from datetime import datetime, time
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
+class ShareRolePlayStartView(LoginRequiredMixin, View):
+    login_url = "/login/"
+    def get(self, request, share_id):
+        share = get_object_or_404(RolePlayShare, id=share_id)
+        bot = share.bot
+        if not bot.is_active or not bot.is_public:
+            messages.error(request, "This Roleplay bot is not available.")
+            return redirect('voice_roleplay')
+        context = {
+            'bot': bot,
+            "bot_creator": bot.created_by,
+            "bot_shared_by": share.shared_by,
+        }
+        MyInvitedRolePlayShare.objects.get_or_create(
+            share=share,
+            bot=bot,
+            invited_to=request.user
+        )
+        return render(request, 'roleplay_bot_detail.html', context)
+class ShareRolePlayBotView(LoginRequiredMixin, View):
+    login_url = "/login/"
+    def get(self, request, bot_id):
+        bot = get_object_or_404(RolePlayBots, id=bot_id)
+        share = RolePlayShare.objects.filter(bot=bot, shared_by=request.user).first()
+        if not share:
+            share = RolePlayShare.objects.create(bot=bot, shared_by=request.user)
+        context = {
+            'bot': bot,
+            'share_link': request.get_host() + "/roleplay/share/" + str(share.id) + "/",
+        }
+        return render(request, 'share_roleplay_bot.html', context)
 class EditRolePlayBotView(LoginRequiredMixin, View):
+        login_url = "/login/"
         def get(self, request, bot_id):
             bot = get_object_or_404(RolePlayBots, id=bot_id, created_by=request.user)
             context = {
@@ -95,6 +127,7 @@ class EditRolePlayBotView(LoginRequiredMixin, View):
                 return render(request, 'edit_roleplay_bot.html', {'bot': bot})
             
 class DeleteRolePlayBotView(LoginRequiredMixin, View):
+    login_url = "/login/"
     def post(self, request, bot_id):
         bot = get_object_or_404(RolePlayBots, id=bot_id, created_by=request.user)
         bot_name = bot.name
@@ -129,6 +162,7 @@ class MyRolePlayBotView(LoginRequiredMixin, View):
         }
         return render(request, 'my_roleplay_bots.html', context)
 class CreateRolePlayBotView(LoginRequiredMixin, View):
+    login_url = "/login/"
     def post(self, request):
         name = request.POST.get('name')
         avatar_url = request.POST.get('avatar_url')
@@ -196,17 +230,13 @@ class RolePlaySessionView(LoginRequiredMixin, View):
                 id=session_id,
                 user=request.user
             )
-            
-            # Only allow access to in-progress sessions
-            if session.status not in ['in_progress', 'pending']:
-                messages.info(request, "This Roleplay session has already been completed.")
-                return redirect('voice_roleplay', session_id=session.id)
-            
+            share_link = MyInvitedRolePlayShare.objects.filter(bot=session.bot, invited_to=request.user).first()
             context = {
                 'session': session,
                 'bot': session.bot,
+                "invited_by": share_link.share.shared_by if share_link else None,
+                "creator" : session.bot.created_by,
             }
-            
             return render(request, 'roleplay_session.html', context)
             
         except InterviewSession.DoesNotExist:
@@ -1142,9 +1172,10 @@ class SignupView(View):
     """View for user registration."""
     def get(self, request):
         # Redirect to dashboard if already logged in
+        next_url = request.GET.get('next', '')
         if request.user.is_authenticated:
             return redirect("dashboard")
-        return render(request, "signup.html")  # Render template with empty form
+        return render(request, "signup.html", {"next": next_url})  # Render template with empty form
 
     def post(self, request):
         # Get form data
@@ -1152,35 +1183,38 @@ class SignupView(View):
         email = request.POST.get("email")
         password1 = request.POST.get("password1")
         password2 = request.POST.get("password2")
+        next_url = request.POST.get("next") or request.GET.get("next")
 
         # Validation
         if not username or not email or not password1 or not password2:
             messages.error(request, "All fields are required.")
-            return render(request, "signup.html")
+            return render(request, "signup.html",  {"next": next_url})
 
         if len(password1) < 8:
             messages.error(request, "Password must be at least 8 characters long.")
-            return render(request, "signup.html")
+            return render(request, "signup.html",  {"next": next_url})
 
         if password1 != password2:
             messages.error(request, "Passwords do not match.")
-            return render(request, "signup.html")
+            return render(request, "signup.html",  {"next": next_url})
 
         if User.objects.filter(username=username).exists():
             messages.error(request, "Username is already taken.")
-            return render(request, "signup.html")
+            return render(request, "signup.html",  {"next": next_url})
 
         if User.objects.filter(email=email).exists():
             messages.error(request, "Email is already registered.")
-            return render(request, "signup.html")
+            return render(request, "signup.html",  {"next": next_url})
 
         # Create user
         user = User.objects.create_user(
             username=username, email=email, password=password1
         )
-        Profile.objects.get_or_create(user=user)
+        Profile.objects.get_or_create(user=user, credits=10)
         login(request, user)  # Auto login after signup
         messages.success(request, "Signup successful!")
+        if next_url and next_url != '/login/':
+                return redirect(next_url)
         return redirect("dashboard")  # Redirect to dashboard
 
 
@@ -1188,14 +1222,19 @@ class LoginView(View):
     """View for user login."""
     def get(self, request):
         # Redirect to dashboard if already logged in
+        # In GET method - pass next to template
+        next_url = request.GET.get('next', '')
         if request.user.is_authenticated:
+            if next_url and next_url != '/login/':  # Avoid redirect loops
+                return redirect(next_url)
             return redirect("dashboard")
-        return render(request, "login.html")  # Render the login page
+        return render(request, "login.html",  {"next": next_url})  # Render the login page
 
     def post(self, request):
         # Get form data
         username = request.POST.get("username")
         password = request.POST.get("password")
+        next_url = request.POST.get("next") or request.GET.get("next")
 
         # Validate input fields
         if not username or not password:
@@ -1208,6 +1247,8 @@ class LoginView(View):
         if user is not None:
             login(request, user)
             messages.success(request, "Login successful!")
+            if next_url and next_url != '/login/':  # Avoid redirect loops
+                return redirect(next_url)
             return redirect("dashboard")  # Redirect to dashboard
         else:
             messages.error(request, "Invalid username or password.")

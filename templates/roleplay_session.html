@@ -715,11 +715,29 @@ class RoleplaySession {
                 this.addConversationEntry('system', `Error: ${data.message}`, 'error');
                 break;
 
+            case 'insufficient_credits':
+                this.handleInsufficientCredits(data);
+                break;
+
             default:
                 if (data.message) {
                     this.addConversationEntry('system', data.message);
                 }
         }
+    }
+
+    handleInsufficientCredits(data) {
+        this.roleplayEnded = true;
+        this.removeBeforeUnload();
+        this.disableControls();
+        this.updateStatus('⚠️ Session Ended - No Credits Remaining', 'error');
+        this.updateCharacterStatus('Session Ended');
+        this.addConversationEntry('system', data.message, 'error');
+        
+        setTimeout(() => {
+            alert(`Session ended due to insufficient credits!\n\nCredits used: ${data.credits_used}\n\nPlease purchase more credits to continue using roleplay features.`);
+            window.location.href = '/voice_roleplay/';
+        }, 2000);
     }
 
     handleAudioMessage(data) {
@@ -753,7 +771,8 @@ class RoleplaySession {
         
         // Show completion message and redirect
         setTimeout(() => {
-            alert(`Roleplay session completed!\n\nDuration: ${Math.floor(data.duration_seconds / 60)}:${(data.duration_seconds % 60).toString().padStart(2, '0')}\nMessages: ${data.transcript_length}`);
+            const creditsMsg = data.credits_used ? `\nCredits used: ${data.credits_used}` : '';
+            alert(`Roleplay session completed!\n\nDuration: ${Math.floor(data.duration_seconds / 60)}:${(data.duration_seconds % 60).toString().padStart(2, '0')}\nMessages: ${data.transcript_length}${creditsMsg}`);
             window.location.href = '/voice_roleplay/';
         }, 1000);
     }

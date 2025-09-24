@@ -391,6 +391,7 @@ class RoleplaySession(models.Model):
     transcript = models.TextField(blank=True)
     feedback = models.JSONField(blank=True, default=dict)
     duration_seconds = models.IntegerField(default=0)
+    credits_used = models.PositiveIntegerField(default=0)
     started_at = models.DateTimeField()
     completed_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -400,3 +401,28 @@ class RoleplaySession(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.bot.name}"
+
+class RolePlayShare(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    bot = models.ForeignKey(RolePlayBots, on_delete=models.CASCADE)
+    shared_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('bot', 'shared_by')
+
+    def __str__(self):
+        return f"{self.bot.name} shared by {self.shared_by.username}"
+    
+class MyInvitedRolePlayShare(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    share = models.ForeignKey(RolePlayShare, on_delete=models.CASCADE)
+    bot = models.ForeignKey(RolePlayBots, on_delete=models.CASCADE)
+    invited_to = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('share','invited_to')
+
+    def __str__(self):
+        return f"{self.share.bot.name} invited by {self.share.shared_by} to {self.invited_to.username}"

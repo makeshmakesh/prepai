@@ -368,6 +368,13 @@ class RoleplayConsumer(VoiceAgentConsumer):
         self.current_transcript = []  # Store the complete transcript
         self.last_processed_item_count = 0  # Track processed items to avoid duplicates
         self.session_start_time = None
+        self.credit_deduction_task = None
+        self.credits_deducted = 0
+        self.roleplay_ended = False
+        self.bot_creator = None  # To store the creator of the bot
+        self.bot_shared_by = None  # To store who shared the bot, if applicable
+        
+
 
     async def connect(self):
         # Get bot ID from URL
@@ -389,14 +396,77 @@ class RoleplayConsumer(VoiceAgentConsumer):
         config = {
             "voice": self.roleplay_bot.voice if self.roleplay_bot.voice else "alloy"
         }
+        
+        if self.roleplay_bot:
+            self.credit_deduction_task = asyncio.create_task(self.credit_deduction_loop())
 
         self.session_start_time = timezone.now()
         await super().connect(config)
+    async def credit_deduction_loop(self):
+        """Deduct credits every minute during active session"""
+        try:
+            while self.connected and not self.roleplay_ended:
+                await asyncio.sleep(10)  # Wait 1 minute
+                
+                if self.connected and not self.roleplay_ended:
+                    success = await self.deduct_user_credit()
+                    if not success:
+                        # If credit deduction fails, end the session
+                        await self.handle_insufficient_credits()
+                        break
+                        
+        except asyncio.CancelledError:
+            logger.info("Credit deduction task cancelled")
+        except Exception as e:
+            logger.error(f"Error in credit deduction loop: {e}")
+            
+    async def handle_insufficient_credits(self):
+        """Handle case when user runs out of credits"""
+        await self.send(text_data=json.dumps({
+            "type": "insufficient_credits",
+            "message": "You have run out of credits. The roleplay session will end.",
+            "credits_used": self.credits_deducted
+        }))
+        
+        # End the roleplay session
+        await self.handle_end_roleplay()
+        
+    @database_sync_to_async
+    def deduct_user_credit(self):
+        """Deduct one credit from user and return success status"""
+        from django.db import transaction
+        try:
+            with transaction.atomic():
+                from .models import Profile
+                
+                user = Profile.objects.select_for_update().get(user=self.scope["user"])
+                
+                # Assuming you have a credits field on User model or a related UserProfile
+                # Adjust this based on your actual credit system implementation
+                if hasattr(user, 'credits') and user.credits >= 10:
+                    user.credits -= 10
+                    user.save(update_fields=['credits'])
+                    self.credits_deducted += 10
+                    logger.info(f"Deducted 10 credit from user {user.user.username}. Remaining: {user.credits}")
+                    if self.bot_shared_by:
+                        
+                        logger.info(f"4 credited to {self.bot_shared_by.username} for shared bot usage.")
+                        logger.info(f"3 credited to {self.bot_creator.username} for bot usage.")
+                    else:
+                        logger.info(f"7 credited to {self.bot_creator.username} for bot usage.")
+                    return True
+                else:
+                    logger.warning(f"User {user.user.username} has insufficient credits")
+                    return False
+                
+        except Exception as e:
+            logger.error(f"Error deducting credit: {e}")
+            return False
 
     @database_sync_to_async
     def load_roleplay_context(self):
         """Load roleplay bot and create session record"""
-        from .models import RolePlayBots, RoleplaySession
+        from .models import RolePlayBots, RoleplaySession, MyInvitedRolePlayShare
 
         try:
             # Load the roleplay bot
@@ -406,7 +476,10 @@ class RoleplayConsumer(VoiceAgentConsumer):
                 id=self.session_id,
             )
             self.roleplay_bot = RolePlayBots.objects.get(id=self.roleplay_session.bot.id, is_active=True)
-
+            self.bot_creator = self.roleplay_bot.created_by
+            invited_data = MyInvitedRolePlayShare.objects.filter(bot=self.roleplay_bot, invited_to=self.scope["user"]).first()
+            if invited_data:
+                self.bot_shared_by = invited_data.share.shared_by
             return True
         except RolePlayBots.DoesNotExist:
             logger.error(f"Roleplay bot {self.roleplay_bot.id} not found or inactive")
@@ -624,7 +697,7 @@ class RoleplayConsumer(VoiceAgentConsumer):
 
             # Update session status
             await self.update_session_status("completed")
-
+            self.roleplay_ended = True
             await self.send(
                 text_data=json.dumps(
                     {
@@ -634,6 +707,7 @@ class RoleplayConsumer(VoiceAgentConsumer):
                         "transcript_saved": True,
                         "transcript_length": len(self.current_transcript),
                         "duration_seconds": duration_seconds,
+                        "credits_used": self.credits_deducted
                     }
                 )
             )
@@ -648,7 +722,8 @@ class RoleplayConsumer(VoiceAgentConsumer):
             # Save transcript and duration
             self.roleplay_session.transcript = transcript
             self.roleplay_session.duration_seconds = duration_seconds
-            self.roleplay_session.save(update_fields=["transcript", "duration_seconds"])
+            self.roleplay_session.credits_used = self.credits_deducted
+            self.roleplay_session.save(update_fields=["transcript", "duration_seconds","credits_used"])
 
             logger.info(
                 f"Roleplay session data saved for bot {self.roleplay_bot.name}, session {self.roleplay_session.id}"

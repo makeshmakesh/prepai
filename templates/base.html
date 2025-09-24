@@ -778,8 +778,8 @@ body:has([style*="background: linear-gradient(135deg, #1a1a1a"]) .navbar-toggler
             <button type="submit" class="btn btn-outline-danger">Logout</button>
         </form>
     {% else %}
-        <a href="{% url 'login' %}" class="btn btn-primary mr-2">Login</a>
-        <a href="{% url 'signup' %}" class="btn btn-outline-primary">Register</a>
+        <a href="{% url 'login' %}{% if next %}?next={{ next }}{% endif %}" class="btn btn-primary mr-2">Login</a>
+        <a href="{% url 'signup' %}{% if next %}?next={{ next }}{% endif %}" class="btn btn-outline-primary">Register</a>
     {% endif %}
 </div>
             </div>

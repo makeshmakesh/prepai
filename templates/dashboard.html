@@ -365,7 +365,7 @@
             </div>
         </a>
     </div>
-    <div class="option-card available" onclick="location.href='{% url 'interview_types' %}'">
+    <div class="option-card disabled" onclick="location.href='{% url 'interview_types' %}'">
         <div class="option-icon">🎤</div>
         <h2 class="option-title">AI Mock Interviews</h2>
         <p class="option-description">Practice with AI-powered mock interviews that adapt to your responses and provide instant feedback.</p>
@@ -378,15 +378,7 @@
             <li>Personalized recommendations</li>
         </ul>
         
-        <a href="{% url 'interview_types' %}" class="btn btn-primary">
-            Start Mock Interview
-            <div class="voice-wave">
-                <div class="wave-bar"></div>
-                <div class="wave-bar"></div>
-                <div class="wave-bar"></div>
-                <div class="wave-bar"></div>
-            </div>
-        </a>
+<div class="coming-soon">Coming Soon</div>
     </div>
 
     <!-- Learn Courses - Disabled -->
@@ -408,7 +400,7 @@
 </div>
 
 <!-- User Stats Section -->
-<div class="stats-section fade-in-on-scroll">
+{% comment %} <div class="stats-section fade-in-on-scroll">
     <h3 class="section-title">Your Progress</h3>
     <div class="stats-grid">
         <div class="stat-item">
@@ -421,10 +413,10 @@
         </div>
 
     </div>
-</div>
+</div> {% endcomment %}
 
 <!-- Recent Activity -->
-<div class="recent-activity fade-in-on-scroll">
+{% comment %} <div class="recent-activity fade-in-on-scroll">
     <h3 class="section-title">Recent Activity</h3>
     
     {% if recent_interviews %}
@@ -452,10 +444,10 @@
         <a href="{% url 'interview_history' %}" class="btn btn-outline-primary">View All Interviews</a>
     </div>
     {% endif %}
-</div>
+</div> {% endcomment %}
 
 <!-- Quick Tips -->
-<div class="card fade-in-on-scroll mt-4">
+{% comment %} <div class="card fade-in-on-scroll mt-4">
     <div class="card-body">
         <h5 class="card-title">💡 Quick Tips for Better Interview Performance</h5>
         <div class="row">
@@ -473,7 +465,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> {% endcomment %}
 {% endblock %}
 
 {% block extra_js %}

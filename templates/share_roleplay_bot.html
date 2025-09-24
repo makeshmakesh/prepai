@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Share Link{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow">
+                <div class="card-body text-center p-5">
+                    <h3 class="card-title mb-4">Share This Link</h3>
+                    
+                    <div class="mb-4">
+                        <div class="input-group">
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="shareLink" 
+                                   value="{{ share_link }}" 
+                                   readonly>
+                            <button class="btn btn-primary" 
+                                    type="button" 
+                                    id="copyBtn"
+                                    onclick="copyToClipboard()">
+                                <i class="fas fa-copy me-2"></i>Copy
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="copyMessage" class="alert alert-success mt-3" style="display: none;">
+                        Link copied to clipboard!
+                    </div>
+                    
+                    <p class="text-muted">
+                        Share this link with others to give them access to this content.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyToClipboard() {
+    const linkInput = document.getElementById('shareLink');
+    const copyBtn = document.getElementById('copyBtn');
+    const message = document.getElementById('copyMessage');
+    
+    // Select and copy the text
+    linkInput.select();
+    linkInput.setSelectionRange(0, 99999); // For mobile devices
+    
+    try {
+        navigator.clipboard.writeText(linkInput.value).then(function() {
+            // Show success message
+            message.style.display = 'block';
+            copyBtn.innerHTML = '<i class="fas fa-check me-2"></i>Copied!';
+            copyBtn.classList.remove('btn-primary');
+            copyBtn.classList.add('btn-success');
+            
+            // Reset button after 2 seconds
+            setTimeout(function() {
+                message.style.display = 'none';
+                copyBtn.innerHTML = '<i class="fas fa-copy me-2"></i>Copy';
+                copyBtn.classList.remove('btn-success');
+                copyBtn.classList.add('btn-primary');
+            }, 2000);
+        });
+    } catch (err) {
+        // Fallback for older browsers
+        document.execCommand('copy');
+        message.style.display = 'block';
+        copyBtn.innerHTML = '<i class="fas fa-check me-2"></i>Copied!';
+        copyBtn.classList.remove('btn-primary');
+        copyBtn.classList.add('btn-success');
+        
+        setTimeout(function() {
+            message.style.display = 'none';
+            copyBtn.innerHTML = '<i class="fas fa-copy me-2"></i>Copy';
+            copyBtn.classList.remove('btn-success');
+            copyBtn.classList.add('btn-primary');
+        }, 2000);
+    }
+}
+</script>
+{% endblock %}

@@ -9,6 +9,7 @@
 
         <form method="POST" action="{% url 'signup' %}">
             {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" name="email" id="email" class="form-control" placeholder="Enter email" required>
