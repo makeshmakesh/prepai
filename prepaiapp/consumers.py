@@ -195,6 +195,7 @@ class VoiceAgentConsumer(AsyncWebsocketConsumer):
         try:
             self.runner = RealtimeRunner(self.agent)
             model_config: RealtimeModelConfig = {
+                # "model" : "gpt-4o-mini-audio-preview",
                 "playback_tracker": self.playback_tracker,
                 
                 "initial_model_settings": {
@@ -626,7 +627,7 @@ class RoleplayConsumer(VoiceAgentConsumer):
                         {
                             "type": "roleplay_start",
                             "bot_name": self.roleplay_bot.name,
-                            "scenario": self.roleplay_bot.scenario_description,
+                            "scenario": self.roleplay_bot.description,
                         }
                     )
                 )
@@ -667,7 +668,7 @@ class RoleplayConsumer(VoiceAgentConsumer):
                             "id": self.roleplay_bot.id,
                             "name": self.roleplay_bot.name,
                             "description": self.roleplay_bot.description,
-                            "scenario": self.roleplay_bot.scenario_description,
+                            "scenario": self.roleplay_bot.description,
                         },
                         "session_duration": (
                             str(timezone.now() - self.session_start_time)
