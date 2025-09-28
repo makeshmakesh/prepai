@@ -372,6 +372,7 @@ class RoleplayConsumer(VoiceAgentConsumer):
         self.credit_deduction_task = None
         self.credits_deducted = 0
         self.roleplay_ended = False
+        self.share_data = None
         self.bot_creator = None  # To store the creator of the bot
         self.bot_shared_by = None  # To store who shared the bot, if applicable
         
@@ -438,9 +439,11 @@ class RoleplayConsumer(VoiceAgentConsumer):
         from django.db import transaction
         try:
             with transaction.atomic():
-                from .models import Profile
+                from .models import Profile, CreditShare
                 
                 user = Profile.objects.select_for_update().get(user=self.scope["user"])
+                user_shared = self.bot_shared_by
+                user_created = self.bot_creator
                 
                 # Assuming you have a credits field on User model or a related UserProfile
                 # Adjust this based on your actual credit system implementation
@@ -450,10 +453,33 @@ class RoleplayConsumer(VoiceAgentConsumer):
                     self.credits_deducted += 10
                     logger.info(f"Deducted 10 credit from user {user.user.username}. Remaining: {user.credits}")
                     if self.bot_shared_by:
-                        
+                        CreditShare.objects.create(
+                            credit=4,
+                            share=self.share_data,
+                            bot=self.roleplay_bot,
+                            credited_to=self.bot_shared_by,
+                            credited_from=user.user,
+                            credit_reason="referral_share",
+                        )
                         logger.info(f"4 credited to {self.bot_shared_by.username} for shared bot usage.")
+                        CreditShare.objects.create(
+                            credit=3,
+                            share=self.share_data,
+                            bot=self.roleplay_bot,
+                            credited_to=self.bot_creator,
+                            credited_from=user.user,
+                            credit_reason="creator_share",
+                        )
                         logger.info(f"3 credited to {self.bot_creator.username} for bot usage.")
                     else:
+                        CreditShare.objects.create(
+                            credit=7,
+                            share=self.share_data,
+                            bot=self.roleplay_bot,
+                            credited_to=self.bot_creator,
+                            credited_from=user.user,
+                            credit_reason="creator_share",
+                        )
                         logger.info(f"7 credited to {self.bot_creator.username} for bot usage.")
                     return True
                 else:
@@ -479,6 +505,7 @@ class RoleplayConsumer(VoiceAgentConsumer):
             self.roleplay_bot = RolePlayBots.objects.get(id=self.roleplay_session.bot.id, is_active=True)
             self.bot_creator = self.roleplay_bot.created_by
             invited_data = MyInvitedRolePlayShare.objects.filter(bot=self.roleplay_bot, invited_to=self.scope["user"]).first()
+            self.share_data = invited_data.share if invited_data else None
             if invited_data:
                 self.bot_shared_by = invited_data.share.shared_by
             return True

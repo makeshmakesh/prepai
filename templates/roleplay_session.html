@@ -5,13 +5,308 @@
 
 {% block extra_css %}
 <style>
-    .page-loading-overlay {
+    /* Minimal Performance-Optimized Design */
+    html, body {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        color: #ffffff;
+        min-height: 100vh;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .content {
+        background: transparent;
+        max-width: 900px;
+        padding: 1rem;
+    }
+
+    /* Main Container */
+    .session-container {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 1rem auto;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Character Info - Simplified */
+    .character-info {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .character-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        flex-shrink: 0;
+        border: 2px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .character-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    .character-details h1 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem 0;
+        color: #ffffff;
+    }
+
+    .character-details p {
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0 0 0.5rem 0;
+        font-size: 0.95rem;
+        line-height: 1.4;
+    }
+
+    .scenario-tag {
+        display: inline-block;
+        background: rgba(102, 126, 234, 0.2);
+        border: 1px solid rgba(102, 126, 234, 0.3);
+        color: #a5b4fc;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    /* Status Bar - Clean */
+    .status-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .connection-status {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #ef4444;
+    }
+
+    .status-dot.connecting { background: #f59e0b; }
+    .status-dot.connected { background: #22c55e; }
+
+    .session-stats {
+        display: flex;
+        gap: 2rem;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-value {
+        display: block;
+        font-weight: 600;
+        color: #ffffff;
+        font-size: 1rem;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        opacity: 0.8;
+    }
+
+    /* Controls - Professional */
+    .voice-controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .control-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 1rem;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        min-height: 48px;
+    }
+
+    .control-btn:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .control-btn:disabled {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.4);
+        cursor: not-allowed;
+    }
+
+    .control-btn.primary {
+        background: rgba(102, 126, 234, 0.3);
+        border-color: rgba(102, 126, 234, 0.5);
+        color: #ffffff;
+    }
+
+    .control-btn.primary:hover:not(:disabled) {
+        background: rgba(102, 126, 234, 0.4);
+        border-color: rgba(102, 126, 234, 0.6);
+    }
+
+    .control-btn.recording {
+        background: rgba(239, 68, 68, 0.3);
+        border-color: rgba(239, 68, 68, 0.5);
+        animation: recording-pulse 2s ease-in-out infinite;
+    }
+
+    .control-btn.danger {
+        background: rgba(239, 68, 68, 0.2);
+        border-color: rgba(239, 68, 68, 0.3);
+        color: #fca5a5;
+    }
+
+    .control-btn.danger:hover:not(:disabled) {
+        background: rgba(239, 68, 68, 0.3);
+        border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    @keyframes recording-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+
+    /* Audio Level Indicator - Minimal */
+    .audio-level {
+        margin-bottom: 2rem;
+    }
+
+    .audio-level-label {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+
+    .audio-level-bar {
+        width: 100%;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+    .audio-level-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
+        width: 0%;
+        transition: width 0.1s ease;
+        border-radius: 3px;
+    }
+
+    /* Conversation Area - Clean */
+    .conversation-area {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        height: 400px;
+        overflow-y: auto;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .conversation-message {
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        word-wrap: break-word;
+    }
+
+    .message-system {
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.6);
+        text-align: center;
+        font-style: italic;
+        font-size: 0.85rem;
+    }
+
+    .message-user {
+        background: rgba(102, 126, 234, 0.15);
+        border-left: 3px solid #667eea;
+        color: #ffffff;
+    }
+
+    .message-assistant {
+        background: rgba(34, 197, 94, 0.15);
+        border-left: 3px solid #22c55e;
+        color: #ffffff;
+    }
+
+    .message-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.25rem;
+    }
+
+    .message-speaker {
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    .message-time {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.5);
+        font-family: 'Monaco', monospace;
+    }
+
+    .message-content {
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Loading Overlay - Minimal */
+    .loading-overlay {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.8);
+        background: rgba(26, 26, 46, 0.9);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -21,350 +316,41 @@
         transition: all 0.3s ease;
     }
 
-    .page-loading-overlay.show {
+    .loading-overlay.show {
         opacity: 1;
         visibility: visible;
     }
 
-    .simple-spinner {
-        width: 40px;
-        height: 40px;
-        border: 4px solid rgba(255, 255, 255, 0.3);
-        border-top: 4px solid #667eea;
+    .loading-spinner {
+        width: 32px;
+        height: 32px;
+        border: 3px solid rgba(255, 255, 255, 0.2);
+        border-top: 3px solid #667eea;
         border-radius: 50%;
         animation: spin 1s linear infinite;
     }
 
-    html, body {
-        background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe);
-        background-size: 400% 400%;
-        animation: gradientShift 15s ease infinite;
-        color: #ffffff;
-        min-height: 100vh;
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
 
-    @keyframes gradientShift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+    /* Custom scrollbar */
+    .conversation-area::-webkit-scrollbar {
+        width: 6px;
     }
 
-    .content {
-        background: transparent;
-        max-width: 950px;
+    .conversation-area::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
     }
 
-    /* Roleplay Container */
-    .roleplay-container {
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(20px);
-        border-radius: 25px;
-        padding: 3rem;
-        margin: 2rem auto;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Character Header */
-    .character-header {
-        text-align: center;
-        margin-bottom: 3rem;
-    }
-
-    .character-avatar {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        margin: 0 auto 1.5rem;
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 4rem;
-        color: white;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .character-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 50%;
-    }
-
-    .character-avatar::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        transform: rotate(45deg);
-        transition: all 0.6s ease;
-        opacity: 0;
-    }
-
-    .character-avatar:hover::before {
-        animation: shimmer 1.5s ease-in-out;
-        opacity: 1;
-    }
-
-    @keyframes shimmer {
-        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-    }
-
-    .character-name {
-        font-size: 3rem;
-        font-weight: 900;
-        margin-bottom: 0.5rem;
-        color: white;
-        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    }
-
-    .character-description {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1.2rem;
-        margin-bottom: 1rem;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .scenario-pill {
-        display: inline-block;
+    .conversation-area::-webkit-scrollbar-thumb {
         background: rgba(255, 255, 255, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 20px;
-        padding: 0.8rem 1.5rem;
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 0.95rem;
-        font-weight: 600;
-        margin-top: 1rem;
+        border-radius: 3px;
     }
 
-    /* Status Indicator */
-    .status-indicator {
-        padding: 1rem 2rem;
-        margin: 1.5rem 0;
-        border-radius: 15px;
-        font-weight: 600;
-        text-align: center;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(10px);
-    }
-
-    .status-connecting {
-        background: rgba(251, 191, 36, 0.2);
-        color: #fbbf24;
-        border: 1px solid rgba(251, 191, 36, 0.4);
-    }
-
-    .status-connected {
-        background: rgba(34, 197, 94, 0.2);
-        color: #22c55e;
-        border: 1px solid rgba(34, 197, 94, 0.4);
-    }
-
-    .status-error {
-        background: rgba(239, 68, 68, 0.2);
-        color: #ef4444;
-        border: 1px solid rgba(239, 68, 68, 0.4);
-    }
-
-    /* Voice Controls */
-    .voice-controls {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        margin: 2rem 0;
-        flex-wrap: wrap;
-    }
-
-    .voice-btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        padding: 1rem 2rem;
-        border-radius: 25px;
-        font-weight: 600;
-        font-size: 1rem;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: all 0.3s ease;
-        min-width: 150px;
-        justify-content: center;
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
-    }
-
-    .voice-btn:hover:not(:disabled) {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 30px rgba(102, 126, 234, 0.5);
-    }
-
-    .voice-btn:disabled {
-        background: rgba(255, 255, 255, 0.2);
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .voice-btn.recording {
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.7; }
-    }
-
-    .voice-btn.secondary {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
-    }
-
-    .voice-btn.secondary:hover:not(:disabled) {
+    .conversation-area::-webkit-scrollbar-thumb:hover {
         background: rgba(255, 255, 255, 0.3);
-        border-color: rgba(255, 255, 255, 0.5);
-        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
-    }
-
-    /* Volume Indicator */
-    .volume-section {
-        margin: 2rem 0;
-    }
-
-    .volume-label {
-        color: rgba(255, 255, 255, 0.9);
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        display: block;
-        text-align: center;
-    }
-
-    .volume-indicator {
-        width: 100%;
-        height: 10px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 10px;
-        overflow: hidden;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .volume-bar {
-        height: 100%;
-        background: linear-gradient(90deg, #22c55e 0%, #34d399 50%, #10b981 100%);
-        width: 0%;
-        transition: width 0.1s ease;
-        border-radius: 10px;
-    }
-
-    /* Conversation Display */
-    .conversation-display {
-        background: rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 20px;
-        padding: 2rem;
-        height: 350px;
-        overflow-y: auto;
-        margin-top: 2rem;
-        backdrop-filter: blur(10px);
-    }
-
-    .conversation-entry {
-        margin: 1rem 0;
-        padding: 1rem 1.5rem;
-        border-radius: 15px;
-        border-left: 4px solid transparent;
-        transition: all 0.3s ease;
-        position: relative;
-    }
-
-    .conversation-character {
-        background: rgba(240, 147, 251, 0.15);
-        border-left-color: #f093fb;
-        color: rgba(255, 255, 255, 0.95);
-        border-radius: 15px 15px 15px 5px;
-    }
-
-    .conversation-user {
-        background: rgba(102, 126, 234, 0.15);
-        border-left-color: #667eea;
-        color: rgba(255, 255, 255, 0.9);
-        border-radius: 15px 15px 5px 15px;
-        margin-left: 2rem;
-    }
-
-    .conversation-system {
-        background: rgba(34, 197, 94, 0.15);
-        border-left-color: #22c55e;
-        color: #bbf7d0;
-        font-style: italic;
-        text-align: center;
-        border-radius: 15px;
-    }
-
-    .conversation-timestamp {
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 0.8rem;
-        margin-bottom: 0.5rem;
-        font-family: 'Monaco', 'Menlo', monospace;
-    }
-
-    .conversation-speaker {
-        font-weight: 700;
-        margin-bottom: 0.3rem;
-        color: rgba(255, 255, 255, 0.95);
-    }
-
-    /* Roleplay Progress */
-    .roleplay-progress {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 20px;
-        padding: 1.5rem;
-        margin: 1.5rem 0;
-        text-align: center;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .progress-title {
-        color: rgba(255, 255, 255, 0.95);
-        font-weight: 700;
-        margin-bottom: 1rem;
-    }
-
-    .progress-stats {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 1rem;
-    }
-
-    .progress-stat {
-        text-align: center;
-    }
-
-    .stat-value {
-        font-size: 1.5rem;
-        font-weight: 800;
-        color: #f093fb;
-        display: block;
-        text-shadow: 0 2px 10px rgba(240, 147, 251, 0.3);
-    }
-
-    .stat-label {
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 0.9rem;
-        margin-top: 0.2rem;
     }
 
     /* Character Status Indicator */
@@ -374,108 +360,113 @@
         right: 1rem;
         background: rgba(34, 197, 94, 0.2);
         color: #22c55e;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
         font-size: 0.8rem;
-        font-weight: 600;
+        font-weight: 500;
         border: 1px solid rgba(34, 197, 94, 0.3);
-        backdrop-filter: blur(10px);
     }
 
     .character-status.speaking {
-        background: rgba(240, 147, 251, 0.2);
-        color: #f093fb;
-        border-color: rgba(240, 147, 251, 0.3);
-        animation: glow 2s ease-in-out infinite alternate;
+        background: rgba(102, 126, 234, 0.2);
+        color: #667eea;
+        border-color: rgba(102, 126, 234, 0.3);
     }
 
-    @keyframes glow {
-        from { box-shadow: 0 0 10px rgba(240, 147, 251, 0.3); }
-        to { box-shadow: 0 0 20px rgba(240, 147, 251, 0.6); }
+    .character-status.processing {
+        background: rgba(245, 158, 11, 0.2);
+        color: #f59e0b;
+        border-color: rgba(245, 158, 11, 0.3);
+    }
+
+    /* Modal Styling */
+    .modal-content {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        color: #1f2937;
     }
 
     /* Mobile Responsive */
     @media (max-width: 768px) {
-        .roleplay-container {
-            padding: 2rem 1.5rem;
-            margin: 1rem;
+        .session-container {
+            padding: 1.5rem;
+            margin: 0.5rem;
         }
 
-        .character-name {
-            font-size: 2.2rem;
+        .character-info {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
         }
 
         .character-avatar {
-            width: 100px;
-            height: 100px;
-            font-size: 3rem;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+        }
+
+        .character-details h1 {
+            font-size: 1.5rem;
+        }
+
+        .status-bar {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .session-stats {
+            gap: 1rem;
         }
 
         .voice-controls {
-            flex-direction: column;
-            align-items: center;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
         }
 
-        .voice-btn {
-            width: 100%;
-            max-width: 280px;
+        .conversation-area {
+            height: 300px;
+            padding: 0.75rem;
         }
 
-        .conversation-display {
-            height: 280px;
-            padding: 1.5rem;
-        }
-
-        .progress-stats {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .conversation-user {
-            margin-left: 0;
+        .character-status {
+            position: static;
+            display: inline-block;
+            margin-top: 0.5rem;
         }
     }
 
     @media (max-width: 480px) {
-        .progress-stats {
-            grid-template-columns: 1fr;
+        .session-container {
+            padding: 1rem;
         }
-        
-        .character-status {
-            position: static;
-            display: inline-block;
-            margin-top: 1rem;
+
+        .session-stats {
+            flex-direction: column;
+            gap: 0.5rem;
         }
     }
 
-    /* Custom scrollbar */
-    .conversation-display::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    .conversation-display::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 4px;
-    }
-
-    .conversation-display::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.3);
-        border-radius: 4px;
-    }
-
-    .conversation-display::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 255, 255, 0.5);
+    /* Performance optimizations - reduce animations on lower-end devices */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="roleplay-container fade-in-on-scroll">
+<div class="session-container fade-in-on-scroll">
     <div class="character-status" id="characterStatus">
         Ready
     </div>
 
-    <!-- Character Header -->
-    <div class="character-header">
+    <!-- Character Info -->
+    <div class="character-info">
         <div class="character-avatar">
             {% if bot.avatar_url %}
                 <img src="{{ bot.avatar_url }}" alt="{{ bot.name }} Avatar">
@@ -483,86 +474,90 @@
                 🎭
             {% endif %}
         </div>
-        <h1 class="character-name">{{ bot.name }}</h1>
-        <p class="character-description">{{ bot.description }}</p>
-        <div class="scenario-pill">
-            📋 {{ bot.scenario_description }}
+        <div class="character-details">
+            <h1>{{ bot.name }}</h1>
+            <p>{{ bot.description }}</p>
+            <div class="scenario-tag">{{ bot.scenario_description }}</div>
         </div>
     </div>
 
-    <!-- Status Indicator -->
-    <div id="status" class="status-indicator status-connecting">
-        🔄 Connecting to {{ bot.name }}...
-    </div>
-
-    <!-- Voice Controls -->
-    <div class="voice-controls">
-        <button id="startBtn" class="voice-btn" disabled>
-            <span>🎤</span>
-            Start Talking
-        </button>
-        <button id="stopBtn" class="voice-btn" disabled>
-            <span>⏹️</span>
-            Stop Talking
-        </button>
-        <button id="interruptBtn" class="voice-btn secondary" disabled>
-            <span>✋</span>
-            Interrupt
-        </button>
-        <button id="endBtn" class="voice-btn secondary" disabled>
-            <span>🚪</span>
-            End Roleplay
-        </button>
-    </div>
-
-    <!-- Microphone Volume -->
-    <div class="volume-section">
-        <label class="volume-label">Microphone Volume</label>
-        <div class="volume-indicator">
-            <div id="volumeBar" class="volume-bar"></div>
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="connection-status" id="connectionStatus">
+            <div class="status-dot connecting" id="statusDot"></div>
+            <span id="statusText">Connecting to {{ bot.name }}...</span>
         </div>
-    </div>
-
-    <!-- Roleplay Progress -->
-    <div class="roleplay-progress">
-        <div class="progress-title">Session Progress</div>
-        <div class="progress-stats">
-            <div class="progress-stat">
+        <div class="session-stats">
+            <div class="stat-item">
                 <span id="sessionTime" class="stat-value">00:00</span>
                 <span class="stat-label">Duration</span>
             </div>
-            <div class="progress-stat">
+            <div class="stat-item">
                 <span id="messageCount" class="stat-value">0</span>
                 <span class="stat-label">Messages</span>
             </div>
         </div>
     </div>
 
-    <!-- Conversation Display -->
-    <div class="conversation-display" id="conversation">
-        <div class="conversation-entry conversation-system">
-            <div class="conversation-timestamp">{{ session.started_at|time:"H:i:s" }}</div>
-            <div>Roleplay session with {{ bot.name }} initialized</div>
+    <!-- Voice Controls -->
+    <div class="voice-controls">
+        <button id="startBtn" class="control-btn primary" disabled>
+            Start Recording
+        </button>
+        <button id="stopBtn" class="control-btn" disabled>
+            Stop Recording
+        </button>
+        <button id="interruptBtn" class="control-btn" disabled>
+            Interrupt
+        </button>
+        <button id="endBtn" class="control-btn danger" disabled>
+            End Session
+        </button>
+    </div>
+
+    <!-- Audio Level -->
+    <div class="audio-level">
+        <div class="audio-level-label">Microphone Level</div>
+        <div class="audio-level-bar">
+            <div id="audioLevelFill" class="audio-level-fill"></div>
+        </div>
+    </div>
+
+    <!-- Conversation -->
+    <div class="conversation-area" id="conversationArea">
+        <div class="conversation-message message-system">
+            <div class="message-content">
+                Initializing roleplay session with {{ bot.name }}... Please wait.
+            </div>
         </div>
     </div>
 </div>
 
-<!-- End Roleplay Modal -->
-<div class="modal fade" id="endRoleplayModal" tabindex="-1" role="dialog">
+<!-- End Session Modal -->
+<div class="modal fade" id="endSessionModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
-        <div class="modal-content text-dark">
+        <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">End Roleplay</h5>
+                <h5 class="modal-title">End Roleplay Session</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
             </div>
             <div class="modal-body">
-                <p class="text-dark">Are you sure you want to end your roleplay session with {{ bot.name }}? Your conversation will be saved.</p>
+                <p>Are you sure you want to end your roleplay session with {{ bot.name }}?</p>
+                <p class="text-muted">Your conversation will be saved automatically.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Continue Roleplay</button>
-                <button type="button" class="btn btn-primary" onclick="endRoleplay()">End Session</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Continue</button>
+                <button type="button" class="btn btn-danger" onclick="endRoleplay()">End Session</button>
             </div>
         </div>
     </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
 </div>
 {% endblock %}
 
@@ -595,24 +590,24 @@ class RoleplaySession {
     }
 
     initializeElements() {
-        this.statusEl = document.getElementById('status');
+        this.statusDot = document.getElementById('statusDot');
+        this.statusText = document.getElementById('statusText');
         this.startBtn = document.getElementById('startBtn');
         this.stopBtn = document.getElementById('stopBtn');
         this.interruptBtn = document.getElementById('interruptBtn');
         this.endBtn = document.getElementById('endBtn');
-        this.conversationEl = document.getElementById('conversation');
-        this.volumeBar = document.getElementById('volumeBar');
+        this.conversationArea = document.getElementById('conversationArea');
+        this.audioLevelFill = document.getElementById('audioLevelFill');
         this.sessionTimeEl = document.getElementById('sessionTime');
         this.messageCountEl = document.getElementById('messageCount');
         this.characterStatusEl = document.getElementById('characterStatus');
+        this.loadingOverlay = document.getElementById('loadingOverlay');
 
         // Event listeners
         this.startBtn.addEventListener('click', () => this.startRecording());
         this.stopBtn.addEventListener('click', () => this.stopRecording());
         this.interruptBtn.addEventListener('click', () => this.interrupt());
         this.endBtn.addEventListener('click', () => this.showEndModal());
-        
-        this.createSimpleSpinner();
     }
 
     setupBeforeUnload() {
@@ -633,16 +628,12 @@ class RoleplaySession {
         }
     }
 
-    createSimpleSpinner() {
-        const overlay = document.createElement('div');
-        overlay.className = 'page-loading-overlay';
-        overlay.innerHTML = '<div class="simple-spinner"></div>';
-        document.body.appendChild(overlay);
-        this.loadingOverlay = overlay;
+    showLoadingOverlay() {
+        this.loadingOverlay.classList.add('show');
     }
 
-    showPageLoadingSpinner() {
-        this.loadingOverlay.classList.add('show');
+    hideLoadingOverlay() {
+        this.loadingOverlay.classList.remove('show');
     }
 
     connect() {
@@ -653,25 +644,23 @@ class RoleplaySession {
 
         this.socket.onopen = () => {
             this.isConnected = true;
-            this.updateStatus(`🟢 Connected - {{ bot.name }} is ready to chat!`, 'connected');
-            this.startBtn.disabled = false;
-            this.interruptBtn.disabled = false;
-            this.endBtn.disabled = false;
+            this.updateConnectionStatus('Connected - {{ bot.name }} is ready', 'connected');
+            this.enableControls();
             this.updateCharacterStatus('Ready');
-            this.addConversationEntry('system', 'Connected to {{ bot.name }}. Start talking to begin the roleplay!');
+            this.addMessage('system', 'Connected to {{ bot.name }}. Click "Start Recording" to begin.');
         };
 
         this.socket.onclose = () => {
             this.isConnected = false;
-            this.updateStatus('🔴 Disconnected', 'error');
+            this.updateConnectionStatus('Disconnected', 'disconnected');
             this.disableControls();
             this.updateCharacterStatus('Disconnected');
-            this.addConversationEntry('system', 'Connection lost', 'error');
+            this.addMessage('system', 'Connection lost');
         };
 
         this.socket.onerror = (error) => {
-            this.updateStatus('🔴 Connection Error', 'error');
-            this.addConversationEntry('system', 'Connection error occurred', 'error');
+            this.updateConnectionStatus('Connection Error', 'disconnected');
+            this.addMessage('system', 'Connection error occurred');
         };
 
         this.socket.onmessage = (event) => {
@@ -682,7 +671,7 @@ class RoleplaySession {
     handleMessage(data) {
         switch (data.type) {
             case 'roleplay_start':
-                this.addConversationEntry('system', `{{ bot.name }} has entered the roleplay`);
+                this.addMessage('system', `{{ bot.name }} has joined the roleplay`);
                 this.updateCharacterStatus('Active');
                 break;
 
@@ -703,16 +692,12 @@ class RoleplaySession {
                 this.handleRoleplayComplete(data);
                 break;
 
-            case 'current_roleplay_transcript':
-                this.handleTranscriptReceived(data);
-                break;
-
             case 'roleplay_info':
                 this.updateSessionInfo(data);
                 break;
 
             case 'error':
-                this.addConversationEntry('system', `Error: ${data.message}`, 'error');
+                this.addMessage('system', `Error: ${data.message}`);
                 break;
 
             case 'insufficient_credits':
@@ -721,7 +706,7 @@ class RoleplaySession {
 
             default:
                 if (data.message) {
-                    this.addConversationEntry('system', data.message);
+                    this.addMessage('system', data.message);
                 }
         }
     }
@@ -730,12 +715,12 @@ class RoleplaySession {
         this.roleplayEnded = true;
         this.removeBeforeUnload();
         this.disableControls();
-        this.updateStatus('⚠️ Session Ended - No Credits Remaining', 'error');
+        this.updateConnectionStatus('Session Ended - No Credits', 'disconnected');
         this.updateCharacterStatus('Session Ended');
-        this.addConversationEntry('system', data.message, 'error');
+        this.addMessage('system', data.message);
         
         setTimeout(() => {
-            alert(`Session ended due to insufficient credits!\n\nCredits used: ${data.credits_used}\n\nPlease purchase more credits to continue using roleplay features.`);
+            alert(`Session ended due to insufficient credits!\n\nCredits used: ${data.credits_used}\n\nPlease purchase more credits to continue.`);
             window.location.href = '/voice_roleplay/';
         }, 2000);
     }
@@ -750,11 +735,10 @@ class RoleplaySession {
 
     handleTranscriptUpdate(data) {
         if (data.latest_items && data.latest_items.length > 0) {
-            // Add the latest conversation items to display
             data.latest_items.forEach(item => {
-                const role = item.role === 'assistant' ? 'character' : 'user';
-                const speaker = item.role_display || (role === 'character' ? '{{ bot.name }}' : 'You');
-                this.addConversationEntry(role, item.content, 'normal', speaker);
+                const role = item.role === 'assistant' ? 'assistant' : 'user';
+                const speaker = item.role === 'assistant' ? '{{ bot.name }}' : 'You';
+                this.addMessage(role, item.content, speaker);
             });
             this.messageCount = data.transcript_length;
             this.messageCountEl.textContent = this.messageCount;
@@ -765,11 +749,10 @@ class RoleplaySession {
         this.roleplayEnded = true;
         this.removeBeforeUnload();
         this.disableControls();
-        this.updateStatus('✅ Roleplay Session Completed!', 'connected');
-        this.updateCharacterStatus('Session Complete');
-        this.addConversationEntry('system', `Roleplay with ${data.bot_name} completed successfully!`);
+        this.updateConnectionStatus('Session Complete', 'connected');
+        this.updateCharacterStatus('Complete');
+        this.addMessage('system', `Roleplay with ${data.bot_name} completed successfully!`);
         
-        // Show completion message and redirect
         setTimeout(() => {
             const creditsMsg = data.credits_used ? `\nCredits used: ${data.credits_used}` : '';
             alert(`Roleplay session completed!\n\nDuration: ${Math.floor(data.duration_seconds / 60)}:${(data.duration_seconds % 60).toString().padStart(2, '0')}\nMessages: ${data.transcript_length}${creditsMsg}`);
@@ -779,7 +762,7 @@ class RoleplaySession {
 
     async startRecording() {
         if (!this.isConnected) {
-            this.addConversationEntry('system', 'Not connected to character', 'error');
+            this.addMessage('system', 'Not connected to character');
             return;
         }
 
@@ -835,15 +818,15 @@ class RoleplaySession {
             
             // Update UI
             this.startBtn.disabled = true;
-            this.startBtn.textContent = '🎤 Listening...';
+            this.startBtn.textContent = 'Listening...';
             this.startBtn.classList.add('recording');
             this.stopBtn.disabled = false;
             this.updateCharacterStatus('Listening');
             
-            this.addConversationEntry('system', 'Started recording your voice...');
+            this.addMessage('system', 'Started recording...');
 
         } catch (error) {
-            this.addConversationEntry('system', `Microphone error: ${error.message}`, 'error');
+            this.addMessage('system', `Microphone error: ${error.message}`);
         }
     }
 
@@ -867,12 +850,12 @@ class RoleplaySession {
 
             // Update UI
             this.startBtn.disabled = false;
-            this.startBtn.innerHTML = '<span>🎤</span>Start Talking';
+            this.startBtn.textContent = 'Start Recording';
             this.startBtn.classList.remove('recording');
             this.stopBtn.disabled = true;
             this.updateCharacterStatus('Processing');
             
-            this.addConversationEntry('system', 'Stopped recording');
+            this.addMessage('system', 'Stopped recording');
         }
     }
 
@@ -882,59 +865,71 @@ class RoleplaySession {
             this.audioQueue = [];
             this.isBotSpeaking = false;
             this.updateCharacterStatus('Interrupted');
-            this.addConversationEntry('system', 'Interrupted {{ bot.name }}');
+            this.addMessage('system', 'Interrupted {{ bot.name }}');
         }
     }
 
     showEndModal() {
-        $('#endRoleplayModal').modal('show');
+        $('#endSessionModal').modal('show');
     }
 
     endRoleplay() {
         this.roleplayEnded = true;
         this.removeBeforeUnload();
-        this.updateStatus('🔄 Ending roleplay session...', 'connecting');
+        this.updateConnectionStatus('Ending session...', 'connecting');
         this.disableControls();
-        this.showPageLoadingSpinner();
+        this.showLoadingOverlay();
         
         if (this.isConnected) {
             this.socket.send(JSON.stringify({ type: 'end_roleplay' }));
         }
         
-        this.addConversationEntry('system', 'Roleplay session ended by user');
-        $('#endRoleplayModal').modal('hide');
+        this.addMessage('system', 'Roleplay session ended by user');
+        $('#endSessionModal').modal('hide');
     }
 
     updateCharacterStatus(status) {
         this.characterStatusEl.textContent = status;
-        
-        // Update styling based on status
         this.characterStatusEl.className = 'character-status';
+        
         if (status === 'Speaking') {
             this.characterStatusEl.classList.add('speaking');
+        } else if (status === 'Processing') {
+            this.characterStatusEl.classList.add('processing');
         }
     }
 
-    addConversationEntry(type, content, severity = 'normal', speaker = null) {
-        const entry = document.createElement('div');
-        entry.className = `conversation-entry conversation-${type}`;
+    updateConnectionStatus(message, type) {
+        this.statusText.textContent = message;
+        this.statusDot.className = `status-dot ${type}`;
+    }
+
+    addMessage(type, content, speaker = null) {
+        const message = document.createElement('div');
+        message.className = `conversation-message message-${type}`;
         
         const timestamp = new Date().toLocaleTimeString();
-        const displaySpeaker = speaker || (type === 'character' ? '{{ bot.name }}' : type === 'user' ? 'You' : 'System');
         
-        entry.innerHTML = `
-            <div class="conversation-timestamp">${timestamp}</div>
-            ${type !== 'system' ? `<div class="conversation-speaker">${displaySpeaker}:</div>` : ''}
-            <div>${content}</div>
-        `;
+        if (type === 'system') {
+            message.innerHTML = `<div class="message-content">${content}</div>`;
+        } else {
+            const displaySpeaker = speaker || (type === 'assistant' ? '{{ bot.name }}' : 'You');
+            message.innerHTML = `
+                <div class="message-header">
+                    <span class="message-speaker">${displaySpeaker}</span>
+                    <span class="message-time">${timestamp}</span>
+                </div>
+                <div class="message-content">${content}</div>
+            `;
+        }
         
-        this.conversationEl.appendChild(entry);
-        this.conversationEl.scrollTop = this.conversationEl.scrollHeight;
+        this.conversationArea.appendChild(message);
+        this.conversationArea.scrollTop = this.conversationArea.scrollHeight;
 
-        // Keep only last 50 entries
-        const entries = this.conversationEl.children;
-        if (entries.length > 50) {
-            this.conversationEl.removeChild(entries[1]); // Keep the first system message
+        // Keep only last 50 messages
+        const messages = this.conversationArea.children;
+        if (messages.length > 50) {
+            this.conversationArea.removeChild(messages[1]);
         }
     }
 
@@ -955,7 +950,7 @@ class RoleplaySession {
             
             const rms = Math.sqrt(sum / bufferLength);
             const volume = (rms / 255) * 100;
-            this.volumeBar.style.width = volume + '%';
+            this.audioLevelFill.style.width = volume + '%';
             
             requestAnimationFrame(checkVolume);
         };
@@ -1014,16 +1009,17 @@ class RoleplaySession {
         }, 1000);
     }
 
+    enableControls() {
+        this.startBtn.disabled = false;
+        this.interruptBtn.disabled = false;
+        this.endBtn.disabled = false;
+    }
+
     disableControls() {
         this.startBtn.disabled = true;
         this.stopBtn.disabled = true;
         this.interruptBtn.disabled = true;
         this.endBtn.disabled = true;
-    }
-
-    updateStatus(message, type) {
-        this.statusEl.textContent = message;
-        this.statusEl.className = `status-indicator status-${type}`;
     }
 
     // Utility methods

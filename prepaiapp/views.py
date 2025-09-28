@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.auth.models import User
-from .models import Profile, Course, InterviewTemplate, InterviewSession, Transaction, RolePlayBots, RoleplaySession, RolePlayShare, MyInvitedRolePlayShare
+from .models import Profile, Course, InterviewTemplate, InterviewSession, Transaction, RolePlayBots, RoleplaySession, RolePlayShare, MyInvitedRolePlayShare, CreditShare
 import os
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -23,6 +23,34 @@ from openai import OpenAI
 from datetime import datetime, time
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
+
+class MyEarningsView(LoginRequiredMixin, View):
+    login_url = "/login/"
+    def seggregate_by_status(self, credit_shares: list[CreditShare]):
+        result = {
+            "completed": [],
+            "pending": [],
+            "failed": [],
+            "creator_share": [],
+            "referral_share": [],
+        }
+        for credit in credit_shares:
+            if credit.settlement_status == "completed":
+                result["completed"].append(credit)
+            elif credit.settlement_status == "pending":
+                result["pending"].append(credit)
+            elif credit.settlement_status == "failed":
+                result["failed"].append(credit)
+            if credit.credit_reason == "creator_share":
+                result["creator_share"].append(credit)
+            elif credit.credit_reason == "referral_share":
+                result["referral_share"].append(credit)
+        return result
+        
+    def get(self, request):
+        all_credit_shares = CreditShare.objects.filter(credited_to=request.user)
+        context = self.seggregate_by_status(all_credit_shares)
+        return render(request, 'my_earnings.html', context)
 class ShareRolePlayStartView(LoginRequiredMixin, View):
     login_url = "/login/"
     def get(self, request, share_id):

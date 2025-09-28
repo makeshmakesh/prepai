@@ -1,0 +1,731 @@
+{% extends 'base.html' %}
+
+{% block title %}My Earnings - PrepAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Earnings specific styles */
+    .earnings-header {
+        background: var(--hero-gradient);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+        color: white;
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .earnings-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+    }
+
+    .earnings-header > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .earnings-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-light);
+        transition: all 0.3s ease;
+        text-align: center;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .summary-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-medium);
+    }
+
+    .summary-card h3 {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+    }
+
+    .summary-card .amount {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .summary-card .count {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .amount.completed { color: #22c55e; }
+    .amount.pending { color: #f59e0b; }
+    .amount.failed { color: #ef4444; }
+    .amount.creator { color: #8b5cf6; }
+    .amount.referral { color: #06b6d4; }
+
+    .earnings-section {
+        margin-bottom: 2rem;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .section-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    .section-badge {
+        background: var(--secondary-gradient);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .earnings-list {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .earning-item {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-light);
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .earning-item:hover {
+        transform: translateX(5px);
+        box-shadow: var(--shadow-medium);
+    }
+
+    .earning-item.completed { border-left-color: #22c55e; }
+    .earning-item.pending { border-left-color: #f59e0b; }
+    .earning-item.failed { border-left-color: #ef4444; }
+
+    .earning-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+
+    .earning-amount {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .earning-amount.completed { color: #22c55e; }
+    .earning-amount.pending { color: #f59e0b; }
+    .earning-amount.failed { color: #ef4444; }
+
+    .earning-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-completed {
+        background: rgba(34, 197, 94, 0.1);
+        color: #22c55e;
+    }
+
+    .status-pending {
+        background: rgba(245, 158, 11, 0.1);
+        color: #f59e0b;
+    }
+
+    .status-failed {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+    }
+
+    .earning-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .detail-label {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .detail-value {
+        font-weight: 600;
+        color: black;
+    }
+
+    .bot-info {
+        background: rgba(102, 126, 234, 0.05);
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+    }
+
+    .bot-name {
+        font-weight: 600;
+        color: #667eea;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--text-secondary);
+    }
+
+    .empty-state svg {
+        width: 4rem;
+        height: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .filter-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .filter-tab {
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        background: white;
+        border: 2px solid rgba(102, 126, 234, 0.2);
+        color: var(--text-secondary);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .filter-tab:hover,
+    .filter-tab.active {
+        background: var(--primary-gradient);
+        color: white;
+        border-color: transparent;
+        text-decoration: none;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+        .earnings-summary {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .summary-card {
+            padding: 1rem;
+        }
+
+        .summary-card .amount {
+            font-size: 1.5rem;
+        }
+
+        .earning-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .earning-details {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+
+        .section-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .filter-tabs {
+            flex-direction: column;
+        }
+
+        .filter-tab {
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .earnings-header {
+            padding: 1.5rem;
+        }
+
+        .earning-item {
+            padding: 1rem;
+        }
+
+        .earnings-summary {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="earnings-header fade-in">
+    <h1 class="mb-2" style="font-size: 2.5rem; font-weight: 800;">💰 My Earnings</h1>
+    <p style="font-size: 1.1rem; opacity: 0.9;">Track your revenue from bot creations and referrals</p>
+</div>
+
+<!-- Summary Cards -->
+<div class="earnings-summary fade-in-on-scroll">
+    <div class="summary-card">
+        <h3>Completed Earnings</h3>
+        <div class="amount completed">
+            {{ completed|length|add:0 }} credits
+        </div>
+        <div class="count">{{ completed|length }} transaction{{ completed|length|pluralize }}</div>
+    </div>
+
+    <div class="summary-card">
+        <h3>Pending Earnings</h3>
+        <div class="amount pending">
+            {{ pending|length|add:0 }} credits
+        </div>
+        <div class="count">{{ pending|length }} transaction{{ pending|length|pluralize }}</div>
+    </div>
+
+    <div class="summary-card">
+        <h3>Failed Earnings</h3>
+        <div class="amount failed">
+            {{ failed|length|add:0 }} credits
+        </div>
+        <div class="count">{{ failed|length }} transaction{{ failed|length|pluralize }}</div>
+    </div>
+
+    <div class="summary-card">
+        <h3>Creator Revenue</h3>
+        <div class="amount creator">
+            {{ creator_share|length|add:0 }} credits
+        </div>
+        <div class="count">{{ creator_share|length }} share{{ creator_share|length|pluralize }}</div>
+    </div>
+
+    <div class="summary-card">
+        <h3>Referral Revenue</h3>
+        <div class="amount referral">
+            {{ referral_share|length|add:0 }} credits
+        </div>
+        <div class="count">{{ referral_share|length }} referral{{ referral_share|length|pluralize }}</div>
+    </div>
+</div>
+
+<!-- Filter Tabs -->
+<div class="filter-tabs fade-in-on-scroll">
+    <a href="#" class="filter-tab active" onclick="showSection('all')">All Earnings</a>
+    <a href="#" class="filter-tab" onclick="showSection('completed')">Completed</a>
+    <a href="#" class="filter-tab" onclick="showSection('pending')">Pending</a>
+    <a href="#" class="filter-tab" onclick="showSection('failed')">Failed</a>
+    <a href="#" class="filter-tab" onclick="showSection('creator')">Creator Share</a>
+    <a href="#" class="filter-tab" onclick="showSection('referral')">Referrals</a>
+</div>
+
+<!-- Completed Earnings -->
+<div id="completed-section" class="earnings-section fade-in-on-scroll">
+    <div class="section-header">
+        <h2>✅ Completed Earnings</h2>
+        <span class="section-badge">{{ completed|length }}</span>
+    </div>
+    
+    {% if completed %}
+        <div class="earnings-list">
+            {% for credit in completed %}
+            <div class="earning-item completed">
+                <div class="earning-header">
+                    <h3 class="earning-amount completed">+{{ credit.credit }} credits</h3>
+                    <span class="earning-status status-completed">Completed</span>
+                </div>
+                
+                <div class="earning-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Type</span>
+                        <span class="detail-value">{{ credit.get_credit_reason_display }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">From</span>
+                        <span class="detail-value">{{ credit.credited_from.username|title }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Date</span>
+                        <span class="detail-value">{{ credit.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Time</span>
+                        <span class="detail-value">{{ credit.created_at|time:"g:i A" }}</span>
+                    </div>
+                </div>
+                
+                <div class="bot-info">
+                    <div class="bot-name">🤖 {{ credit.bot.name }}</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                        {{ credit.bot.description|truncatechars:100 }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-5-5 1.41-1.41L11 14.17l7.59-7.59L20 8l-9 9z"/></svg>
+            <h3>No completed earnings yet</h3>
+            <p>Your completed transactions will appear here</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Pending Earnings -->
+<div id="pending-section" class="earnings-section fade-in-on-scroll">
+    <div class="section-header">
+        <h2>⏳ Pending Earnings</h2>
+        <span class="section-badge">{{ pending|length }}</span>
+    </div>
+    
+    {% if pending %}
+        <div class="earnings-list">
+            {% for credit in pending %}
+            <div class="earning-item pending">
+                <div class="earning-header">
+                    <h3 class="earning-amount pending">{{ credit.credit }} credits</h3>
+                    <span class="earning-status status-pending">Pending</span>
+                </div>
+                
+                <div class="earning-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Type</span>
+                        <span class="detail-value">{{ credit.get_credit_reason_display }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">From</span>
+                        <span class="detail-value">{{ credit.credited_from.username|title }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Date</span>
+                        <span class="detail-value">{{ credit.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Time</span>
+                        <span class="detail-value">{{ credit.created_at|time:"g:i A" }}</span>
+                    </div>
+                </div>
+                
+                <div class="bot-info">
+                    <div class="bot-name">🤖 {{ credit.bot.name }}</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                        {{ credit.bot.description|truncatechars:100 }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/></svg>
+            <h3>No pending earnings</h3>
+            <p>Your pending transactions will appear here</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Failed Earnings -->
+<div id="failed-section" class="earnings-section fade-in-on-scroll">
+    <div class="section-header">
+        <h2>❌ Failed Earnings</h2>
+        <span class="section-badge">{{ failed|length }}</span>
+    </div>
+    
+    {% if failed %}
+        <div class="earnings-list">
+            {% for credit in failed %}
+            <div class="earning-item failed">
+                <div class="earning-header">
+                    <h3 class="earning-amount failed">{{ credit.credit }} credits</h3>
+                    <span class="earning-status status-failed">Failed</span>
+                </div>
+                
+                <div class="earning-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Type</span>
+                        <span class="detail-value">{{ credit.get_credit_reason_display }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">From</span>
+                        <span class="detail-value">{{ credit.credited_from.username|title }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Date</span>
+                        <span class="detail-value">{{ credit.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Time</span>
+                        <span class="detail-value">{{ credit.created_at|time:"g:i A" }}</span>
+                    </div>
+                </div>
+                
+                <div class="bot-info">
+                    <div class="bot-name">🤖 {{ credit.bot.name }}</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                        {{ credit.bot.description|truncatechars:100 }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            <h3>No failed transactions</h3>
+            <p>Failed earnings will appear here</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Creator Share Section -->
+<div id="creator-section" class="earnings-section fade-in-on-scroll">
+    <div class="section-header">
+        <h2>🎨 Creator Revenue</h2>
+        <span class="section-badge">{{ creator_share|length }}</span>
+    </div>
+    
+    {% if creator_share %}
+        <div class="earnings-list">
+            {% for credit in creator_share %}
+            <div class="earning-item {% if credit.settlement_status == 'completed' %}completed{% elif credit.settlement_status == 'pending' %}pending{% else %}failed{% endif %}">
+                <div class="earning-header">
+                    <h3 class="earning-amount {% if credit.settlement_status == 'completed' %}completed{% elif credit.settlement_status == 'pending' %}pending{% else %}failed{% endif %}">
+                        {% if credit.settlement_status == 'completed' %}+{% endif %}{{ credit.credit }} credits
+                    </h3>
+                    <span class="earning-status status-{{ credit.settlement_status }}">{{ credit.get_settlement_status_display }}</span>
+                </div>
+                
+                <div class="earning-details">
+                    <div class="detail-item">
+                        <span class="detail-label">From</span>
+                        <span class="detail-value">{{ credit.credited_from.username|title }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Date</span>
+                        <span class="detail-value">{{ credit.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Time</span>
+                        <span class="detail-value">{{ credit.created_at|time:"g:i A" }}</span>
+                    </div>
+                </div>
+                
+                <div class="bot-info">
+                    <div class="bot-name">🤖 {{ credit.bot.name }}</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                        Revenue from your bot creation
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <h3>No creator earnings yet</h3>
+            <p>Start creating bots to earn revenue from users</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Referral Share Section -->
+<div id="referral-section" class="earnings-section fade-in-on-scroll">
+    <div class="section-header">
+        <h2>🤝 Referral Revenue</h2>
+        <span class="section-badge">{{ referral_share|length }}</span>
+    </div>
+    
+    {% if referral_share %}
+        <div class="earnings-list">
+            {% for credit in referral_share %}
+            <div class="earning-item {% if credit.settlement_status == 'completed' %}completed{% elif credit.settlement_status == 'pending' %}pending{% else %}failed{% endif %}">
+                <div class="earning-header">
+                    <h3 class="earning-amount {% if credit.settlement_status == 'completed' %}completed{% elif credit.settlement_status == 'pending' %}pending{% else %}failed{% endif %}">
+                        {% if credit.settlement_status == 'completed' %}+{% endif %}{{ credit.credit }}₹
+                    </h3>
+                    <span class="earning-status status-{{ credit.settlement_status }}">{{ credit.get_settlement_status_display }}</span>
+                </div>
+                
+                <div class="earning-details">
+                    <div class="detail-item">
+                        <span class="detail-label">From</span>
+                        <span class="detail-value">{{ credit.credited_from.username|title }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Date</span>
+                        <span class="detail-value">{{ credit.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Time</span>
+                        <span class="detail-value">{{ credit.created_at|time:"g:i A" }}</span>
+                    </div>
+                </div>
+                
+                <div class="bot-info">
+                    <div class="bot-name">🤖 {{ credit.bot.name }}</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                        Commission from referral usage
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A1.5 1.5 0 0 0 18.54 8H16c-.8 0-1.54.37-2.01 1l-2.8 3.73A1 1 0 0 0 12 14h2l-1.8 7H15l.9-3.6L17 22h3zM12.5 11.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5S11 9.17 11 10s.67 1.5 1.5 1.5zM5.5 6c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2zm2 16v-7H5V9.5C5 8.12 6.12 7 7.5 7S10 8.12 10 9.5V11h2.5c.28 0 .5.22.5.5s-.22.5-.5.5H10V15h-2.5z"/></svg>
+            <h3>No referral earnings yet</h3>
+            <p>Share bots with friends to earn referral commissions</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function showSection(sectionType) {
+        // Remove active class from all tabs
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        // Add active class to clicked tab
+        event.target.classList.add('active');
+        
+        // Hide all sections
+        document.querySelectorAll('.earnings-section').forEach(section => {
+            section.style.display = 'none';
+        });
+        
+        // Show selected sections
+        if (sectionType === 'all') {
+            document.querySelectorAll('.earnings-section').forEach(section => {
+                section.style.display = 'block';
+            });
+        } else if (sectionType === 'creator') {
+            document.getElementById('creator-section').style.display = 'block';
+        } else if (sectionType === 'referral') {
+            document.getElementById('referral-section').style.display = 'block';
+        } else {
+            document.getElementById(sectionType + '-section').style.display = 'block';
+        }
+    }
+
+    // Initialize with all sections visible
+    document.addEventListener('DOMContentLoaded', function() {
+        showSection('all');
+    });
+
+    // Calculate and display actual totals
+    document.addEventListener('DOMContentLoaded', function() {
+        // Calculate completed total
+        const completedItems = document.querySelectorAll('#completed-section .earning-amount');
+        let completedTotal = 0;
+        completedItems.forEach(item => {
+            const amount = parseInt(item.textContent.replace(/[^\d]/g, ''));
+            completedTotal += amount;
+        });
+        
+        // Calculate pending total
+        const pendingItems = document.querySelectorAll('#pending-section .earning-amount');
+        let pendingTotal = 0;
+        pendingItems.forEach(item => {
+            const amount = parseInt(item.textContent.replace(/[^\d]/g, ''));
+            pendingTotal += amount;
+        });
+        
+        // Calculate failed total
+        const failedItems = document.querySelectorAll('#failed-section .earning-amount');
+        let failedTotal = 0;
+        failedItems.forEach(item => {
+            const amount = parseInt(item.textContent.replace(/[^\d]/g, ''));
+            failedTotal += amount;
+        });
+        
+        // Calculate creator total
+        const creatorItems = document.querySelectorAll('#creator-section .earning-amount');
+        let creatorTotal = 0;
+        creatorItems.forEach(item => {
+            const amount = parseInt(item.textContent.replace(/[^\d]/g, ''));
+            creatorTotal += amount;
+        });
+        
+        // Calculate referral total
+        const referralItems = document.querySelectorAll('#referral-section .earning-amount');
+        let referralTotal = 0;
+        referralItems.forEach(item => {
+            const amount = parseInt(item.textContent.replace(/[^\d]/g, ''));
+            referralTotal += amount;
+        });
+        
+        // Update summary cards
+        const summaryCards = document.querySelectorAll('.summary-card .amount');
+        if (summaryCards.length >= 5) {
+            summaryCards[0].textContent = completedTotal + ' credits';
+            summaryCards[1].textContent = pendingTotal + ' credits';
+            summaryCards[2].textContent = failedTotal + ' credits';
+            summaryCards[3].textContent = creatorTotal + ' credits';
+            summaryCards[4].textContent = referralTotal + ' credits';
+        }
+    });
+</script>
+{% endblock %}

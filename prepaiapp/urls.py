@@ -32,6 +32,7 @@ urlpatterns = [
     path("share-roleplay-bot/<uuid:bot_id>/", views.ShareRolePlayBotView.as_view(), name="share-roleplay-bot"),
     path("roleplay/share/<uuid:share_id>/", views.ShareRolePlayStartView.as_view(), name="share-roleplay-bot-public"),
     path("delete-roleplay-bot/<uuid:bot_id>/", views.DeleteRolePlayBotView.as_view(), name="delete-roleplay-bot"),
+    path("my-earnings/", views.MyEarningsView.as_view(), name="my-earnings"),
     
     path('purchase/confirmation/<uuid:transaction_id>/', views.purchase_confirmation, name='purchase_confirmation'),
     path('transaction-status/<uuid:transaction_id>/', views.transaction_status, name='transaction_status'),

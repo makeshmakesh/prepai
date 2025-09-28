@@ -396,17 +396,7 @@
                 <span class="info-label">Current Balance</span>
                 <span class="info-value">{{ user.profile.credits|default:0 }} credits</span>
             </div>
-            
-            <div class="info-row">
-                <span class="info-label">Credits Used</span>
-                <span class="info-value">{{ user.profile.credits_used|default:0 }} credits</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="info-label">Credits Per Interview</span>
-                <span class="info-value">5 credits</span>
-            </div>
-
+        
             <div class="credits-actions">
                 <a href="{% url 'purchase_credits' %}" class="btn-credits">
                     💳 Purchase Credits

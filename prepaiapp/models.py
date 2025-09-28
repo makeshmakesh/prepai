@@ -426,3 +426,29 @@ class MyInvitedRolePlayShare(models.Model):
 
     def __str__(self):
         return f"{self.share.bot.name} invited by {self.share.shared_by} to {self.invited_to.username}"
+    
+    
+
+class CreditShare(models.Model):
+    CREDITED_FOR_CHOICES = [
+        ("creator_share", "Creator Share"),
+        ("referral_share", "Referral Share"),
+        ("other", "Other"),
+    ]
+    SETTLEMENT_STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("completed", "Completed"),
+        ("failed", "Failed"),
+    ]
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    credit = models.IntegerField(default=0)
+    share = models.ForeignKey(RolePlayShare, on_delete=models.CASCADE, null=True, blank=True)
+    bot = models.ForeignKey(RolePlayBots, on_delete=models.CASCADE)
+    credited_to = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    credited_from = models.ForeignKey(User, on_delete=models.CASCADE, related_name='credited_from', default=None)
+    credit_reason = models.CharField(max_length=50, choices=CREDITED_FOR_CHOICES, default="other")
+    settlement_status = models.CharField(max_length=20, choices=SETTLEMENT_STATUS_CHOICES, default="pending")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.credit} credited to {self.credited_to} from {self.credited_from}"
