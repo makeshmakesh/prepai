@@ -25,7 +25,6 @@ urlpatterns = [
     path("interview_history/", views.InterviewHistoryView.as_view(), name="interview_history"),
     path("purchase_credits/", views.PurchaseCredits.as_view(), name="purchase_credits"),
     path("profile/", views.ProfileView.as_view(), name="profile"),
-    path('process-purchase/', views.process_purchase, name='process_purchase'),
     path("create_roleplay_bot/", views.CreateRolePlayBotView.as_view(), name="create_roleplay_bot"),
     path("my-roleplay-bots/", views.MyRolePlayBotView.as_view(), name="my-roleplay-bots"),
     path("edit-roleplay-bot/<uuid:bot_id>/", views.EditRolePlayBotView.as_view(), name="edit-roleplay-bot"),
@@ -34,8 +33,11 @@ urlpatterns = [
     path("delete-roleplay-bot/<uuid:bot_id>/", views.DeleteRolePlayBotView.as_view(), name="delete-roleplay-bot"),
     path("my-earnings/", views.MyEarningsView.as_view(), name="my-earnings"),
     
-    path('purchase/confirmation/<uuid:transaction_id>/', views.purchase_confirmation, name='purchase_confirmation'),
-    path('transaction-status/<uuid:transaction_id>/', views.transaction_status, name='transaction_status'),
+    path('order_confirmation/', views.OrderConfirmationView.as_view(), name='order_confirmation'),
+    path('payment/success/', views.PaymentSuccessView.as_view(), name='payment_success'),
+    path('payment/success/page/', views.PaymentSuccessPageView.as_view(), name='payment_success_page'),
+    path('payment/failed/', views.PaymentFailedView.as_view(), name='payment_failed'),
+    
     path(
         "course/<slug:slug>/subtopics/",
         views.CourseSubtopicsView.as_view(),

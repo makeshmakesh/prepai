@@ -23,7 +23,164 @@ from openai import OpenAI
 from datetime import datetime, time
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
+import hashlib
+import hmac
+from decimal import Decimal
+import razorpay
+class PaymentFailedView(View):
+    """Handle payment failure (optional logging)"""
+    
+    @csrf_exempt
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+    
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            
+            # Log payment failure
+            logger.warning(f"Payment failed: {data}")
+            
+            # Optional: Create failed transaction record
+            if request.user.is_authenticated:
+                Transaction.objects.create(
+                    user=request.user,
+                    transaction_id=data.get('payment_id', 'N/A'),
+                    credits=0,
+                    amount=Decimal('0.00'),
+                    payment_method='razorpay',
+                    status='failed',
+                    error_message=data.get('error_description', 'Payment failed')
+                )
+            
+            return JsonResponse({'status': 'logged'})
+            
+        except Exception as e:
+            logger.error(f"Error logging payment failure: {e}")
+            return JsonResponse({'status': 'error'}, status=400)
+    
+    def get(self, request):
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
+
+class PaymentSuccessPageView(LoginRequiredMixin, View):
+    """Display success page after payment"""
+    login_url = "/login/"
+    
+    def get(self, request):
+        context = {
+            'current_credits': request.user.profile.credits,
+        }
+        return render(request, 'payment_success.html', context)
+class PaymentSuccessView(LoginRequiredMixin, View):
+    """Handle successful payment and update user credits"""
+    login_url = "/login/"
+    
+    def post(self, request):
+        # Get payment details
+        razorpay_payment_id = request.POST.get('razorpay_payment_id')
+        razorpay_order_id = request.POST.get('razorpay_order_id')
+        razorpay_signature = request.POST.get('razorpay_signature')
+        
+        plan_type = request.POST.get('plan_type')
+        credits = int(request.POST.get('credits'))
+        price = int(request.POST.get('price'))
+        
+        # Verify payment signature
+        try:
+            # Create signature verification string
+            sign_string = f"{razorpay_order_id}|{razorpay_payment_id}"
+            
+            # Generate expected signature
+            expected_signature = hmac.new(
+                os.getenv("RAZORPAYAPI_SECRET").encode(),
+                sign_string.encode(),
+                hashlib.sha256
+            ).hexdigest()
+            
+            # Verify signature
+            if expected_signature != razorpay_signature:
+                logger.error(f"Payment signature verification failed for user {request.user.id}")
+                messages.error(request, 'Payment verification failed. Please contact support.')
+                return redirect('purchase_credits')
+            
+            # Payment verified - update user credits
+            profile = Profile.objects.get(user=request.user)
+            profile.credits += credits
+            profile.save()
+            
+            # Create transaction record
+            Transaction.objects.create(
+                user=request.user,
+                transaction_id=razorpay_payment_id,  # Now accepts string
+                order_id=razorpay_order_id,  # Store order ID
+                credits=credits,
+                amount=Decimal(price),
+                payment_method='razorpay',
+                status='success'
+            )
+            
+            logger.info(f"Payment successful for user {request.user.id}: {credits} credits added")
+            messages.success(
+                request, 
+                f'Payment successful! {credits} credits have been added to your account.'
+            )
+            return redirect('payment_success_page')
+            
+        except Exception as e:
+            logger.error(f"Payment verification error for user {request.user.id}: {e}")
+            messages.error(request, f'Payment verification error: {str(e)}')
+            return redirect('purchase_credits')
+    
+    def get(self, request):
+        # Redirect GET requests to payment success page
+        return redirect('payment_success_page')
+class OrderConfirmationView(LoginRequiredMixin, View):
+    """Display checkout page with Razorpay integration"""
+    login_url = "/login/"
+    
+    def post(self, request):
+        razorpay_client = razorpay.Client(auth=(os.getenv("RAZORPAY_API_KEY"), os.getenv("RAZORPAYAPI_SECRET")))
+        
+        # Get plan details from POST
+        plan_type = request.POST.get('plan_type')
+        credits = int(request.POST.get('credits'))
+        price = int(request.POST.get('price'))
+
+        # Create Razorpay order
+        amount_paise = price * 100  # Convert rupees to paise
+        
+        try:
+            razorpay_order = razorpay_client.order.create({
+                'amount': amount_paise,
+                'currency': 'INR',
+                'notes': {
+                    'user_id': request.user.id,
+                    'plan_type': plan_type,
+                    'credits': credits,
+                }
+            })
+            
+            context = {
+                'plan_type': plan_type,
+                'plan_name': plan_type,
+                'credits': credits,
+                'price': price,
+                'amount_paise': amount_paise,
+                'order_id': razorpay_order['id'],
+                'razorpay_key_id': os.getenv("RAZORPAY_API_KEY"),
+            }
+            
+            return render(request, 'checkout.html', context)
+            
+        except Exception as e:
+            logger.error(f"Error creating Razorpay order: {e}")
+            messages.error(request, f'Error creating order: {str(e)}')
+            return redirect('purchase_credits')
+    
+    def get(self, request):
+        # Redirect GET requests back to purchase page
+        return redirect('purchase_credits')
 class MyEarningsView(LoginRequiredMixin, View):
     login_url = "/login/"
     def seggregate_by_status(self, credit_shares: list[CreditShare]):
@@ -1345,72 +1502,4 @@ def sub_topic(request):
 
 
 
-@login_required 
-@csrf_exempt
-def process_purchase(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        
-        # Create transaction record
-        transaction = Transaction.objects.create(
-            user=request.user,
-            credits=int(data['credits']),
-            amount=float(data['amount']),
-            payment_method=data['payment_method'],
-            status='pending'
-        )
-        
-        # Mock payment processing
-        success = mock_payment_processing(data)
-        
-        if success:
-            transaction.status = 'success'
-            transaction.save()
-            
-            # Update user credits
-            profile = request.user.profile
-            profile.credits += transaction.credits
-            profile.save()
-            
-            return JsonResponse({
-                'success': True,
-                'transaction_id': str(transaction.transaction_id)
-            })
-        else:
-            transaction.status = 'failed'
-            transaction.error_message = 'Payment declined'
-            transaction.save()
-            
-            return JsonResponse({
-                'success': False,
-                'transaction_id': str(transaction.transaction_id),
-                'error': 'Payment processing failed'
-            })
 
-def mock_payment_processing(data):
-    # Mock payment logic - 90% success rate
-    # import random
-    # return random.random() < 0.5
-    return False
-
-@login_required
-def purchase_confirmation(request, transaction_id):
-    transaction = get_object_or_404(Transaction, 
-                                  transaction_id=transaction_id,
-                                  user=request.user)
-    
-    return render(request, 'purchase_confirmation.html', {
-        'transaction': transaction
-    })
-
-@login_required
-def transaction_status(request, transaction_id):
-    transaction = get_object_or_404(Transaction,
-                                  transaction_id=transaction_id,
-                                  user=request.user)
-    
-    return JsonResponse({
-        'status': transaction.status,
-        'credits': transaction.credits,
-        'amount': str(transaction.amount)
-    })

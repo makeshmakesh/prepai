@@ -408,7 +408,7 @@ class RoleplayConsumer(VoiceAgentConsumer):
         """Deduct credits every minute during active session"""
         try:
             while self.connected and not self.roleplay_ended:
-                await asyncio.sleep(10)  # Wait 1 minute
+                await asyncio.sleep(60)  # Wait 1 minute
                 
                 if self.connected and not self.roleplay_ended:
                     success = await self.deduct_user_credit()
@@ -454,33 +454,33 @@ class RoleplayConsumer(VoiceAgentConsumer):
                     logger.info(f"Deducted 10 credit from user {user.user.username}. Remaining: {user.credits}")
                     if self.bot_shared_by:
                         CreditShare.objects.create(
-                            credit=4,
+                            credit=2,
                             share=self.share_data,
                             bot=self.roleplay_bot,
                             credited_to=self.bot_shared_by,
                             credited_from=user.user,
                             credit_reason="referral_share",
                         )
-                        logger.info(f"4 credited to {self.bot_shared_by.username} for shared bot usage.")
+                        logger.info(f"2 credited to {self.bot_shared_by.username} for shared bot usage.")
                         CreditShare.objects.create(
-                            credit=3,
+                            credit=1,
                             share=self.share_data,
                             bot=self.roleplay_bot,
                             credited_to=self.bot_creator,
                             credited_from=user.user,
                             credit_reason="creator_share",
                         )
-                        logger.info(f"3 credited to {self.bot_creator.username} for bot usage.")
+                        logger.info(f"1 credited to {self.bot_creator.username} for bot usage.")
                     else:
                         CreditShare.objects.create(
-                            credit=7,
+                            credit=1,
                             share=self.share_data,
                             bot=self.roleplay_bot,
                             credited_to=self.bot_creator,
                             credited_from=user.user,
                             credit_reason="creator_share",
                         )
-                        logger.info(f"7 credited to {self.bot_creator.username} for bot usage.")
+                        logger.info(f"1 credited to {self.bot_creator.username} for bot usage.")
                     return True
                 else:
                     logger.warning(f"User {user.user.username} has insufficient credits")

@@ -13,3 +13,4 @@ openai  # For OpenAI agents SDK
 openai-agents[voice]
 python-dotenv
 pillow
+razorpay

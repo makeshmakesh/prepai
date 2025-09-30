@@ -318,9 +318,11 @@ class Transaction(models.Model):
         ("card", "Credit Card"),
         ("paypal", "PayPal"),
         ("gpay", "Google Pay"),
+        ("razorpay", "Razorpay"),
     ]
 
-    transaction_id = models.UUIDField(default=uuid.uuid4, unique=True)
+    transaction_id = models.CharField(max_length=100, unique=True, db_index=True)
+    order_id = models.CharField(max_length=100, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     credits = models.IntegerField()
     amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -329,6 +331,12 @@ class Transaction(models.Model):
     error_message = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user.username} - {self.transaction_id} - {self.status}"
 
 
 class RolePlayBots(models.Model):
