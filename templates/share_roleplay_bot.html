@@ -1,38 +1,366 @@
 {% extends "base.html" %}
 
-{% block title %}Share Link{% endblock %}
+{% block title %}Share Link - PrepAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .share-container {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 0;
+    }
+
+    .share-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: var(--shadow-medium);
+        overflow: hidden;
+        max-width: 600px;
+        width: 100%;
+        margin: 0 auto;
+        animation: fadeInUp 0.6s ease;
+    }
+
+    .share-header {
+        background: var(--primary-gradient);
+        padding: 2rem;
+        text-align: center;
+        color: white;
+    }
+
+    .share-header h2 {
+        font-size: clamp(1.5rem, 5vw, 2rem);
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .share-header p {
+        font-size: clamp(0.9rem, 2vw, 1rem);
+        opacity: 0.95;
+        margin: 0;
+    }
+
+    .share-icon {
+        font-size: clamp(2.5rem, 8vw, 3.5rem);
+        margin-bottom: 1rem;
+        display: inline-block;
+        animation: bounce 2s ease infinite;
+    }
+
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .share-body {
+        padding: clamp(1.5rem, 5vw, 2.5rem);
+    }
+
+    .link-container {
+        background: rgba(102, 126, 234, 0.05);
+        border: 2px solid rgba(102, 126, 234, 0.2);
+        border-radius: 15px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .link-container:focus-within {
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .link-input-group {
+        display: flex;
+        gap: 0.75rem;
+        align-items: stretch;
+    }
+
+    .link-input {
+        flex: 1;
+        background: white;
+        border: 2px solid rgba(102, 126, 234, 0.2);
+        border-radius: 12px;
+        padding: 0.875rem 1rem;
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        color: black;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+        min-width: 0;
+    }
+
+    .link-input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .copy-btn {
+        background: var(--primary-gradient);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 0.875rem 1.5rem;
+        font-weight: 600;
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        white-space: nowrap;
+        min-width: 100px;
+        justify-content: center;
+    }
+
+    .copy-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .copy-btn:active {
+        transform: translateY(0);
+    }
+
+    .copy-btn.success {
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    }
+
+    .copy-btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .success-message {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        color: #16a34a;
+        padding: 1rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 600;
+        animation: slideDown 0.3s ease;
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .success-message.show {
+        opacity: 1;
+        max-height: 100px;
+        margin-top: 1rem;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .success-icon {
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .share-info {
+        background: rgba(102, 126, 234, 0.05);
+        border-left: 4px solid #667eea;
+        padding: 1rem 1.25rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+
+    .share-info p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        line-height: 1.6;
+    }
+
+    .share-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        flex: 1;
+        min-width: 140px;
+        padding: 0.875rem 1.25rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .action-btn.secondary {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        border-color: rgba(102, 126, 234, 0.3);
+    }
+
+    .action-btn.secondary:hover {
+        background: rgba(102, 126, 234, 0.2);
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .qr-section {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 2px solid rgba(0, 0, 0, 0.05);
+        text-align: center;
+    }
+
+    .qr-section h3 {
+        font-size: clamp(1rem, 3vw, 1.2rem);
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .qr-section p {
+        font-size: clamp(0.85rem, 2vw, 0.9rem);
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 576px) {
+        .share-container {
+            padding: 1rem 0;
+        }
+
+        .share-card {
+            border-radius: 16px;
+        }
+
+        .share-header {
+            padding: 1.5rem 1rem;
+        }
+
+        .share-body {
+            padding: 1.5rem 1rem;
+        }
+
+        .link-input-group {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .copy-btn {
+            width: 100%;
+            padding: 1rem;
+        }
+
+        .share-actions {
+            flex-direction: column;
+        }
+
+        .action-btn {
+            width: 100%;
+            min-width: auto;
+        }
+
+        .link-input {
+            font-size: 0.8rem;
+            padding: 0.75rem;
+        }
+    }
+
+    /* Loading state */
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .spinner {
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        border: 2px solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+    }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow">
-                <div class="card-body text-center p-5">
-                    <h3 class="card-title mb-4">Share This Link</h3>
-                    
-                    <div class="mb-4">
-                        <div class="input-group">
-                            <input type="text" 
-                                   class="form-control" 
-                                   id="shareLink" 
-                                   value="{{ share_link }}" 
-                                   readonly>
-                            <button class="btn btn-primary" 
-                                    type="button" 
-                                    id="copyBtn"
-                                    onclick="copyToClipboard()">
-                                <i class="fas fa-copy me-2"></i>Copy
-                            </button>
-                        </div>
+<div class="share-container fade-in">
+    <div class="container">
+        <div class="share-card">
+            <div class="share-header">
+                <div class="share-icon">🔗</div>
+                <h2>Share Your Link</h2>
+                <p>Share this link with others to give them access</p>
+            </div>
+
+            <div class="share-body">
+                <div class="link-container">
+                    <div class="link-input-group">
+                        <input type="text" 
+                               class="link-input" 
+                               id="shareLink" 
+                               value="{{ share_link }}" 
+                               readonly
+                               aria-label="Share link">
+                        <button class="copy-btn" 
+                                type="button" 
+                                id="copyBtn"
+                                onclick="copyToClipboard()"
+                                aria-label="Copy link to clipboard">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M13.3333 6H7.33333C6.59695 6 6 6.59695 6 7.33333V13.3333C6 14.0697 6.59695 14.6667 7.33333 14.6667H13.3333C14.0697 14.6667 14.6667 14.0697 14.6667 13.3333V7.33333C14.6667 6.59695 14.0697 6 13.3333 6Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M3.33333 10H2.66667C2.31304 10 1.97391 9.85952 1.72386 9.60948C1.47381 9.35943 1.33333 9.02029 1.33333 8.66667V2.66667C1.33333 2.31304 1.47381 1.97391 1.72386 1.72386C1.97391 1.47381 2.31304 1.33333 2.66667 1.33333H8.66667C9.02029 1.33333 9.35943 1.47381 9.60948 1.72386C9.85952 1.97391 10 2.31304 10 2.66667V3.33333" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span id="btnText">Copy</span>
+                        </button>
                     </div>
-                    
-                    <div id="copyMessage" class="alert alert-success mt-3" style="display: none;">
-                        Link copied to clipboard!
-                    </div>
-                    
-                    <p class="text-muted">
-                        Share this link with others to give them access to this content.
-                    </p>
+                </div>
+
+                <div class="success-message" id="successMessage" role="alert">
+                    <span class="success-icon">✓</span>
+                    <span>Link copied to clipboard successfully!</span>
+                </div>
+
+
+                <div class="share-actions">
+                    <a href="{% url 'dashboard' %}" class="action-btn secondary">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6.66667 12.6667L2 8.00004L6.66667 3.33337" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 8H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Back to Dashboard
+                    </a>
                 </div>
             </div>
         </div>
@@ -43,43 +371,64 @@
 function copyToClipboard() {
     const linkInput = document.getElementById('shareLink');
     const copyBtn = document.getElementById('copyBtn');
-    const message = document.getElementById('copyMessage');
+    const btnText = document.getElementById('btnText');
+    const message = document.getElementById('successMessage');
     
-    // Select and copy the text
-    linkInput.select();
-    linkInput.setSelectionRange(0, 99999); // For mobile devices
+    // Disable button during copy
+    copyBtn.disabled = true;
     
-    try {
-        navigator.clipboard.writeText(linkInput.value).then(function() {
-            // Show success message
-            message.style.display = 'block';
-            copyBtn.innerHTML = '<i class="fas fa-check me-2"></i>Copied!';
-            copyBtn.classList.remove('btn-primary');
-            copyBtn.classList.add('btn-success');
+    // Use modern clipboard API with fallback
+    const copyText = async () => {
+        try {
+            // Try modern clipboard API first
+            await navigator.clipboard.writeText(linkInput.value);
+            return true;
+        } catch (err) {
+            // Fallback to older method
+            linkInput.select();
+            linkInput.setSelectionRange(0, 99999);
+            return document.execCommand('copy');
+        }
+    };
+    
+    copyText().then((success) => {
+        if (success) {
+            // Show success state
+            message.classList.add('show');
+            btnText.textContent = 'Copied!';
+            copyBtn.classList.add('success');
             
-            // Reset button after 2 seconds
-            setTimeout(function() {
-                message.style.display = 'none';
-                copyBtn.innerHTML = '<i class="fas fa-copy me-2"></i>Copy';
-                copyBtn.classList.remove('btn-success');
-                copyBtn.classList.add('btn-primary');
-            }, 2000);
-        });
-    } catch (err) {
-        // Fallback for older browsers
-        document.execCommand('copy');
-        message.style.display = 'block';
-        copyBtn.innerHTML = '<i class="fas fa-check me-2"></i>Copied!';
-        copyBtn.classList.remove('btn-primary');
-        copyBtn.classList.add('btn-success');
-        
-        setTimeout(function() {
-            message.style.display = 'none';
-            copyBtn.innerHTML = '<i class="fas fa-copy me-2"></i>Copy';
-            copyBtn.classList.remove('btn-success');
-            copyBtn.classList.add('btn-primary');
-        }, 2000);
-    }
+            // Reset after 3 seconds
+            setTimeout(() => {
+                message.classList.remove('show');
+                btnText.textContent = 'Copy';
+                copyBtn.classList.remove('success');
+                copyBtn.disabled = false;
+            }, 3000);
+        } else {
+            alert('Failed to copy link. Please copy it manually.');
+            copyBtn.disabled = false;
+        }
+    }).catch((err) => {
+        console.error('Copy failed:', err);
+        alert('Failed to copy link. Please copy it manually.');
+        copyBtn.disabled = false;
+    });
 }
+
+// Auto-select text on focus for easy manual copying
+document.getElementById('shareLink').addEventListener('focus', function() {
+    this.select();
+});
+
+// Add keyboard shortcut (Ctrl/Cmd + C)
+document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
+        const linkInput = document.getElementById('shareLink');
+        if (document.activeElement === linkInput) {
+            copyToClipboard();
+        }
+    }
+});
 </script>
 {% endblock %}

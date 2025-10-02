@@ -71,7 +71,7 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 clamp(1rem, 5vw, 2rem);
             position: relative;
             z-index: 2;
         }
@@ -92,10 +92,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .logo {
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 4vw, 2rem);
             font-weight: 800;
             color: white;
             text-decoration: none;
@@ -104,29 +106,27 @@
             gap: 0.5rem;
         }
 
-        .logo::before {
-            content: '🤖';
-            font-size: 1.5rem;
-        }
-
         .nav-links {
             display: flex;
             list-style: none;
-            gap: 2rem;
+            gap: clamp(1rem, 3vw, 2rem);
+            flex-wrap: wrap;
         }
 
         .nav-links a {
             color: white;
             text-decoration: none;
             font-weight: 500;
+            font-size: clamp(0.9rem, 2vw, 1rem);
             transition: all 0.3s ease;
             position: relative;
+            padding: 0.5rem 0;
         }
 
         .nav-links a::after {
             content: '';
             position: absolute;
-            bottom: -5px;
+            bottom: 0;
             left: 0;
             width: 0;
             height: 2px;
@@ -144,11 +144,11 @@
             color: white;
             max-width: 900px;
             margin: 0 auto;
-            padding-top: 100px;
+            padding-top: clamp(100px, 20vh, 150px);
         }
 
         .hero h1 {
-            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-size: clamp(2rem, 8vw, 5.5rem);
             font-weight: 800;
             margin-bottom: 1.5rem;
             animation: fadeInUp 1s ease 0.2s both;
@@ -156,19 +156,20 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            line-height: 1.2;
         }
 
         .hero .subtitle {
-            font-size: clamp(1.3rem, 4vw, 1.8rem);
-            margin-bottom: 2rem;
+            font-size: clamp(1.1rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
             opacity: 0.95;
             animation: fadeInUp 1s ease 0.4s both;
             font-weight: 600;
         }
 
         .hero p {
-            font-size: clamp(1.1rem, 3vw, 1.3rem);
-            margin-bottom: 3rem;
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            margin-bottom: 2.5rem;
             opacity: 0.9;
             animation: fadeInUp 1s ease 0.6s both;
             line-height: 1.7;
@@ -185,17 +186,19 @@
         .cta-button {
             background: rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 1.2rem 3rem;
+            padding: clamp(1rem, 2vw, 1.2rem) clamp(2rem, 5vw, 3rem);
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 50px;
-            font-size: 1.1rem;
+            font-size: clamp(0.95rem, 2vw, 1.1rem);
             font-weight: 600;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 0.5rem;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
+            min-width: 150px;
         }
 
         .cta-button.primary {
@@ -209,7 +212,6 @@
         }
 
         .cta-button:hover {
-            background: rgba(255, 255, 255, 0.3);
             transform: translateY(-3px);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         }
@@ -220,6 +222,10 @@
 
         .cta-button.secondary:hover {
             background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .cta-button:active {
+            transform: translateY(-1px);
         }
 
         @keyframes fadeInUp {
@@ -235,39 +241,41 @@
 
         /* Features Section */
         .features {
-            padding: 6rem 0;
+            padding: clamp(3rem, 10vw, 6rem) 0;
             background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             position: relative;
         }
 
         .section-title {
             text-align: center;
-            font-size: 3rem;
+            font-size: clamp(2rem, 6vw, 3rem);
             font-weight: 800;
             margin-bottom: 1rem;
             color: #333;
+            line-height: 1.2;
         }
 
         .section-subtitle {
             text-align: center;
-            font-size: 1.3rem;
+            font-size: clamp(1rem, 3vw, 1.3rem);
             color: #666;
-            margin-bottom: 4rem;
+            margin-bottom: clamp(2rem, 6vw, 4rem);
             max-width: 700px;
             margin-left: auto;
             margin-right: auto;
+            line-height: 1.6;
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 3rem;
-            margin-top: 4rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: clamp(1.5rem, 4vw, 3rem);
+            margin-top: clamp(2rem, 6vw, 4rem);
         }
 
         .feature-card {
             background: white;
-            padding: 3rem 2rem;
+            padding: clamp(2rem, 5vw, 3rem) clamp(1.5rem, 4vw, 2rem);
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             text-align: center;
@@ -298,19 +306,19 @@
         }
 
         .feature-icon {
-            width: 80px;
-            height: 80px;
+            width: clamp(60px, 15vw, 80px);
+            height: clamp(60px, 15vw, 80px);
             margin: 0 auto 1.5rem;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 4vw, 2rem);
         }
 
         .feature-card h3 {
-            font-size: 1.5rem;
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
             font-weight: 700;
             margin-bottom: 1rem;
             color: #333;
@@ -319,11 +327,12 @@
         .feature-card p {
             color: #666;
             line-height: 1.7;
+            font-size: clamp(0.9rem, 2vw, 1rem);
         }
 
         /* How it works section */
         .how-it-works {
-            padding: 6rem 0;
+            padding: clamp(3rem, 10vw, 6rem) 0;
             background: white;
         }
 
@@ -336,8 +345,9 @@
         .flow-step {
             display: flex;
             align-items: center;
-            margin-bottom: 4rem;
+            margin-bottom: clamp(2rem, 6vw, 4rem);
             position: relative;
+            gap: 2rem;
         }
 
         .flow-step:nth-child(even) {
@@ -348,9 +358,9 @@
             content: '';
             position: absolute;
             left: 50%;
-            bottom: -2rem;
+            bottom: clamp(-1rem, -3vw, -2rem);
             width: 2px;
-            height: 2rem;
+            height: clamp(1rem, 3vw, 2rem);
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             transform: translateX(-50%);
         }
@@ -361,38 +371,38 @@
 
         .step-content {
             flex: 1;
-            padding: 0 2rem;
+            padding: 0 1rem;
         }
 
         .step-visual {
             flex: 1;
             text-align: center;
-            padding: 2rem;
+            padding: 1rem;
         }
 
         .step-number {
-            width: 80px;
-            height: 80px;
+            width: clamp(60px, 15vw, 80px);
+            height: clamp(60px, 15vw, 80px);
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 4vw, 2rem);
             font-weight: bold;
             margin: 0 auto 1.5rem;
             box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3);
         }
 
         .step-icon {
-            font-size: 4rem;
+            font-size: clamp(2.5rem, 8vw, 4rem);
             margin: 1rem 0;
             opacity: 0.8;
         }
 
         .step-content h3 {
-            font-size: 2rem;
+            font-size: clamp(1.3rem, 4vw, 2rem);
             font-weight: 700;
             margin-bottom: 1rem;
             color: #333;
@@ -400,22 +410,22 @@
 
         .step-content p {
             color: #666;
-            font-size: 1.1rem;
+            font-size: clamp(0.95rem, 2vw, 1.1rem);
             line-height: 1.7;
         }
 
         /* Creator vs User sections */
         .dual-audience {
-            padding: 6rem 0;
+            padding: clamp(3rem, 10vw, 6rem) 0;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
 
         .audience-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            margin-top: 4rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: clamp(2rem, 6vw, 4rem);
+            margin-top: clamp(2rem, 6vw, 4rem);
         }
 
         .audience-card {
@@ -423,7 +433,7 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
-            padding: 3rem 2rem;
+            padding: clamp(2rem, 5vw, 3rem) clamp(1.5rem, 4vw, 2rem);
             text-align: center;
             transition: all 0.3s ease;
         }
@@ -435,13 +445,13 @@
         }
 
         .audience-icon {
-            font-size: 4rem;
+            font-size: clamp(2.5rem, 8vw, 4rem);
             margin-bottom: 1.5rem;
             display: block;
         }
 
         .audience-card h3 {
-            font-size: 2.2rem;
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
             font-weight: 700;
             margin-bottom: 1rem;
         }
@@ -450,7 +460,7 @@
             opacity: 0.9;
             line-height: 1.7;
             margin-bottom: 2rem;
-            font-size: 1.1rem;
+            font-size: clamp(0.95rem, 2vw, 1.1rem);
         }
 
         .feature-list {
@@ -464,32 +474,35 @@
             opacity: 0.9;
             position: relative;
             padding-left: 2rem;
+            font-size: clamp(0.9rem, 2vw, 1rem);
         }
 
         .feature-list li::before {
-            content: '✨';
+            content: '✓';
             position: absolute;
             left: 0;
             top: 0.5rem;
+            font-weight: bold;
+            color: #22c55e;
         }
 
         /* Bot categories section */
         .bot-categories {
-            padding: 6rem 0;
+            padding: clamp(3rem, 10vw, 6rem) 0;
             background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
         }
 
         .categories-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 3rem;
-            margin-top: 4rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: clamp(1.5rem, 4vw, 3rem);
+            margin-top: clamp(2rem, 6vw, 4rem);
         }
 
         .category-card {
             background: white;
             border-radius: 20px;
-            padding: 3rem 2rem;
+            padding: clamp(2rem, 5vw, 3rem) clamp(1.5rem, 4vw, 2rem);
             text-align: center;
             transition: all 0.3s ease;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -503,13 +516,13 @@
         }
 
         .category-icon {
-            font-size: 3rem;
+            font-size: clamp(2rem, 6vw, 3rem);
             margin-bottom: 1.5rem;
             display: block;
         }
 
         .category-card h3 {
-            font-size: 1.5rem;
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
             font-weight: 700;
             margin-bottom: 1rem;
             color: #333;
@@ -519,17 +532,18 @@
             color: #666;
             line-height: 1.7;
             margin-bottom: 1.5rem;
+            font-size: clamp(0.9rem, 2vw, 1rem);
         }
 
         .bot-examples {
             color: #888;
-            font-size: 0.9rem;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
             font-style: italic;
         }
 
         /* Early Access Section */
         .early-access {
-            padding: 6rem 0;
+            padding: clamp(3rem, 10vw, 6rem) 0;
             background: linear-gradient(135deg, #1a1a1a 0%, #2d3748 100%);
             color: white;
             text-align: center;
@@ -564,8 +578,8 @@
         }
 
         .signup-form {
-            max-width: 500px;
-            margin: 0 auto 4rem;
+            max-width: 600px;
+            margin: 0 auto clamp(2rem, 6vw, 4rem);
         }
 
         .form-container {
@@ -573,23 +587,25 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
-            padding: 2rem;
+            padding: clamp(1.5rem, 4vw, 2rem);
         }
 
         .form-group {
             display: flex;
             gap: 1rem;
             margin-bottom: 1rem;
+            flex-wrap: wrap;
         }
 
         .form-group input {
             flex: 1;
-            padding: 1rem 1.5rem;
+            min-width: 200px;
+            padding: clamp(0.875rem, 2vw, 1rem) clamp(1rem, 3vw, 1.5rem);
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 50px;
             background: rgba(255, 255, 255, 0.1);
             color: white;
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 2vw, 1rem);
             outline: none;
             transition: all 0.3s ease;
         }
@@ -608,9 +624,9 @@
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
             border: none;
-            padding: 1rem 2rem;
+            padding: clamp(0.875rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2rem);
             border-radius: 50px;
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 2vw, 1rem);
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -628,14 +644,19 @@
             transform: translateY(0);
         }
 
+        .signup-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
         .form-note {
             color: rgba(255, 255, 255, 0.8);
-            font-size: 0.9rem;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
             margin-top: 1rem;
         }
 
         .success-message {
-            position: absolute;
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -643,9 +664,11 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 20px;
-            padding: 3rem;
+            padding: clamp(2rem, 5vw, 3rem);
             text-align: center;
             animation: successSlideIn 0.5s ease;
+            max-width: 90%;
+            z-index: 2000;
         }
 
         @keyframes successSlideIn {
@@ -660,12 +683,12 @@
         }
 
         .success-icon {
-            font-size: 3rem;
+            font-size: clamp(2rem, 8vw, 3rem);
             margin-bottom: 1rem;
         }
 
         .success-message h3 {
-            font-size: 1.8rem;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
             margin-bottom: 0.5rem;
             font-weight: 700;
         }
@@ -674,33 +697,49 @@
         footer {
             background: #1a1a1a;
             color: white;
-            padding: 3rem 0;
-            text-align: center;
+            padding: clamp(2rem, 5vw, 3rem) 0;
         }
 
         .footer-content {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
+            gap: clamp(1.5rem, 4vw, 2rem);
             margin-bottom: 2rem;
         }
 
         .footer-section h3 {
             margin-bottom: 1rem;
             color: #f093fb;
+            font-size: clamp(1rem, 3vw, 1.2rem);
         }
 
-        .footer-section p, .footer-section a {
+        .footer-section p {
             color: #ccc;
-            text-decoration: none;
             line-height: 1.8;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            margin-bottom: 0.5rem;
         }
 
-        .footer-section a:hover {
-            color: #f093fb;
+        .footer-bottom {
+            text-align: center;
+            color: #ccc;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Mobile Responsive */
+        .earnings-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        /* Mobile specific optimizations */
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
@@ -710,24 +749,6 @@
                 padding-top: 120px;
             }
             
-            .features-grid, .categories-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .audience-grid {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-            
-            .form-group {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .early-access {
-                padding: 4rem 0;
-            }
-
             .flow-step {
                 flex-direction: column !important;
                 text-align: center;
@@ -739,7 +760,20 @@
 
             .cta-buttons {
                 flex-direction: column;
-                align-items: center;
+                align-items: stretch;
+            }
+
+            .cta-button {
+                width: 100%;
+            }
+
+            .form-group {
+                flex-direction: column;
+            }
+
+            .form-group input,
+            .signup-btn {
+                width: 100%;
             }
         }
 
@@ -755,40 +789,15 @@
             transform: translateY(0);
         }
 
-        /* Voice wave animation */
-        .voice-wave {
-            display: inline-flex;
-            align-items: center;
-            gap: 2px;
-            margin-left: 0.5rem;
-        }
-
-        .wave-bar {
-            width: 3px;
-            height: 15px;
-            background: currentColor;
-            border-radius: 2px;
-            animation: wave 1.5s ease-in-out infinite;
-        }
-
-        .wave-bar:nth-child(2) { animation-delay: 0.1s; }
-        .wave-bar:nth-child(3) { animation-delay: 0.2s; }
-        .wave-bar:nth-child(4) { animation-delay: 0.3s; }
-
-        @keyframes wave {
-            0%, 40%, 100% { transform: scaleY(0.4); }
-            20% { transform: scaleY(1); }
-        }
-
-        .earnings-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-top: 1rem;
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
@@ -813,8 +822,8 @@
                 <p class="subtitle">Create, Share, Play & Earn with AI Roleplay Bots</p>
                 <p>The ultimate platform where creators build unique AI roleplay characters and players discover endless conversational experiences. From interview practice to fantasy adventures - create any bot, monetize your creativity, and explore infinite possibilities.</p>
                 <div class="cta-buttons">
-                    <a href="#early-access" class="cta-button primary">🎭 Explore Bots</a>
-                    <a href="#early-access" class="cta-button secondary">💰 Start Creating</a>
+                    <a href="#early-access" class="cta-button primary">Explore Bots</a>
+                    <a href="#early-access" class="cta-button secondary">Start Creating</a>
                 </div>
             </div>
         </div>
@@ -885,7 +894,7 @@
                         <li>Get featured in marketplace highlights</li>
                     </ul>
                     
-                    <div class="earnings-badge">Earn $100-$5000+ monthly</div>
+                    <div class="earnings-badge">Earn ₹8,500-₹4,20,000+ monthly</div>
                 </div>
                 
                 <div class="audience-card fade-in-on-scroll">
@@ -1022,7 +1031,7 @@
             </div>
             
             <div style="text-align: center; margin-top: 3rem;">
-                <p style="font-size: 1.1rem; color: #666;">Thousands more categories and bots created daily by our community!</p>
+                <p style="font-size: clamp(0.95rem, 2vw, 1.1rem); color: #666;">Thousands more categories and bots created daily by our community</p>
             </div>
         </div>
     </section>
@@ -1067,18 +1076,18 @@
                 
                 <div class="footer-section">
                     <h3>For Creators</h3>
-                    <a href="#">Bot Builder Tools</a><br>
-                    <a href="#">Creator Dashboard</a><br>
-                    <a href="#">Monetization Guide</a><br>
-                    <a href="#">Community Forum</a>
+                    <p>Bot Builder Tools</p>
+                    <p>Creator Dashboard</p>
+                    <p>Monetization Guide</p>
+                    <p>Community Forum</p>
                 </div>
                 
                 <div class="footer-section">
                     <h3>For Players</h3>
-                    <a href="#">Browse Bots</a><br>
-                    <a href="#">Top Rated</a><br>
-                    <a href="#">New Releases</a><br>
-                    <a href="#">My Conversations</a>
+                    <p>Browse Bots</p>
+                    <p>Top Rated</p>
+                    <p>New Releases</p>
+                    <p>My Conversations</p>
                 </div>
                 
                 <div class="footer-section">
@@ -1088,7 +1097,9 @@
                 </div>
             </div>
             
-            <p>&copy; 2025 PrepAI. The ultimate AI roleplay bot marketplace. All rights reserved.</p>
+            <div class="footer-bottom">
+                <p>&copy; 2025 PrepAI. The ultimate AI roleplay bot marketplace. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 
@@ -1096,7 +1107,7 @@
         // Create floating particles
         function createParticles() {
             const particles = document.querySelector('.particles');
-            const particleCount = 60;
+            const particleCount = window.innerWidth < 768 ? 30 : 60;
             
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
@@ -1151,10 +1162,16 @@
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 100) {
                     header.style.background = 'rgba(255, 255, 255, 0.95)';
-                    header.style.color = '#333';
+                    header.querySelector('.logo').style.color = '#333';
+                    header.querySelectorAll('.nav-links a').forEach(link => {
+                        link.style.color = '#333';
+                    });
                 } else {
                     header.style.background = 'rgba(255, 255, 255, 0.1)';
-                    header.style.color = 'white';
+                    header.querySelector('.logo').style.color = 'white';
+                    header.querySelectorAll('.nav-links a').forEach(link => {
+                        link.style.color = 'white';
+                    });
                 }
             });
         }
@@ -1171,19 +1188,16 @@
                 const btnText = submitBtn.querySelector('.btn-text');
                 const btnLoading = submitBtn.querySelector('.btn-loading');
                 
-                // Validate email
                 if (!email || !email.includes('@')) {
                     alert('Please enter a valid email address');
                     return;
                 }
                 
-                // Show loading state
                 btnText.style.display = 'none';
                 btnLoading.style.display = 'inline';
                 submitBtn.disabled = true;
                 
                 try {
-                    // Simulate API call (replace with actual endpoint)
                     await new Promise(resolve => setTimeout(resolve, 1500));
                     
                     form.style.display = 'none';

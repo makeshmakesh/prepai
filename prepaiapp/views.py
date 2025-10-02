@@ -27,6 +27,14 @@ import hashlib
 import hmac
 from decimal import Decimal
 import razorpay
+
+class BotDetailView(LoginRequiredMixin, View):
+    def get(self, request, bot_id):
+        bot = RolePlayBots.objects.get(id=bot_id)
+        context = {
+            "bot" :bot
+        }
+        return render(request, "roleplay_bot_detail.html", context)
 class PaymentFailedView(View):
     """Handle payment failure (optional logging)"""
     

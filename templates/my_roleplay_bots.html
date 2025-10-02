@@ -4,130 +4,161 @@
 
 {% block extra_css %}
 <style>
-    .bots-header {
+    /* Clean, mobile-friendly bots page */
+    .bots-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    /* Page Header */
+    .page-header {
         text-align: center;
-        margin-bottom: 3rem;
+        margin-bottom: 2.5rem;
     }
 
-    .bots-header h1 {
-        font-size: 2.5rem;
-        font-weight: 800;
-        background: var(--primary-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 1rem;
-        color: black
+    .page-title {
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.75rem;
     }
 
-    .bots-header p {
-        color: var(--text-secondary);
-        font-size: 1.2rem;
+    .page-subtitle {
+        font-size: 1.125rem;
+        color: #64748b;
         max-width: 600px;
         margin: 0 auto;
+        line-height: 1.6;
     }
 
+    /* Stats Bar */
+    .stats-bar {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #2563eb;
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    /* Bots Grid */
     .bots-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 2rem;
-        margin-bottom: 3rem;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
     }
 
+    /* Bot Card */
     .bot-card {
         background: white;
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: var(--shadow-light);
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 1.5rem;
         transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-        border: 2px solid transparent;
-    }
-
-    .bot-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-        transition: left 0.6s ease;
-    }
-
-    .bot-card:hover::before {
-        left: 100%;
+        display: flex;
+        flex-direction: column;
     }
 
     .bot-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-medium);
-        border-color: rgba(102, 126, 234, 0.2);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        border-color: #cbd5e1;
     }
 
     .bot-card.inactive {
         opacity: 0.7;
-        border-color: rgba(245, 87, 108, 0.3);
+        background: #f8fafc;
+    }
+
+    /* Bot Header */
+    .bot-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1rem;
     }
 
     .bot-avatar {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: var(--primary-gradient);
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 2rem;
-        color: white;
-        margin-bottom: 1.5rem;
+        font-size: 1.75rem;
         flex-shrink: 0;
+        overflow: hidden;
     }
 
     .bot-avatar img {
         width: 100%;
         height: 100%;
-        border-radius: 50%;
         object-fit: cover;
     }
 
-    .bot-info {
+    .bot-header-info {
         flex: 1;
+        min-width: 0;
     }
 
     .bot-name {
-        font-size: 1.4rem;
+        font-size: 1.25rem;
         font-weight: 700;
-        color: black;
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+        color: #1e293b;
+        margin-bottom: 0.25rem;
+        line-height: 1.3;
+        word-break: break-word;
     }
 
     .bot-status {
         display: inline-block;
         padding: 0.25rem 0.75rem;
-        border-radius: 12px;
-        font-size: 0.8rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
         font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     .bot-status.active {
-        background: rgba(34, 197, 94, 0.1);
-        color: #22c55e;
+        background: #dcfce7;
+        color: #15803d;
     }
 
     .bot-status.inactive {
-        background: rgba(245, 87, 108, 0.1);
-        color: #f5576c;
+        background: #fee2e2;
+        color: #dc2626;
     }
 
+    /* Bot Content */
     .bot-description {
-        color: var(--text-secondary);
+        color: #475569;
+        font-size: 0.95rem;
         line-height: 1.6;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
@@ -136,329 +167,333 @@
 
     .bot-meta {
         display: flex;
+        flex-wrap: wrap;
         gap: 1rem;
-        margin-bottom: 1.5rem;
-        font-size: 0.9rem;
-        color: var(--text-secondary);
+        padding: 1rem 0;
+        margin-bottom: 1rem;
+        border-top: 1px solid #f1f5f9;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 0.875rem;
+        color: #64748b;
     }
 
-    .bot-meta span {
+    .bot-meta-item {
         display: flex;
         align-items: center;
         gap: 0.25rem;
     }
 
+    /* Bot Actions */
     .bot-actions {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-top: auto;
     }
 
     .btn-start {
-        background: var(--secondary-gradient);
+        background: #2563eb;
         color: white;
-        padding: 0.75rem 1.5rem;
-        border-radius: 20px;
-        text-decoration: none;
+        border: none;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
+        text-decoration: none;
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        transition: all 0.3s ease;
-        border: none;
-        cursor: pointer;
-        flex: 1;
         justify-content: center;
-        min-width: 120px;
+        gap: 0.5rem;
+        transition: all 0.2s;
+        cursor: pointer;
     }
 
     .btn-start:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(240, 147, 251, 0.4);
+        background: #1d4ed8;
+        transform: translateY(-1px);
         color: white;
         text-decoration: none;
     }
 
+    .btn-start:disabled {
+        background: #cbd5e1;
+        color: #94a3b8;
+        cursor: not-allowed;
+        transform: none;
+    }
+
     .btn-edit {
-        background: transparent;
-        color: #667eea;
-        border: 2px solid rgba(102, 126, 234, 0.3);
-        padding: 0.75rem 1.5rem;
-        border-radius: 20px;
-        text-decoration: none;
+        background: white;
+        color: #64748b;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
+        text-decoration: none;
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        flex: 1;
         justify-content: center;
-        min-width: 120px;
+        gap: 0.5rem;
+        transition: all 0.2s;
+        cursor: pointer;
     }
 
     .btn-edit:hover {
-        background: rgba(102, 126, 234, 0.1);
-        color: #667eea;
-        border-color: #667eea;
-        transform: translateY(-2px);
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        color: #475569;
         text-decoration: none;
     }
 
+    .btn-share {
+        grid-column: span 2;
+        background: #10b981;
+        color: white;
+    }
+
+    .btn-share:hover {
+        background: #059669;
+    }
+
+    /* Empty State */
     .empty-state {
         text-align: center;
         padding: 4rem 2rem;
         background: white;
-        border-radius: 25px;
-        box-shadow: var(--shadow-light);
+        border: 2px dashed #e2e8f0;
+        border-radius: 16px;
+        margin: 2rem 0;
     }
 
     .empty-state-icon {
         font-size: 4rem;
-        margin-bottom: 1.5rem;
-        opacity: 0.7;
+        margin-bottom: 1rem;
+        opacity: 0.5;
     }
 
     .empty-state h3 {
         font-size: 1.5rem;
         font-weight: 700;
-        color: var(--text-primary);
-        margin-bottom: 1rem;
+        color: #1e293b;
+        margin-bottom: 0.5rem;
     }
 
     .empty-state p {
-        color: var(--text-secondary);
-        font-size: 1.1rem;
-        margin-bottom: 2rem;
+        font-size: 1rem;
+        color: #64748b;
+        margin-bottom: 1.5rem;
         max-width: 400px;
         margin-left: auto;
         margin-right: auto;
     }
 
     .btn-create-first {
-        background: var(--secondary-gradient);
+        background: #2563eb;
         color: white;
         padding: 1rem 2rem;
-        border-radius: 25px;
+        border-radius: 12px;
         text-decoration: none;
         font-weight: 600;
-        font-size: 1.1rem;
+        font-size: 1rem;
         display: inline-flex;
         align-items: center;
-        gap: 0.75rem;
-        transition: all 0.3s ease;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
     }
 
     .btn-create-first:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 30px rgba(240, 147, 251, 0.4);
+        background: #1d4ed8;
+        transform: translateY(-2px);
         color: white;
         text-decoration: none;
     }
 
-    .stats-bar {
-        display: flex;
-        gap: 2rem;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-    }
-
-    .stat-item {
-        background: white;
-        padding: 1.5rem 2rem;
-        border-radius: 15px;
-        box-shadow: var(--shadow-light);
-        flex: 1;
-        min-width: 200px;
-        text-align: center;
-    }
-
-    .stat-number {
-        font-size: 2rem;
-        font-weight: 800;
-        background: var(--primary-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        display: block;
-    }
-
-    .stat-label {
-        color: var(--text-secondary);
-        font-size: 0.9rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    /* Mobile responsiveness */
+    /* Mobile Responsive */
     @media (max-width: 768px) {
-        .bots-grid {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
+        .bots-container {
+            padding: 1rem 0.5rem;
         }
 
-        .bots-header h1 {
+        .page-title {
             font-size: 2rem;
         }
 
-        .bot-actions {
-            flex-direction: column;
-        }
-
-        .btn-start,
-        .btn-edit {
-            flex: none;
+        .page-subtitle {
+            font-size: 1rem;
         }
 
         .stats-bar {
-            flex-direction: column;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        .bots-grid {
+            grid-template-columns: 1fr;
             gap: 1rem;
         }
 
-        .stat-item {
-            min-width: auto;
+        .bot-card {
+            padding: 1.25rem;
         }
+
+        .bot-actions {
+            grid-template-columns: 1fr;
+        }
+
+        .btn-share {
+            grid-column: span 1;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .bot-header {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .bot-meta {
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: center;
+        }
+    }
+
+    /* Smooth animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .bot-card {
+        animation: fadeIn 0.3s ease-out;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="bots-header fade-in">
-    <h1>🤖 My AI Roleplay Bots</h1>
-    <p>Manage and interact with your custom AI roleplay companions</p>
-</div>
+<div class="bots-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">My AI Roleplay Bots</h1>
+        <p class="page-subtitle">Manage and interact with your custom AI roleplay companions</p>
+    </div>
 
-<!-- Stats Bar -->
-<div class="stats-bar fade-in-on-scroll">
-    <div class="stat-item">
-        <span class="stat-number">{{ total_bots|default:0 }}</span>
-        <span class="stat-label">Total Bots</span>
-    </div>
-    <div class="stat-item">
-        <span class="stat-number">{{ active_bots|default:0 }}</span>
-        <span class="stat-label">Active Bots</span>
-    </div>
-    <div class="stat-item">
-        <span class="stat-number">{{ total_sessions|default:0 }}</span>
-        <span class="stat-label">Total Sessions</span>
-    </div>
-</div>
-
-{% if bots %}
-<!-- Bots Grid -->
-<div class="bots-grid fade-in-on-scroll">
-    {% for bot in bots %}
-    <div class="bot-card {% if not bot.is_active %}inactive{% endif %}">
-        <div class="bot-avatar">
-            {% if bot.avatar_url %}
-                <img src="{{ bot.avatar_url }}" alt="{{ bot.name }} avatar">
-            {% else %}
-                🤖
-            {% endif %}
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stat-card">
+            <span class="stat-value">{{ total_bots|default:0 }}</span>
+            <span class="stat-label">Total Bots</span>
         </div>
-        
-        <div class="bot-info">
-            <div class="bot-name">
-                {{ bot.name }}
-                <span class="bot-status {% if bot.is_active %}active{% else %}inactive{% endif %}">
-                    {% if bot.is_active %}Active{% else %}Inactive{% endif %}
-                </span>
+        <div class="stat-card">
+            <span class="stat-value">{{ active_bots|default:0 }}</span>
+            <span class="stat-label">Active Bots</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-value">{{ total_sessions|default:0 }}</span>
+            <span class="stat-label">Sessions</span>
+        </div>
+    </div>
+
+    {% if bots %}
+    <!-- Bots Grid -->
+    <div class="bots-grid">
+        {% for bot in bots %}
+        <div class="bot-card {% if not bot.is_active %}inactive{% endif %}">
+            <div class="bot-header">
+                <div class="bot-avatar">
+                    {% if bot.avatar_url %}
+                        <img src="{{ bot.avatar_url }}" alt="{{ bot.name }}">
+                    {% else %}
+                        🤖
+                    {% endif %}
+                </div>
+                <div class="bot-header-info">
+                    <h3 class="bot-name">{{ bot.name }}</h3>
+                    <span class="bot-status {% if bot.is_active %}active{% else %}inactive{% endif %}">
+                        {% if bot.is_active %}Active{% else %}Inactive{% endif %}
+                    </span>
+                </div>
             </div>
-            
+
             {% if bot.description %}
-            <div class="bot-description">
-                {{ bot.description }}
-            </div>
+            <p class="bot-description">{{ bot.description }}</p>
             {% endif %}
-            
+
             <div class="bot-meta">
-                <span>📅 Created {{ bot.created_at|date:"M d, Y" }}</span>
-                <span>🔄 Updated {{ bot.updated_at|timesince }} ago</span>
+                <span class="bot-meta-item">📅 {{ bot.created_at|date:"M d, Y" }}</span>
+                <span class="bot-meta-item">🔄 {{ bot.updated_at|timesince }} ago</span>
             </div>
-            
+
             <div class="bot-actions">
                 {% if bot.is_active %}
                     <a href="{% url 'start_roleplay' bot.id %}" class="btn-start">
-                        🚀 Start Roleplay
-                    </a>
-                    <a href="{% url 'share-roleplay-bot' bot.id %}" class="btn-start">
-                        🔗 Share Roleplay
+                        Start
                     </a>
                 {% else %}
-                    <button class="btn-start" style="opacity: 0.5; cursor: not-allowed;" disabled>
-                        ⏸️ Inactive
+                    <button class="btn-start" disabled>
+                        Inactive
                     </button>
                 {% endif %}
                 <a href="{% url 'edit-roleplay-bot' bot.id %}" class="btn-edit">
-                    ✏️ Edit
+                    Edit
                 </a>
+                {% if bot.is_active %}
+                    <a href="{% url 'share-roleplay-bot' bot.id %}" class="btn-start btn-share">
+                        Share
+                    </a>
+                {% endif %}
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
+    {% else %}
+    <!-- Empty State -->
+    <div class="empty-state">
+        <div class="empty-state-icon">🤖</div>
+        <h3>No Roleplay Bots Yet</h3>
+        <p>Create your first AI roleplay bot to get started with personalized conversation experiences.</p>
+        <a href="{% url 'create_roleplay_bot' %}" class="btn-create-first">
+            Create Your First Bot
+        </a>
+    </div>
+    {% endif %}
 </div>
-{% else %}
-<!-- Empty State -->
-<div class="empty-state fade-in-on-scroll">
-    <div class="empty-state-icon">🤖</div>
-    <h3>No Roleplay Bots Yet</h3>
-    <p>Create your first AI roleplay bot to get started with personalized conversation experiences.</p>
-    <a href="{% url 'create_roleplay_bot' %}" class="btn-create-first">
-        🚀 Create Your First Bot
-    </a>
-</div>
-{% endif %}
 {% endblock %}
 
 {% block extra_js %}
 <script>
 $(document).ready(function() {
-    // Add hover effects to bot cards
-    $('.bot-card').hover(
-        function() {
-            if (!$(this).hasClass('inactive')) {
-                $(this).find('.bot-avatar').css('transform', 'scale(1.05)');
-            }
-        },
-        function() {
-            $(this).find('.bot-avatar').css('transform', 'scale(1)');
-        }
-    );
-
-    // Animate stats on scroll
-    $('.stat-number').each(function() {
+    // Animate stats on load
+    $('.stat-value').each(function() {
         const $this = $(this);
         const finalNumber = parseInt($this.text()) || 0;
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateNumber($this, finalNumber);
-                    observer.unobserve(entry.target);
-                }
-            });
-        });
-        
-        observer.observe(this);
-    });
-
-    function animateNumber($element, target) {
         let current = 0;
-        const increment = target / 30;
+        const increment = Math.ceil(finalNumber / 20);
+        
         const timer = setInterval(() => {
             current += increment;
-            if (current >= target) {
-                current = target;
+            if (current >= finalNumber) {
+                current = finalNumber;
                 clearInterval(timer);
             }
-            $element.text(Math.floor(current));
+            $this.text(current);
         }, 50);
-    }
+    });
 
-    // Add confirmation for inactive bot actions
+    // Stagger card animations
+    $('.bot-card').each(function(index) {
+        $(this).css('animation-delay', (index * 0.1) + 's');
+    });
+
+    // Handle inactive bot clicks
     $('.btn-start[disabled]').on('click', function(e) {
         e.preventDefault();
         alert('This bot is currently inactive. Please edit the bot to activate it first.');

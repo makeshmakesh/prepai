@@ -10,9 +10,9 @@
         background-size: 400% 400%;
         animation: gradientShift 15s ease infinite;
         color: white;
-        border-radius: 20px;
-        padding: 2rem;
-        margin-bottom: 2rem;
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
         text-align: center;
         position: relative;
         overflow: hidden;
@@ -34,6 +34,18 @@
         z-index: 1;
     }
 
+    .earnings-header h1 {
+        font-size: clamp(1.5rem, 5vw, 2.5rem);
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .earnings-header p {
+        font-size: clamp(0.9rem, 3vw, 1.1rem);
+        opacity: 0.95;
+        margin: 0;
+    }
+
     @keyframes gradientShift {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
@@ -42,15 +54,15 @@
 
     .earnings-summary {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
     }
 
     .summary-card {
         background: white;
-        border-radius: 15px;
-        padding: 1.5rem;
+        border-radius: 12px;
+        padding: 1.25rem 1rem;
         box-shadow: var(--shadow-light);
         transition: all 0.3s ease;
         text-align: center;
@@ -58,28 +70,29 @@
     }
 
     .summary-card:hover {
-        transform: translateY(-5px);
+        transform: translateY(-3px);
         box-shadow: var(--shadow-medium);
     }
 
     .summary-card h3 {
         color: var(--text-secondary);
-        font-size: 0.9rem;
+        font-size: 0.75rem;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.3px;
         margin-bottom: 0.5rem;
     }
 
     .summary-card .amount {
-        font-size: 2rem;
+        font-size: clamp(1.25rem, 4vw, 1.75rem);
         font-weight: 800;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
+        line-height: 1.2;
     }
 
     .summary-card .count {
         color: var(--text-secondary);
-        font-size: 0.9rem;
+        font-size: 0.8rem;
     }
 
     .amount.completed { color: #22c55e; }
@@ -96,14 +109,16 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 1.5rem;
-        padding-bottom: 0.5rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
         border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+        gap: 0.5rem;
+        flex-wrap: wrap;
     }
 
     .section-header h2 {
         margin: 0;
-        font-size: 1.5rem;
+        font-size: clamp(1.25rem, 4vw, 1.5rem);
         font-weight: 700;
         color: var(--text-primary);
     }
@@ -112,9 +127,10 @@
         background: var(--secondary-gradient);
         color: white;
         padding: 0.25rem 0.75rem;
-        border-radius: 15px;
-        font-size: 0.8rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
         font-weight: 600;
+        flex-shrink: 0;
     }
 
     .earnings-list {
@@ -125,7 +141,7 @@
     .earning-item {
         background: white;
         border-radius: 12px;
-        padding: 1.5rem;
+        padding: 1.25rem;
         box-shadow: var(--shadow-light);
         transition: all 0.3s ease;
         border-left: 4px solid transparent;
@@ -133,9 +149,8 @@
         overflow: hidden;
     }
 
-    .earning-item:hover {
-        transform: translateX(5px);
-        box-shadow: var(--shadow-medium);
+    .earning-item:active {
+        transform: scale(0.98);
     }
 
     .earning-item.completed { border-left-color: #22c55e; }
@@ -147,12 +162,14 @@
         justify-content: space-between;
         align-items: flex-start;
         margin-bottom: 1rem;
+        gap: 0.75rem;
     }
 
     .earning-amount {
-        font-size: 1.5rem;
+        font-size: clamp(1.25rem, 5vw, 1.5rem);
         font-weight: 800;
         margin: 0;
+        line-height: 1.2;
     }
 
     .earning-amount.completed { color: #22c55e; }
@@ -160,12 +177,14 @@
     .earning-amount.failed { color: #ef4444; }
 
     .earning-status {
-        padding: 0.25rem 0.75rem;
+        padding: 0.35rem 0.75rem;
         border-radius: 12px;
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+        flex-shrink: 0;
     }
 
     .status-completed {
@@ -185,21 +204,22 @@
 
     .earning-details {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 1rem;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
         margin-bottom: 1rem;
     }
 
     .detail-item {
         display: flex;
         flex-direction: column;
+        min-width: 0;
     }
 
     .detail-label {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         color: var(--text-secondary);
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.3px;
         font-weight: 600;
         margin-bottom: 0.25rem;
     }
@@ -207,11 +227,15 @@
     .detail-value {
         font-weight: 600;
         color: black;
+        font-size: 0.9rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .bot-info {
         background: rgba(102, 126, 234, 0.05);
-        padding: 1rem;
+        padding: 0.875rem;
         border-radius: 8px;
         margin-top: 1rem;
     }
@@ -220,31 +244,54 @@
         font-weight: 600;
         color: #667eea;
         margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .bot-description {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        line-height: 1.4;
     }
 
     .empty-state {
         text-align: center;
-        padding: 3rem 1rem;
+        padding: 2.5rem 1rem;
         color: var(--text-secondary);
     }
 
     .empty-state svg {
-        width: 4rem;
-        height: 4rem;
+        width: 3rem;
+        height: 3rem;
         margin-bottom: 1rem;
         opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        font-size: 0.9rem;
     }
 
     .filter-tabs {
         display: flex;
         gap: 0.5rem;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 0.5rem;
+    }
+
+    .filter-tabs::-webkit-scrollbar {
+        display: none;
     }
 
     .filter-tab {
-        padding: 0.75rem 1.5rem;
-        border-radius: 25px;
+        padding: 0.625rem 1.25rem;
+        border-radius: 20px;
         background: white;
         border: 2px solid rgba(102, 126, 234, 0.2);
         color: var(--text-secondary);
@@ -252,6 +299,9 @@
         cursor: pointer;
         transition: all 0.3s ease;
         text-decoration: none;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        flex-shrink: 0;
     }
 
     .filter-tab:hover,
@@ -260,21 +310,62 @@
         color: white;
         border-color: transparent;
         text-decoration: none;
+        transform: translateY(-1px);
     }
 
-    /* Mobile responsiveness */
+    .filter-tab:active {
+        transform: translateY(0);
+    }
+
+    /* Mobile optimizations */
     @media (max-width: 768px) {
+        .earnings-header {
+            padding: 1.25rem;
+            border-radius: 12px;
+        }
+
         .earnings-summary {
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .summary-card {
+            padding: 1rem 0.75rem;
+        }
+
+        .summary-card h3 {
+            font-size: 0.7rem;
+        }
+
+        .earning-item {
+            padding: 1rem;
+        }
+
+        .earning-details {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.25rem;
+        }
+
+        .bot-info {
+            padding: 0.75rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .earnings-header {
+            padding: 1rem;
+        }
+
+        .earnings-summary {
+            grid-template-columns: 1fr;
         }
 
         .summary-card {
             padding: 1rem;
-        }
-
-        .summary-card .amount {
-            font-size: 1.5rem;
         }
 
         .earning-header {
@@ -283,86 +374,94 @@
             gap: 0.5rem;
         }
 
-        .earning-details {
-            grid-template-columns: 1fr;
-            gap: 0.5rem;
-        }
-
-        .section-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.5rem;
+        .earning-status {
+            align-self: flex-start;
         }
 
         .filter-tabs {
-            flex-direction: column;
+            gap: 0.375rem;
         }
 
         .filter-tab {
-            text-align: center;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
         }
     }
 
-    @media (max-width: 576px) {
-        .earnings-header {
-            padding: 1.5rem;
+    /* Improved touch targets for mobile */
+    @media (hover: none) and (pointer: coarse) {
+        .filter-tab {
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .earning-item {
-            padding: 1rem;
+            min-height: 44px;
         }
+    }
 
-        .earnings-summary {
-            grid-template-columns: 1fr;
-        }
+    /* Loading state */
+    .loading-skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+        border-radius: 8px;
+        height: 100px;
+    }
+
+    @keyframes loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="earnings-header fade-in">
-    <h1 class="mb-2" style="font-size: 2.5rem; font-weight: 800;">💰 My Earnings</h1>
-    <p style="font-size: 1.1rem; opacity: 0.9;">Track your revenue from bot creations and referrals</p>
+    <h1>💰 My Earnings</h1>
+    <p>Track your revenue from bot creations and referrals</p>
 </div>
 
 <!-- Summary Cards -->
 <div class="earnings-summary fade-in-on-scroll">
     <div class="summary-card">
-        <h3>Completed Earnings</h3>
+        <h3>Completed</h3>
         <div class="amount completed">
-            {{ completed|length|add:0 }} credits
+            {{ completed|length|add:0 }}
         </div>
-        <div class="count">{{ completed|length }} transaction{{ completed|length|pluralize }}</div>
+        <div class="count">{{ completed|length }} credit{{ completed|length|pluralize }}</div>
     </div>
 
     <div class="summary-card">
-        <h3>Pending Earnings</h3>
+        <h3>Pending</h3>
         <div class="amount pending">
-            {{ pending|length|add:0 }} credits
+            {{ pending|length|add:0 }}
         </div>
-        <div class="count">{{ pending|length }} transaction{{ pending|length|pluralize }}</div>
+        <div class="count">{{ pending|length }} credit{{ pending|length|pluralize }}</div>
     </div>
 
     <div class="summary-card">
-        <h3>Failed Earnings</h3>
+        <h3>Failed</h3>
         <div class="amount failed">
-            {{ failed|length|add:0 }} credits
+            {{ failed|length|add:0 }}
         </div>
-        <div class="count">{{ failed|length }} transaction{{ failed|length|pluralize }}</div>
+        <div class="count">{{ failed|length }} credit{{ failed|length|pluralize }}</div>
     </div>
 
     <div class="summary-card">
-        <h3>Creator Revenue</h3>
+        <h3>Creator</h3>
         <div class="amount creator">
-            {{ creator_share|length|add:0 }} credits
+            {{ creator_share|length|add:0 }}
         </div>
         <div class="count">{{ creator_share|length }} share{{ creator_share|length|pluralize }}</div>
     </div>
 
     <div class="summary-card">
-        <h3>Referral Revenue</h3>
+        <h3>Referral</h3>
         <div class="amount referral">
-            {{ referral_share|length|add:0 }} credits
+            {{ referral_share|length|add:0 }}
         </div>
         <div class="count">{{ referral_share|length }} referral{{ referral_share|length|pluralize }}</div>
     </div>
@@ -370,18 +469,18 @@
 
 <!-- Filter Tabs -->
 <div class="filter-tabs fade-in-on-scroll">
-    <a href="#" class="filter-tab active" onclick="showSection('all')">All Earnings</a>
-    <a href="#" class="filter-tab" onclick="showSection('completed')">Completed</a>
-    <a href="#" class="filter-tab" onclick="showSection('pending')">Pending</a>
-    <a href="#" class="filter-tab" onclick="showSection('failed')">Failed</a>
-    <a href="#" class="filter-tab" onclick="showSection('creator')">Creator Share</a>
-    <a href="#" class="filter-tab" onclick="showSection('referral')">Referrals</a>
+    <a href="#" class="filter-tab active" onclick="showSection('all'); return false;">All</a>
+    <a href="#" class="filter-tab" onclick="showSection('completed'); return false;">Completed</a>
+    <a href="#" class="filter-tab" onclick="showSection('pending'); return false;">Pending</a>
+    <a href="#" class="filter-tab" onclick="showSection('failed'); return false;">Failed</a>
+    <a href="#" class="filter-tab" onclick="showSection('creator'); return false;">Creator</a>
+    <a href="#" class="filter-tab" onclick="showSection('referral'); return false;">Referrals</a>
 </div>
 
 <!-- Completed Earnings -->
 <div id="completed-section" class="earnings-section fade-in-on-scroll">
     <div class="section-header">
-        <h2>✅ Completed Earnings</h2>
+        <h2>✅ Completed</h2>
         <span class="section-badge">{{ completed|length }}</span>
     </div>
     
@@ -415,7 +514,7 @@
                 
                 <div class="bot-info">
                     <div class="bot-name">🤖 {{ credit.bot.name }}</div>
-                    <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                    <div class="bot-description">
                         {{ credit.bot.description|truncatechars:100 }}
                     </div>
                 </div>
@@ -434,7 +533,7 @@
 <!-- Pending Earnings -->
 <div id="pending-section" class="earnings-section fade-in-on-scroll">
     <div class="section-header">
-        <h2>⏳ Pending Earnings</h2>
+        <h2>⏳ Pending</h2>
         <span class="section-badge">{{ pending|length }}</span>
     </div>
     
@@ -468,7 +567,7 @@
                 
                 <div class="bot-info">
                     <div class="bot-name">🤖 {{ credit.bot.name }}</div>
-                    <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                    <div class="bot-description">
                         {{ credit.bot.description|truncatechars:100 }}
                     </div>
                 </div>
@@ -487,7 +586,7 @@
 <!-- Failed Earnings -->
 <div id="failed-section" class="earnings-section fade-in-on-scroll">
     <div class="section-header">
-        <h2>❌ Failed Earnings</h2>
+        <h2>❌ Failed</h2>
         <span class="section-badge">{{ failed|length }}</span>
     </div>
     
@@ -521,7 +620,7 @@
                 
                 <div class="bot-info">
                     <div class="bot-name">🤖 {{ credit.bot.name }}</div>
-                    <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                    <div class="bot-description">
                         {{ credit.bot.description|truncatechars:100 }}
                     </div>
                 </div>
@@ -572,7 +671,7 @@
                 
                 <div class="bot-info">
                     <div class="bot-name">🤖 {{ credit.bot.name }}</div>
-                    <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                    <div class="bot-description">
                         Revenue from your bot creation
                     </div>
                 </div>
@@ -583,7 +682,7 @@
         <div class="empty-state">
             <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             <h3>No creator earnings yet</h3>
-            <p>Start creating bots to earn revenue from users</p>
+            <p>Start creating bots to earn revenue</p>
         </div>
     {% endif %}
 </div>
@@ -623,7 +722,7 @@
                 
                 <div class="bot-info">
                     <div class="bot-name">🤖 {{ credit.bot.name }}</div>
-                    <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                    <div class="bot-description">
                         Commission from referral usage
                     </div>
                 </div>
@@ -634,7 +733,7 @@
         <div class="empty-state">
             <svg fill="currentColor" viewBox="0 0 24 24"><path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A1.5 1.5 0 0 0 18.54 8H16c-.8 0-1.54.37-2.01 1l-2.8 3.73A1 1 0 0 0 12 14h2l-1.8 7H15l.9-3.6L17 22h3zM12.5 11.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5S11 9.17 11 10s.67 1.5 1.5 1.5zM5.5 6c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2zm2 16v-7H5V9.5C5 8.12 6.12 7 7.5 7S10 8.12 10 9.5V11h2.5c.28 0 .5.22.5.5s-.22.5-.5.5H10V15h-2.5z"/></svg>
             <h3>No referral earnings yet</h3>
-            <p>Share bots with friends to earn referral commissions</p>
+            <p>Share bots to earn referral commissions</p>
         </div>
     {% endif %}
 </div>
@@ -670,13 +769,11 @@
         }
     }
 
-    // Initialize with all sections visible
-    document.addEventListener('DOMContentLoaded', function() {
-        showSection('all');
-    });
-
     // Calculate and display actual totals
     document.addEventListener('DOMContentLoaded', function() {
+        // Initialize with all sections visible
+        showSection('all');
+        
         // Calculate completed total
         const completedItems = document.querySelectorAll('#completed-section .earning-amount');
         let completedTotal = 0;

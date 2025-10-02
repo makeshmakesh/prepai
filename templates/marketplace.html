@@ -4,353 +4,512 @@
 
 {% block extra_css %}
 <style>
-    /* Marketplace specific styles */
+    /* Clean marketplace styles */
+    .marketplace-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    /* Hero Section */
     .marketplace-hero {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 25px;
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        border-radius: 16px;
         color: white;
-        padding: 4rem 2rem;
+        padding: 3rem 2rem;
         text-align: center;
         margin-bottom: 3rem;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .marketplace-hero::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: repeating-linear-gradient(
-            45deg,
-            transparent,
-            transparent 10px,
-            rgba(255, 255, 255, 0.05) 10px,
-            rgba(255, 255, 255, 0.05) 20px
-        );
-        animation: movePattern 20s linear infinite;
-    }
-
-    @keyframes movePattern {
-        0% { transform: translateX(-50px) translateY(-50px); }
-        100% { transform: translateX(50px) translateY(50px); }
     }
 
     .marketplace-hero h1 {
-        font-size: 3.5rem;
-        font-weight: 800;
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 700;
         margin-bottom: 1rem;
-        position: relative;
-        z-index: 2;
     }
 
     .marketplace-hero p {
-        font-size: 1.3rem;
-        opacity: 0.9;
+        font-size: 1.125rem;
+        opacity: 0.95;
         max-width: 600px;
-        margin: 0 auto 2rem;
-        position: relative;
-        z-index: 2;
-    }
-
-.create-bot-section {
-    padding: 3rem 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 2rem;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-.create-bot-card {
-    background: white;
-    border-radius: 25px;
-    padding: 3rem;
-    box-shadow: var(--shadow-medium);
-    transition: all 0.3s ease;
-    border: 3px solid transparent;
-    background-clip: padding-box;
-    position: relative;
-    text-align: center;
-}
-
-    .create-bot-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: var(--secondary-gradient);
-        border-radius: 25px;
-        padding: 3px;
-        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        mask-composite: xor;
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .create-bot-card:hover::before {
-        opacity: 1;
-    }
-
-    .create-bot-card:hover {
-        transform: translateY(-10px);
-        box-shadow: var(--shadow-heavy);
-    }
-
-    .bot-icon {
-        font-size: 4rem;
-        margin-bottom: 1.5rem;
-        display: block;
-    }
-
-    .create-bot-title {
-        font-size: 2rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        color: black;
-    }
-
-    .create-bot-description {
-        color: var(--text-secondary);
-        font-size: 1.1rem;
+        margin: 0 auto;
         line-height: 1.6;
-        margin-bottom: 2rem;
     }
 
-    .btn-create-bot {
-        background: var(--secondary-gradient);
+    /* Action Cards Grid */
+    .action-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 4rem;
+    }
+
+    .action-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .action-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        border-color: #cbd5e1;
+    }
+
+    .action-icon {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .action-card.earnings .action-icon {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .action-card.manage .action-icon {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+
+    .action-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.75rem;
+    }
+
+    .action-description {
+        color: #64748b;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        flex-grow: 1;
+    }
+
+    .btn-action {
+        background: #2563eb;
         color: white;
-        padding: 1rem 2.5rem;
-        font-size: 1.1rem;
+        padding: 0.875rem 2rem;
+        font-size: 1rem;
         font-weight: 600;
-        border-radius: 25px;
+        border-radius: 12px;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
-        gap: 0.75rem;
-        transition: all 0.3s ease;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
         border: none;
         cursor: pointer;
-        position: relative;
-        overflow: hidden;
+        width: 100%;
+        justify-content: center;
     }
 
-    .btn-create-bot::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        transition: all 0.6s ease;
-    }
-
-    .btn-create-bot:hover::before {
-        width: 300px;
-        height: 300px;
-    }
-
-    .btn-create-bot:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 20px 40px rgba(240, 147, 251, 0.4);
+    .btn-action:hover {
+        background: #1d4ed8;
+        transform: translateY(-2px);
         color: white;
         text-decoration: none;
     }
 
-    .btn-create-bot span {
-        position: relative;
-        z-index: 2;
+    .action-card.earnings .btn-action {
+        background: #10b981;
+    }
+
+    .action-card.earnings .btn-action:hover {
+        background: #059669;
+    }
+
+    .action-card.manage .btn-action {
+        background: #f59e0b;
+    }
+
+    .action-card.manage .btn-action:hover {
+        background: #d97706;
+    }
+
+    /* Features Section */
+    .features-section {
+        margin-bottom: 3rem;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.5rem;
+    }
+
+    .section-subtitle {
+        font-size: 1.125rem;
+        color: #64748b;
     }
 
     .features-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin-top: 4rem;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
     }
 
     .feature-card {
         background: white;
+        border: 1px solid #e2e8f0;
         padding: 2rem;
-        border-radius: 20px;
+        border-radius: 16px;
         text-align: center;
-        box-shadow: var(--shadow-light);
         transition: all 0.3s ease;
     }
 
     .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-medium);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border-color: #cbd5e1;
     }
 
     .feature-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        display: block;
+        width: 56px;
+        height: 56px;
+        background: #f1f5f9;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        margin: 0 auto 1.25rem;
     }
 
     .feature-title {
-        font-size: 1.3rem;
+        font-size: 1.25rem;
         font-weight: 700;
-        margin-bottom: 1rem;
-        color: black;
+        color: #1e293b;
+        margin-bottom: 0.75rem;
     }
 
     .feature-description {
-        color: var(--text-secondary);
+        color: #64748b;
         line-height: 1.6;
+        font-size: 0.95rem;
     }
 
-    .coming-soon-badge {
-        background: var(--accent-gradient);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        display: inline-block;
+    /* Stats Bar */
+    .stats-bar {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 3rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        text-align: center;
+    }
+
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #2563eb;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        border-radius: 16px;
+        padding: 3rem 2rem;
+        text-align: center;
+        margin-top: 3rem;
+    }
+
+    .cta-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 1rem;
+    }
+
+    .cta-description {
+        font-size: 1.125rem;
+        color: #64748b;
         margin-bottom: 2rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
-    /* Mobile responsiveness */
-    @media (max-width: 768px) {
-            .create-bot-section {
-        grid-template-columns: 1fr;
-        padding: 2rem 1rem;
-        gap: 1.5rem;
+    .btn-cta {
+        background: #2563eb;
+        color: white;
+        padding: 1rem 2.5rem;
+        font-size: 1.125rem;
+        font-weight: 600;
+        border-radius: 12px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
     }
+
+    .btn-cta:hover {
+        background: #1d4ed8;
+        transform: translateY(-2px);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .marketplace-container {
+            padding: 1rem 0.5rem;
+        }
+
         .marketplace-hero {
-            padding: 3rem 1.5rem;
+            padding: 2rem 1.5rem;
         }
 
         .marketplace-hero h1 {
-            font-size: 2.5rem;
+            font-size: 2rem;
         }
 
         .marketplace-hero p {
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
-        .create-bot-card {
-            margin: 1rem;
-            padding: 2rem;
+        .action-cards {
+            grid-template-columns: 1fr;
+            gap: 1rem;
         }
 
-        .create-bot-title {
-            font-size: 1.5rem;
-            color: black;
+        .action-card {
+            padding: 1.5rem;
         }
 
         .features-grid {
             grid-template-columns: 1fr;
-            gap: 1.5rem;
+            gap: 1rem;
         }
+
+        .stats-bar {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            padding: 1.5rem;
+        }
+
+        .cta-section {
+            padding: 2rem 1.5rem;
+        }
+
+        .cta-title {
+            font-size: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .action-icon {
+            width: 56px;
+            height: 56px;
+            font-size: 1.75rem;
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            font-size: 1.5rem;
+        }
+    }
+
+    /* Smooth animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .action-card,
+    .feature-card {
+        animation: fadeIn 0.4s ease-out;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="marketplace-hero fade-in">
-    <h1>🤖 AI Roleplay Marketplace</h1>
-    <p>Create intelligent AI companions for realistic roleplay experiences. Build custom bots tailored to your specific needs.</p>
-</div>
+<div class="marketplace-container">
+    <!-- Hero Section -->
+    <div class="marketplace-hero">
+        <h1>AI Roleplay Marketplace</h1>
+        <p>Create intelligent AI bots for realistic roleplay experiences. Build, manage, and monetize custom bots tailored to your specific needs.</p>
+    </div>
 
-<div class="create-bot-section fade-in-on-scroll">
-    <div class="create-bot-card">
-        <span class="bot-icon">🎭</span>
-        <h2 class="create-bot-title">Create AI Roleplay Bot</h2>
-        <p class="create-bot-description">
-            Design your own AI-powered roleplay companion. Perfect for interview practice, conversation training, or creative storytelling scenarios.
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-value">500+</div>
+            <div class="stat-label">Active(public and invite only)Bots</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">10K+</div>
+            <div class="stat-label">Sessions Completed</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">98%</div>
+            <div class="stat-label">Satisfaction Rate</div>
+        </div>
+    </div>
+
+    <!-- Action Cards -->
+    <div class="action-cards">
+        <div class="action-card">
+            <div class="action-icon">🤖</div>
+            <h2 class="action-title">Create AI Bot</h2>
+            <p class="action-description">
+                Design your own AI-powered roleplay companion with custom personalities and conversation styles.
+            </p>
+            <a href="{% url 'create_roleplay_bot' %}" class="btn-action">
+                Create New Bot
+            </a>
+        </div>
+
+        <div class="action-card manage">
+            <div class="action-icon">⚙️</div>
+            <h2 class="action-title">My Bots</h2>
+            <p class="action-description">
+                Manage, edit, and monitor your AI roleplay bots. Track performance and user engagement.
+            </p>
+            <a href="{% url 'my-roleplay-bots' %}" class="btn-action">
+                View My Bots
+            </a>
+        </div>
+
+        <div class="action-card earnings">
+            <div class="action-icon">💰</div>
+            <h2 class="action-title">My Earnings</h2>
+            <p class="action-description">
+                Track your revenue from bot usage, subscriptions, and referrals. View detailed analytics.
+            </p>
+            <a href="{% url 'my-earnings' %}" class="btn-action">
+                View Earnings
+            </a>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features-section">
+        <div class="section-header">
+            <h2 class="section-title">Platform Features</h2>
+            <p class="section-subtitle">Everything you need to create and monetize AI roleplay bots</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3 class="feature-title">Custom Personalities</h3>
+                <p class="feature-description">
+                    Design unique AI personalities with specific traits, knowledge, and conversation styles.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎤</div>
+                <h3 class="feature-title">Voice Interactions</h3>
+                <p class="feature-description">
+                    Engage in realistic voice conversations using advanced speech recognition and synthesis.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💸</div>
+                <h3 class="feature-title">Monetization</h3>
+                <p class="feature-description">
+                    Share your bots and earn revenue through per-session pricing, credits, or subscriptions.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3 class="feature-title">Analytics</h3>
+                <p class="feature-description">
+                    Track usage metrics, user engagement, and earnings with detailed analytics dashboards.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3 class="feature-title">Privacy & Security</h3>
+                <p class="feature-description">
+                    Your conversations and data are encrypted and protected with enterprise-grade security.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🚀</div>
+                <h3 class="feature-title">Easy Sharing</h3>
+                <p class="feature-description">
+                    Share your bots with specific audiences or make them publicly available on the marketplace.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="cta-section">
+        <h2 class="cta-title">Ready to Get Started?</h2>
+        <p class="cta-description">
+            Join thousands of creators building the future of AI-powered roleplay experiences. Start creating your first bot today.
         </p>
-        <a href="{% url 'create_roleplay_bot' %}" class="btn-create-bot">
-            <span>🚀 Create Your Bot</span>
+        <a href="{% url 'create_roleplay_bot' %}" class="btn-cta">
+            Create Your First Bot
         </a>
     </div>
-        <div class="create-bot-card">
-        <span class="bot-icon">🎭</span>
-        <h2 class="create-bot-title">My AI Roleplay Bot</h2>
-        <p class="create-bot-description">
-            Manage your AI Roleplay Bot's here.
-        </p>
-        <a href="{% url 'my-roleplay-bots' %}" class="btn-create-bot">
-            <span>👁️ View My Bot's</span>
-        </a>
-    </div>
-    </div>
-        <div class="create-bot-card">
-        <span class="bot-icon">🎭</span>
-        <h2 class="create-bot-title">My Earnings</h2>
-        <p class="create-bot-description">
-            Manage your Earnings here.
-        </p>
-        <a href="{% url 'my-earnings' %}" class="btn-create-bot">
-            <span>💰 View Earnings</span>
-        </a>
-    </div>
-</div>
-
-<div class="features-grid fade-in-on-scroll">
-    <div class="feature-card">
-        <span class="feature-icon">🎯</span>
-        <h3 class="feature-title">Custom Personalities</h3>
-        <p class="feature-description">
-            Design unique AI personalities with specific traits, knowledge, and conversation styles tailored to your needs.
-        </p>
-    </div>
-    
-    <div class="feature-card">
-        <span class="feature-icon">💬</span>
-        <h3 class="feature-title">Voice Interactions</h3>
-        <p class="feature-description">
-            Engage in realistic voice conversations with your AI roleplay bots using advanced speech recognition and synthesis.
-        </p>
-    </div>
-
-
-        <div class="feature-card">
-        <span class="feature-icon">💰</span>
-        <h3 class="feature-title">Share & Discover</h3>
-        <p class="feature-description">
-            Share your roleplay bots with your niche audience and set pricing per session, credits, or subscriptions. Every interaction earns you revenue while users gain value.
-        </p>
-    </div>
-
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    // Add some interactive effects
-    $(document).ready(function() {
-        // Animate create bot card on hover
-        $('.create-bot-card').hover(
-            function() {
-                $(this).find('.bot-icon').css('transform', 'scale(1.1) rotate(10deg)');
-            },
-            function() {
-                $(this).find('.bot-icon').css('transform', 'scale(1) rotate(0deg)');
-            }
-        );
-
-        // Add click effect to create bot button
-        $('.btn-create-bot').on('click', function(e) {
-            // Add ripple effect or loading state here if needed
-            console.log('Navigating to create roleplay bot...');
-        });
-
-        // Stagger animation for feature cards
-        $('.feature-card').each(function(index) {
-            $(this).css('animation-delay', (index * 0.1) + 's');
-        });
+$(document).ready(function() {
+    // Smooth scroll animation for cards
+    const cards = document.querySelectorAll('.action-card, .feature-card');
+    
+    cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
     });
+
+    // Add click tracking (optional)
+    $('.btn-action, .btn-cta').on('click', function(e) {
+        const destination = $(this).attr('href');
+        console.log('Navigating to:', destination);
+    });
+});
 </script>
 {% endblock %}
