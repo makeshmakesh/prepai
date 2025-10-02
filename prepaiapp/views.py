@@ -20,14 +20,15 @@ from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.core.cache import cache
 from openai import OpenAI
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 import hashlib
 import hmac
 from decimal import Decimal
 import razorpay
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 class BotDetailView(LoginRequiredMixin, View):
     def get(self, request, bot_id):
         bot = RolePlayBots.objects.get(id=bot_id)
@@ -189,32 +190,72 @@ class OrderConfirmationView(LoginRequiredMixin, View):
     def get(self, request):
         # Redirect GET requests back to purchase page
         return redirect('purchase_credits')
+
 class MyEarningsView(LoginRequiredMixin, View):
     login_url = "/login/"
-    def seggregate_by_status(self, credit_shares: list[CreditShare]):
-        result = {
-            "completed": [],
-            "pending": [],
-            "failed": [],
-            "creator_share": [],
-            "referral_share": [],
-        }
-        for credit in credit_shares:
-            if credit.settlement_status == "completed":
-                result["completed"].append(credit)
-            elif credit.settlement_status == "pending":
-                result["pending"].append(credit)
-            elif credit.settlement_status == "failed":
-                result["failed"].append(credit)
-            if credit.credit_reason == "creator_share":
-                result["creator_share"].append(credit)
-            elif credit.credit_reason == "referral_share":
-                result["referral_share"].append(credit)
-        return result
-        
+    
     def get(self, request):
-        all_credit_shares = CreditShare.objects.filter(credited_to=request.user)
-        context = self.seggregate_by_status(all_credit_shares)
+        # Start with base queryset - NOT EXECUTED YET
+        queryset = CreditShare.objects.filter(credited_to=request.user)
+        
+        # Get filter parameters
+        date_from = request.GET.get('date_from')
+        date_to = request.GET.get('date_to')
+        status = request.GET.get('status')
+        credit_type = request.GET.get('type')
+        
+        # Apply default 30-day filter if no dates provided
+        if not date_from and not date_to:
+            end_date = timezone.now()
+            start_date = end_date - timedelta(days=30)
+            queryset = queryset.filter(
+                created_at__gte=start_date,
+                created_at__lte=end_date
+            )
+        else:
+            # Apply custom date filters
+            if date_from:
+                try:
+                    from_date = datetime.strptime(date_from, '%Y-%m-%d').date()
+                    queryset = queryset.filter(created_at__date__gte=from_date)
+                except ValueError:
+                    pass
+                    
+            if date_to:
+                try:
+                    to_date = datetime.strptime(date_to, '%Y-%m-%d').date()
+                    queryset = queryset.filter(created_at__date__lte=to_date)
+                except ValueError:
+                    pass
+        
+        # Apply status filter
+        if status:
+            queryset = queryset.filter(settlement_status=status)
+        
+        # Apply type filter
+        if credit_type:
+            queryset = queryset.filter(credit_reason=credit_type)
+        
+        # Order by most recent and FETCH ALL IN ONE QUERY
+        all_earnings = list(queryset.order_by('-created_at'))
+        
+        # Segregate in Python (no additional DB queries)
+        completed = [e for e in all_earnings if e.settlement_status == 'completed']
+        pending = [e for e in all_earnings if e.settlement_status == 'pending']
+        failed = [e for e in all_earnings if e.settlement_status == 'failed']
+        
+        context = {
+            'completed': completed,
+            'pending': pending,
+            'failed': failed,
+            'filters': {
+                'date_from': date_from or '',
+                'date_to': date_to or '',
+                'status': status or '',
+                'type': credit_type or '',
+            }
+        }
+        
         return render(request, 'my_earnings.html', context)
 class ShareRolePlayStartView(LoginRequiredMixin, View):
     login_url = "/login/"
@@ -481,19 +522,58 @@ class RolePlayStartView(LoginRequiredMixin, View):
             print(f"Error starting Roleplay session: {e}")
             messages.error(request, "Failed to start Roleplay session. Please try again.")
             return redirect('voice_roleplay')
+
+
+
 class VoiceRolePlayView(LoginRequiredMixin, View):
     """
-    View to display voice roleplay options
+    View to display voice roleplay options with search, filter, and pagination
     """
     login_url = "/login/"
     
     def get(self, request):
-        # Fetch roleplay templates (assuming they are a subset of InterviewTemplate)
-        roleplay_bots = RolePlayBots.objects.filter(is_active=True, is_public=True).order_by('order', '-created_at')
+        # Get query parameters
+        search_query = request.GET.get('search', '').strip()
+        filter_status = request.GET.get('filter', 'all')
+        page_number = request.GET.get('page', 1)
+        
+        # Base queryset
+        roleplay_bots = RolePlayBots.objects.filter(is_public=True)
+        
+        # Apply search filter (searches in name and description)
+        if search_query:
+            roleplay_bots = roleplay_bots.filter(
+                Q(name__icontains=search_query) | 
+                Q(description__icontains=search_query)
+            )
+        
+        # Apply status filter
+        if filter_status == 'active':
+            roleplay_bots = roleplay_bots.filter(is_active=True)
+        elif filter_status == 'inactive':
+            roleplay_bots = roleplay_bots.filter(is_active=False)
+        # 'all' shows everything (no additional filter)
+        
+        # Order by priority and recency
+        roleplay_bots = roleplay_bots.order_by('order', '-created_at')
+        
+        # Pagination (10 items per page)
+        paginator = Paginator(roleplay_bots, 100)
+        
+        try:
+            bots_page = paginator.page(page_number)
+        except PageNotAnInteger:
+            bots_page = paginator.page(1)
+        except EmptyPage:
+            bots_page = paginator.page(paginator.num_pages)
         
         context = {
-            'roleplay_bots': roleplay_bots,
+            'roleplay_bots': bots_page,
+            'search_query': search_query,
+            'filter_status': filter_status,
+            'total_bots': paginator.count,
         }
+        
         return render(request, 'voice_roleplay_list.html', context)
 
 class ProfileView(LoginRequiredMixin, View):

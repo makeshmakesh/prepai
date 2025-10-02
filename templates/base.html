@@ -766,17 +766,14 @@ body:has([style*="background: linear-gradient(135deg, #1a1a1a"]) .navbar-toggler
                     {% endif %}
                 </ul>
 
-<div class="navbar-nav ml-auto d-flex align-items-center">
+<div class="navbar-nav ml-auto d-flex align-items-center" style="gap: 0.75rem;">
     {% if user.is_authenticated %}
         <div class="user-profile">
             <a href="{% url 'profile' %}">
-                👤 {{ user.username|title }}
+                👤 Profile
             </a>
         </div>
-        <form method="post" action="{% url 'logout' %}" style="display: inline; margin: 0;">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-outline-danger">Logout</button>
-        </form>
+
     {% else %}
         <a href="{% url 'login' %}{% if next %}?next={{ next }}{% endif %}" class="btn btn-primary mr-2">Login</a>
         <a href="{% url 'signup' %}{% if next %}?next={{ next }}{% endif %}" class="btn btn-outline-primary">Register</a>

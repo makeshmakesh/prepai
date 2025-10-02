@@ -4,54 +4,56 @@
 
 {% block extra_css %}
 <style>
-    /* Clean, professional roleplay page */
     .roleplay-container {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 2rem 1rem;
+        padding: clamp(1rem, 3vw, 2rem);
     }
 
-    /* Header Section */
+    /* Page Header */
     .page-header {
         text-align: center;
-        margin-bottom: 3rem;
+        margin-bottom: clamp(2rem, 5vw, 3rem);
     }
 
     .page-title {
-        font-size: clamp(2rem, 5vw, 3rem);
+        font-size: clamp(1.75rem, 6vw, 3rem);
         font-weight: 700;
         color: #1e293b;
         margin-bottom: 0.75rem;
+        line-height: 1.2;
     }
 
     .page-subtitle {
-        font-size: 1.125rem;
+        font-size: clamp(0.95rem, 2.5vw, 1.125rem);
         color: #64748b;
         max-width: 600px;
-        margin: 0 auto 2rem;
+        margin: 0 auto;
         line-height: 1.6;
     }
 
-    /* Search and Filter Bar */
-    .search-filter-bar {
+    /* Search Bar */
+    .search-container {
         background: white;
         border-radius: 16px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
+        padding: clamp(1rem, 3vw, 1.5rem);
+        margin-bottom: clamp(1.5rem, 4vw, 2rem);
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-form {
         display: flex;
-        gap: 1rem;
+        gap: 0.75rem;
         flex-wrap: wrap;
-        align-items: center;
     }
 
     .search-input {
         flex: 1;
-        min-width: 250px;
-        padding: 0.75rem 1rem;
+        min-width: 200px;
+        padding: 0.875rem 1rem;
         border: 2px solid #e2e8f0;
         border-radius: 12px;
-        font-size: 1rem;
+        font-size: clamp(0.9rem, 2vw, 1rem);
         transition: all 0.2s;
     }
 
@@ -61,106 +63,120 @@
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
-    .filter-badge {
-        padding: 0.5rem 1rem;
-        background: #f1f5f9;
-        border: 2px solid transparent;
-        border-radius: 12px;
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: #64748b;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-
-    .filter-badge:hover,
-    .filter-badge.active {
+    .search-btn {
+        padding: 0.875rem 1.75rem;
         background: #2563eb;
         color: white;
-        border-color: #2563eb;
+        border: none;
+        border-radius: 12px;
+        font-size: clamp(0.9rem, 2vw, 0.95rem);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+
+    .search-btn:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
     }
 
     /* Bots Grid */
     .bots-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 3rem;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+        gap: clamp(1rem, 3vw, 1.5rem);
+        margin-bottom: clamp(2rem, 5vw, 3rem);
     }
 
-    /* Bot Card */
+    /* Bot Card with Background Image */
     .bot-card {
         background: white;
         border: 1px solid #e2e8f0;
         border-radius: 16px;
-        padding: 1.5rem;
+        overflow: hidden;
         transition: all 0.3s ease;
         cursor: pointer;
-        position: relative;
         display: flex;
         flex-direction: column;
+        min-height: 320px;
+        position: relative;
     }
 
     .bot-card:hover {
         transform: translateY(-4px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         border-color: #cbd5e1;
     }
 
-    /* Bot Header */
-    .bot-header {
-        display: flex;
-        align-items: flex-start;
-        gap: 1rem;
-        margin-bottom: 1rem;
-    }
-
-    .bot-avatar {
-        width: 56px;
-        height: 56px;
-        border-radius: 12px;
+    /* Background Image Section */
+    .bot-card-bg {
+        position: relative;
+        height: 140px;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.75rem;
-        flex-shrink: 0;
+        font-size: 3rem;
         overflow: hidden;
     }
 
-    .bot-avatar img {
+    .bot-card-bg::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+        z-index: 1;
+    }
+
+    .bot-card-bg img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        position: absolute;
+        inset: 0;
     }
 
-    .bot-header-info {
+    .bot-card-bg-emoji {
+        position: relative;
+        z-index: 2;
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
+    }
+
+    /* Card Content */
+    .bot-card-content {
+        padding: clamp(1.25rem, 3vw, 1.5rem);
+        display: flex;
+        flex-direction: column;
         flex: 1;
-        min-width: 0;
+        background: white;
+    }
+
+    .bot-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        gap: 1rem;
     }
 
     .bot-name {
-        font-size: 1.25rem;
+        font-size: clamp(1.1rem, 3vw, 1.25rem);
         font-weight: 700;
         color: #1e293b;
-        margin-bottom: 0.25rem;
         line-height: 1.3;
-    }
-
-    .bot-meta {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        flex-wrap: wrap;
+        word-break: break-word;
+        flex: 1;
     }
 
     .status-badge {
-        padding: 0.25rem 0.75rem;
+        padding: 0.35rem 0.75rem;
         border-radius: 6px;
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        white-space: nowrap;
     }
 
     .status-active {
@@ -173,73 +189,38 @@
         color: #64748b;
     }
 
-    .bot-creator {
-        font-size: 0.875rem;
-        color: #64748b;
-    }
-
-    /* Bot Content */
     .bot-description {
         color: #475569;
-        font-size: 0.95rem;
+        font-size: clamp(0.875rem, 2vw, 0.95rem);
         line-height: 1.6;
         margin-bottom: 1rem;
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
-    }
-
-    .bot-stats {
-        display: flex;
-        gap: 1.5rem;
-        padding: 1rem 0;
-        margin-bottom: 1rem;
-        border-top: 1px solid #f1f5f9;
-        border-bottom: 1px solid #f1f5f9;
-    }
-
-    .stat-item {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-    }
-
-    .stat-label {
-        font-size: 0.75rem;
-        color: #94a3b8;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-weight: 600;
-    }
-
-    .stat-value {
-        font-size: 1.125rem;
-        font-weight: 700;
-        color: #1e293b;
+        flex: 1;
     }
 
     /* Bot Actions */
     .bot-actions {
-        display: flex;
-        gap: 0.75rem;
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 0.5rem;
         margin-top: auto;
     }
 
     .btn-start {
-        flex: 1;
         background: #2563eb;
         color: white;
         border: none;
         border-radius: 10px;
-        padding: 0.75rem 1rem;
+        padding: 0.75rem 0.5rem;
         font-weight: 600;
-        font-size: 0.95rem;
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
         text-decoration: none;
-        display: inline-flex;
+        display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.5rem;
         transition: all 0.2s;
         cursor: pointer;
     }
@@ -258,33 +239,94 @@
         transform: none;
     }
 
-    .btn-share {
+    .btn-secondary {
         background: white;
         color: #64748b;
         border: 2px solid #e2e8f0;
         border-radius: 10px;
-        padding: 0.75rem 1rem;
+        padding: 0.75rem 0.5rem;
         font-weight: 600;
-        font-size: 0.95rem;
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
         text-decoration: none;
-        display: inline-flex;
+        display: flex;
         align-items: center;
         justify-content: center;
         transition: all 0.2s;
         cursor: pointer;
     }
 
-    .btn-share:hover {
+    .btn-secondary:hover {
         background: #f8fafc;
         border-color: #cbd5e1;
         color: #475569;
         text-decoration: none;
     }
 
+    /* Pagination */
+    .pagination-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: clamp(2rem, 5vw, 3rem);
+        padding: 1rem;
+    }
+
+    .pagination {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .page-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        min-height: 40px;
+        padding: 0.5rem 0.75rem;
+        background: white;
+        color: #64748b;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .page-btn:hover:not(.page-btn-disabled):not(.page-btn-active) {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        color: #475569;
+        text-decoration: none;
+    }
+
+    .page-btn-active {
+        background: #2563eb;
+        color: white;
+        border-color: #2563eb;
+        cursor: default;
+    }
+
+    .page-btn-disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    .page-dots {
+        padding: 0.5rem;
+        color: #94a3b8;
+        font-weight: 600;
+    }
+
     /* Empty State */
     .empty-state {
         text-align: center;
-        padding: 4rem 2rem;
+        padding: clamp(3rem, 8vw, 4rem) clamp(1rem, 4vw, 2rem);
         background: white;
         border: 2px dashed #e2e8f0;
         border-radius: 16px;
@@ -292,132 +334,63 @@
     }
 
     .empty-state-icon {
-        font-size: 4rem;
+        font-size: clamp(3rem, 10vw, 4rem);
         margin-bottom: 1rem;
         opacity: 0.5;
     }
 
     .empty-state h3 {
-        font-size: 1.5rem;
+        font-size: clamp(1.25rem, 4vw, 1.5rem);
         font-weight: 700;
         color: #1e293b;
         margin-bottom: 0.5rem;
     }
 
     .empty-state p {
-        font-size: 1rem;
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
         color: #64748b;
         margin-bottom: 1.5rem;
     }
 
-    /* Stats Bar */
-    .stats-bar {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin-bottom: 2rem;
-    }
-
-    .stat-card {
-        background: white;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 1.25rem;
-        text-align: center;
-    }
-
-    .stat-card-value {
-        font-size: 2rem;
-        font-weight: 800;
-        color: #2563eb;
-        margin-bottom: 0.25rem;
-    }
-
-    .stat-card-label {
-        font-size: 0.875rem;
-        color: #64748b;
-        font-weight: 500;
-    }
-
-    /* Mobile Responsive */
-    @media (max-width: 768px) {
-        .roleplay-container {
-            padding: 1rem 0.5rem;
+    /* Mobile Optimizations */
+    @media (max-width: 640px) {
+        .bot-actions {
+            grid-template-columns: 1fr;
         }
 
-        .page-title {
-            font-size: 2rem;
+        .btn-secondary {
+            order: 2;
         }
 
-        .page-subtitle {
-            font-size: 1rem;
-        }
-
-        .search-filter-bar {
-            padding: 1rem;
+        .search-form {
+            flex-direction: column;
         }
 
         .search-input {
             min-width: 100%;
         }
 
-        .bots-grid {
-            grid-template-columns: 1fr;
-            gap: 1rem;
+        .search-btn {
+            width: 100%;
         }
 
-        .bot-card {
-            padding: 1.25rem;
+        .page-btn {
+            min-width: 36px;
+            min-height: 36px;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.85rem;
         }
 
-        .bot-stats {
-            gap: 1rem;
+        .pagination {
+            gap: 0.375rem;
         }
 
-        .stat-item {
-            flex: 1;
-        }
-
-        .bot-actions {
-            flex-direction: column;
-        }
-
-        .btn-share {
-            order: 2;
-        }
-
-        .stats-bar {
-            grid-template-columns: 1fr;
-            gap: 0.75rem;
+        .bot-card-bg {
+            height: 120px;
         }
     }
 
-    @media (max-width: 480px) {
-        .bot-header {
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-
-        .bot-meta {
-            justify-content: center;
-        }
-    }
-
-    /* Loading State */
-    .skeleton {
-        background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
-        background-size: 200% 100%;
-        animation: loading 1.5s ease-in-out infinite;
-        border-radius: 8px;
-    }
-
-    @keyframes loading {
-        0% { background-position: 200% 0; }
-        100% { background-position: -200% 0; }
-    }
-
-    /* Smooth animations */
+    /* Animations */
     @keyframes fadeIn {
         from {
             opacity: 0;
@@ -445,109 +418,162 @@
         </p>
     </div>
 
-    <!-- Search and Filters -->
-    <div class="search-filter-bar">
-        <input 
-            type="text" 
-            class="search-input" 
-            placeholder="Search bots..."
-            id="searchInput"
-        >
-        <div class="filter-badge active" data-filter="all">All</div>
-        <div class="filter-badge" data-filter="active">Active</div>
-        <div class="filter-badge" data-filter="popular">Popular</div>
+    <!-- Search Container -->
+    <div class="search-container">
+        <form method="get" action="" class="search-form">
+            <input 
+                type="text" 
+                class="search-input" 
+                placeholder="Search bots by name, scenarios, use case etc..."
+                name="search"
+                value="{{ search_query }}"
+            >
+            <button type="submit" class="search-btn">Search</button>
+        </form>
     </div>
-
-    <!-- Stats Bar (Optional) -->
-    {% comment %} {% if roleplay_bots %}
-    <div class="stats-bar">
-        <div class="stat-card">
-            <div class="stat-card-value">{{ roleplay_bots|length }}</div>
-            <div class="stat-card-label">Available Bots</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-card-value">{{ roleplay_bots|length }}</div>
-            <div class="stat-card-label">Active Sessions</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-card-value">10+</div>
-            <div class="stat-card-label">Categories</div>
-        </div>
-    </div>
-    {% endif %} {% endcomment %}
 
     <!-- Bots Grid -->
     {% if roleplay_bots %}
-    <div class="bots-grid" id="botsGrid">
+    <div class="bots-grid">
         {% for bot in roleplay_bots %}
-        <div class="bot-card" data-bot-name="{{ bot.name|lower }}" data-bot-status="{{ bot.is_active|yesno:'active,inactive' }}">
-            <div class="bot-header">
-                <div class="bot-avatar">
-                    {% if bot.avatar_url %}
-                        <img src="{{ bot.avatar_url }}" alt="{{ bot.name }}">
-                    {% else %}
-                        🤖
-                    {% endif %}
-                </div>
-                <div class="bot-header-info">
-                    <h3 class="bot-name">{{ bot.name }}</h3>
-                    <div class="bot-meta">
-                        {% if bot.is_active %}
-                            <span class="status-badge status-active">Active</span>
-                        {% else %}
-                            <span class="status-badge status-inactive">Inactive</span>
-                        {% endif %}
-                        {% comment %} <span class="bot-creator">By {{ bot.created_by.username }}</span> {% endcomment %}
-                    </div>
-                </div>
+        <div class="bot-card" onclick="handleCardClick(event, '{% url 'start_roleplay' bot.id %}', {{ bot.is_active|yesno:'true,false' }})">
+            <!-- Background Image Section -->
+            <div class="bot-card-bg">
+                {% if bot.avatar_url %}
+                    <img src="{{ bot.avatar_url }}" alt="{{ bot.name }}">
+                {% else %}
+                    <span class="bot-card-bg-emoji">🤖</span>
+                {% endif %}
             </div>
 
-            {% if bot.description %}
-            <p class="bot-description">{{ bot.description }}</p>
-            {% endif %}
+            <!-- Card Content -->
+            <div class="bot-card-content">
+                <div class="bot-header">
+                    <h3 class="bot-name">{{ bot.name }}</h3>
+                    {% if bot.is_active %}
+                        <span class="status-badge status-active">Active</span>
+                    {% else %}
+                        <span class="status-badge status-inactive">Inactive</span>
+                    {% endif %}
+                </div>
 
-            {% comment %} <div class="bot-stats">
-                <div class="stat-item">
-                    <span class="stat-label">Sessions</span>
-                    <span class="stat-value">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Rating</span>
-                    <span class="stat-value">4.8</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Duration</span>
-                    <span class="stat-value">~15m</span>
-                </div>
-            </div> {% endcomment %}
-
-            <div class="bot-actions">
-                {% if bot.is_active %}
-                    <a href="{% url 'start_roleplay' bot.id %}" class="btn-start">
-                        Start Session
-                    </a>
-                    <a href="{% url 'share-roleplay-bot' bot.id %}" class="btn-share">
-                        Share
-                    </a>
-                    <a href="{% url 'bot-detail' bot.id %}" class="btn-share">
-                        View
-                    </a>
-                {% else %}
-                    <button class="btn-start" disabled>
-                        Unavailable
-                    </button>
+                {% if bot.description %}
+                <p class="bot-description">{{ bot.description }}</p>
                 {% endif %}
+
+                <div class="bot-actions">
+                    {% if bot.is_active %}
+                        <a href="{% url 'start_roleplay' bot.id %}" class="btn-start" onclick="event.stopPropagation()">
+                            Start
+                        </a>
+                        <a href="{% url 'share-roleplay-bot' bot.id %}" class="btn-secondary" onclick="event.stopPropagation()">
+                            Share
+                        </a>
+                        <a href="{% url 'bot-detail' bot.id %}" class="btn-secondary" onclick="event.stopPropagation()">
+                            View
+                        </a>
+                    {% else %}
+                        <button class="btn-start" disabled>Unavailable</button>
+                    {% endif %}
+                </div>
             </div>
         </div>
         {% endfor %}
     </div>
+
+    <!-- Pagination -->
+    {% if roleplay_bots.paginator.num_pages > 1 %}
+    <div class="pagination-wrapper">
+        <div class="pagination">
+            <!-- Previous Button -->
+            {% if roleplay_bots.has_previous %}
+                <a href="?page={{ roleplay_bots.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                   class="page-btn">
+                    ‹
+                </a>
+            {% else %}
+                <span class="page-btn page-btn-disabled">‹</span>
+            {% endif %}
+
+            <!-- Page Numbers -->
+            {% with page_num=roleplay_bots.number total_pages=roleplay_bots.paginator.num_pages %}
+                {% if total_pages <= 7 %}
+                    <!-- Show all pages if 7 or fewer -->
+                    {% for num in roleplay_bots.paginator.page_range %}
+                        {% if num == page_num %}
+                            <span class="page-btn page-btn-active">{{ num }}</span>
+                        {% else %}
+                            <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                               class="page-btn">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <!-- Show condensed pagination for many pages -->
+                    {% if page_num <= 3 %}
+                        <!-- Near start -->
+                        {% for num in "12345" %}
+                            {% if forloop.counter == page_num %}
+                                <span class="page-btn page-btn-active">{{ forloop.counter }}</span>
+                            {% else %}
+                                <a href="?page={{ forloop.counter }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                                   class="page-btn">{{ forloop.counter }}</a>
+                            {% endif %}
+                        {% endfor %}
+                        <span class="page-dots">...</span>
+                        <a href="?page={{ total_pages }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                           class="page-btn">{{ total_pages }}</a>
+                    {% elif page_num >= total_pages|add:"-2" %}
+                        <!-- Near end -->
+                        <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}" 
+                           class="page-btn">1</a>
+                        <span class="page-dots">...</span>
+                        {% for i in "01234"|make_list %}
+                            {% with num=total_pages|add:"-4"|add:forloop.counter0 %}
+                                {% if num == page_num %}
+                                    <span class="page-btn page-btn-active">{{ num }}</span>
+                                {% else %}
+                                    <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                                       class="page-btn">{{ num }}</a>
+                                {% endif %}
+                            {% endwith %}
+                        {% endfor %}
+                    {% else %}
+                        <!-- In middle -->
+                        <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}" 
+                           class="page-btn">1</a>
+                        <span class="page-dots">...</span>
+                        <a href="?page={{ page_num|add:"-1" }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                           class="page-btn">{{ page_num|add:"-1" }}</a>
+                        <span class="page-btn page-btn-active">{{ page_num }}</span>
+                        <a href="?page={{ page_num|add:"1" }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                           class="page-btn">{{ page_num|add:"1" }}</a>
+                        <span class="page-dots">...</span>
+                        <a href="?page={{ total_pages }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                           class="page-btn">{{ total_pages }}</a>
+                    {% endif %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Next Button -->
+            {% if roleplay_bots.has_next %}
+                <a href="?page={{ roleplay_bots.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                   class="page-btn">
+                    ›
+                </a>
+            {% else %}
+                <span class="page-btn page-btn-disabled">›</span>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
     {% else %}
     <!-- Empty State -->
     <div class="empty-state">
         <div class="empty-state-icon">🤖</div>
         <h3>No Roleplay Bots Available</h3>
         <p>We're working on adding exciting roleplay scenarios. Check back soon!</p>
-        <a href="{% url 'dashboard' %}" class="btn-start">
+        <a href="{% url 'dashboard' %}" class="btn-start" style="display: inline-flex; padding: 0.75rem 2rem;">
             Back to Dashboard
         </a>
     </div>
@@ -557,47 +583,14 @@
 
 {% block extra_js %}
 <script>
-$(document).ready(function() {
-    // Search functionality
-    $('#searchInput').on('keyup', function() {
-        const searchTerm = $(this).val().toLowerCase();
-        
-        $('.bot-card').each(function() {
-            const botName = $(this).data('bot-name');
-            const isVisible = botName.includes(searchTerm);
-            $(this).toggle(isVisible);
-        });
-    });
-
-    // Filter functionality
-    $('.filter-badge').on('click', function() {
-        $('.filter-badge').removeClass('active');
-        $(this).addClass('active');
-        
-        const filter = $(this).data('filter');
-        
-        $('.bot-card').each(function() {
-            if (filter === 'all') {
-                $(this).show();
-            } else if (filter === 'active') {
-                const isActive = $(this).data('bot-status') === 'active';
-                $(this).toggle(isActive);
-            } else if (filter === 'popular') {
-                // Add your popular logic here
-                $(this).show();
-            }
-        });
-    });
-
-    // Click card to start (except when clicking buttons)
-    $('.bot-card').on('click', function(e) {
-        if ($(e.target).closest('.bot-actions').length) return;
-        
-        const startBtn = $(this).find('.btn-start');
-        if (!startBtn.prop('disabled')) {
-            window.location.href = startBtn.attr('href');
-        }
-    });
-});
+function handleCardClick(event, url, isActive) {
+    // Don't navigate if clicking on action buttons
+    if (event.target.closest('.bot-actions')) return;
+    
+    // Only navigate if bot is active
+    if (isActive) {
+        window.location.href = url;
+    }
+}
 </script>
 {% endblock %}

@@ -4,172 +4,263 @@
 
 {% block extra_css %}
 <style>
-    /* Earnings specific styles */
-    .earnings-header {
-        background: var(--hero-gradient);
-        background-size: 400% 400%;
-        animation: gradientShift 15s ease infinite;
-        color: white;
+    .earnings-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: clamp(1rem, 3vw, 2rem);
+    }
+
+    /* Page Header */
+    .page-header {
+        background: var(--primary-gradient);
         border-radius: 16px;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
+        padding: clamp(1.5rem, 4vw, 2rem);
+        color: white;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow-medium);
     }
 
-    .earnings-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(10px);
-    }
-
-    .earnings-header > * {
-        position: relative;
-        z-index: 1;
-    }
-
-    .earnings-header h1 {
-        font-size: clamp(1.5rem, 5vw, 2.5rem);
+    .page-header h1 {
+        font-size: clamp(1.5rem, 5vw, 2rem);
         font-weight: 800;
         margin-bottom: 0.5rem;
     }
 
-    .earnings-header p {
-        font-size: clamp(0.9rem, 3vw, 1.1rem);
+    .page-header p {
+        font-size: clamp(0.9rem, 2vw, 1rem);
         opacity: 0.95;
         margin: 0;
     }
 
-    @keyframes gradientShift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-
-    .earnings-summary {
+    /* Summary Stats */
+    .summary-stats {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
         gap: 1rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .summary-card {
-        background: white;
-        border-radius: 12px;
-        padding: 1.25rem 1rem;
-        box-shadow: var(--shadow-light);
-        transition: all 0.3s ease;
-        text-align: center;
-        border: 1px solid rgba(0, 0, 0, 0.05);
-    }
-
-    .summary-card:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-medium);
-    }
-
-    .summary-card h3 {
-        color: var(--text-secondary);
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-        margin-bottom: 0.5rem;
-    }
-
-    .summary-card .amount {
-        font-size: clamp(1.25rem, 4vw, 1.75rem);
-        font-weight: 800;
-        margin-bottom: 0.25rem;
-        line-height: 1.2;
-    }
-
-    .summary-card .count {
-        color: var(--text-secondary);
-        font-size: 0.8rem;
-    }
-
-    .amount.completed { color: #22c55e; }
-    .amount.pending { color: #f59e0b; }
-    .amount.failed { color: #ef4444; }
-    .amount.creator { color: #8b5cf6; }
-    .amount.referral { color: #06b6d4; }
-
-    .earnings-section {
         margin-bottom: 2rem;
     }
 
-    .section-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 1rem;
-        padding-bottom: 0.75rem;
-        border-bottom: 2px solid rgba(0, 0, 0, 0.05);
-        gap: 0.5rem;
-        flex-wrap: wrap;
-    }
-
-    .section-header h2 {
-        margin: 0;
-        font-size: clamp(1.25rem, 4vw, 1.5rem);
-        font-weight: 700;
-        color: var(--text-primary);
-    }
-
-    .section-badge {
-        background: var(--secondary-gradient);
-        color: white;
-        padding: 0.25rem 0.75rem;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        flex-shrink: 0;
-    }
-
-    .earnings-list {
-        display: grid;
-        gap: 1rem;
-    }
-
-    .earning-item {
+    .stat-card {
         background: white;
         border-radius: 12px;
         padding: 1.25rem;
         box-shadow: var(--shadow-light);
+        text-align: center;
+        border: 2px solid transparent;
         transition: all 0.3s ease;
-        border-left: 4px solid transparent;
-        position: relative;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-medium);
+        border-color: rgba(102, 126, 234, 0.2);
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        font-weight: 800;
+        color: #667eea;
+    }
+
+    /* Filter Section */
+    .filter-section {
+        background: white;
+        border-radius: 16px;
+        padding: clamp(1rem, 3vw, 1.5rem);
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow-light);
+    }
+
+    .filter-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .filter-header h3 {
+        font-size: clamp(1rem, 3vw, 1.2rem);
+        font-weight: 700;
+        color: black;
+        margin: 0;
+    }
+
+    .filter-toggle {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .filter-toggle:hover {
+        background: rgba(102, 126, 234, 0.2);
+    }
+
+    .filter-controls {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        max-height: 0;
         overflow: hidden;
+        transition: max-height 0.3s ease;
     }
 
-    .earning-item:active {
-        transform: scale(0.98);
+    .filter-controls.active {
+        max-height: 500px;
+        margin-top: 1rem;
     }
 
-    .earning-item.completed { border-left-color: #22c55e; }
-    .earning-item.pending { border-left-color: #f59e0b; }
-    .earning-item.failed { border-left-color: #ef4444; }
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
 
-    .earning-header {
+    .filter-group label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: grey;
+    }
+
+    .filter-group select,
+    .filter-group input {
+        padding: 0.75rem;
+        border: 2px solid rgba(102, 126, 234, 0.2);
+        border-radius: 8px;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .filter-group select:focus,
+    .filter-group input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .filter-actions {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+
+    .btn-filter {
+        flex: 1;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .btn-apply {
+        background: var(--primary-gradient);
+        color: white;
+    }
+
+    .btn-apply:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-reset {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border: 2px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-reset:hover {
+        background: rgba(239, 68, 68, 0.2);
+    }
+
+    /* Earnings List */
+    .earnings-container {
+        background: white;
+        border-radius: 16px;
+        padding: clamp(1rem, 3vw, 1.5rem);
+        box-shadow: var(--shadow-light);
+    }
+
+    .earnings-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .earnings-header h3 {
+        font-size: clamp(1.1rem, 3vw, 1.3rem);
+        font-weight: 700;
+        color: black;
+        margin: 0;
+    }
+
+    .results-count {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        font-weight: 600;
+    }
+
+    .earnings-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .earning-card {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.02) 0%, rgba(240, 147, 251, 0.02) 100%);
+        border: 2px solid rgba(102, 126, 234, 0.1);
+        border-left: 4px solid #667eea;
+        border-radius: 12px;
+        padding: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .earning-card:hover {
+        transform: translateX(4px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+        border-color: rgba(102, 126, 234, 0.3);
+    }
+
+    .earning-card.completed { border-left-color: #22c55e; }
+    .earning-card.pending { border-left-color: #f59e0b; }
+    .earning-card.failed { border-left-color: #ef4444; }
+
+    .earning-top {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: 1rem;
-        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+        gap: 1rem;
     }
 
     .earning-amount {
-        font-size: clamp(1.25rem, 5vw, 1.5rem);
+        font-size: clamp(1.2rem, 4vw, 1.4rem);
         font-weight: 800;
-        margin: 0;
-        line-height: 1.2;
+        color: #667eea;
     }
 
     .earning-amount.completed { color: #22c55e; }
@@ -178,13 +269,12 @@
 
     .earning-status {
         padding: 0.35rem 0.75rem;
-        border-radius: 12px;
+        border-radius: 8px;
         font-size: 0.7rem;
-        font-weight: 600;
+        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.3px;
+        letter-spacing: 0.5px;
         white-space: nowrap;
-        flex-shrink: 0;
     }
 
     .status-completed {
@@ -202,627 +292,360 @@
         color: #ef4444;
     }
 
-    .earning-details {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
-        margin-bottom: 1rem;
-    }
-
-    .detail-item {
+    .earning-meta {
         display: flex;
-        flex-direction: column;
-        min-width: 0;
-    }
-
-    .detail-label {
-        font-size: 0.7rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.85rem;
         color: var(--text-secondary);
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-        font-weight: 600;
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.75rem;
     }
 
-    .detail-value {
-        font-weight: 600;
-        color: black;
-        font-size: 0.9rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
     }
 
-    .bot-info {
+    .earning-bot {
         background: rgba(102, 126, 234, 0.05);
-        padding: 0.875rem;
+        padding: 0.75rem;
         border-radius: 8px;
-        margin-top: 1rem;
+        font-size: 0.85rem;
     }
 
     .bot-name {
         font-weight: 600;
         color: #667eea;
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
+        margin-bottom: 0.25rem;
     }
 
-    .bot-description {
-        font-size: 0.85rem;
-        color: var(--text-secondary);
-        line-height: 1.4;
-    }
-
+    /* Empty State */
     .empty-state {
         text-align: center;
-        padding: 2.5rem 1rem;
+        padding: 3rem 1rem;
         color: var(--text-secondary);
     }
 
-    .empty-state svg {
-        width: 3rem;
-        height: 3rem;
+    .empty-icon {
+        font-size: 3rem;
         margin-bottom: 1rem;
         opacity: 0.5;
     }
 
     .empty-state h3 {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
+        color: black;
         margin-bottom: 0.5rem;
     }
 
-    .empty-state p {
-        font-size: 0.9rem;
-    }
-
-    .filter-tabs {
-        display: flex;
-        gap: 0.5rem;
-        margin-bottom: 1.5rem;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        padding-bottom: 0.5rem;
-    }
-
-    .filter-tabs::-webkit-scrollbar {
-        display: none;
-    }
-
-    .filter-tab {
-        padding: 0.625rem 1.25rem;
-        border-radius: 20px;
-        background: white;
-        border: 2px solid rgba(102, 126, 234, 0.2);
+    /* Loading State */
+    .loading {
+        text-align: center;
+        padding: 2rem;
         color: var(--text-secondary);
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        font-size: 0.85rem;
-        white-space: nowrap;
-        flex-shrink: 0;
     }
 
-    .filter-tab:hover,
-    .filter-tab.active {
-        background: var(--primary-gradient);
-        color: white;
-        border-color: transparent;
-        text-decoration: none;
-        transform: translateY(-1px);
+    .spinner {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(102, 126, 234, 0.2);
+        border-top-color: #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
     }
 
-    .filter-tab:active {
-        transform: translateY(0);
+    @keyframes spin {
+        to { transform: rotate(360deg); }
     }
 
-    /* Mobile optimizations */
+    /* Mobile Optimizations */
     @media (max-width: 768px) {
-        .earnings-header {
-            padding: 1.25rem;
-            border-radius: 12px;
-        }
-
-        .earnings-summary {
+        .summary-stats {
             grid-template-columns: repeat(2, 1fr);
-            gap: 0.75rem;
         }
 
-        .summary-card {
-            padding: 1rem 0.75rem;
-        }
-
-        .summary-card h3 {
-            font-size: 0.7rem;
-        }
-
-        .earning-item {
-            padding: 1rem;
-        }
-
-        .earning-details {
+        .filter-controls {
             grid-template-columns: 1fr;
+        }
+
+        .filter-actions {
+            flex-direction: column;
+        }
+
+        .earning-top {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .earning-meta {
+            flex-direction: column;
             gap: 0.5rem;
-        }
-
-        .section-header h2 {
-            font-size: 1.25rem;
-        }
-
-        .bot-info {
-            padding: 0.75rem;
         }
     }
 
     @media (max-width: 480px) {
-        .earnings-header {
-            padding: 1rem;
-        }
-
-        .earnings-summary {
+        .summary-stats {
             grid-template-columns: 1fr;
         }
-
-        .summary-card {
-            padding: 1rem;
-        }
-
-        .earning-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.5rem;
-        }
-
-        .earning-status {
-            align-self: flex-start;
-        }
-
-        .filter-tabs {
-            gap: 0.375rem;
-        }
-
-        .filter-tab {
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
-        }
-    }
-
-    /* Improved touch targets for mobile */
-    @media (hover: none) and (pointer: coarse) {
-        .filter-tab {
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .earning-item {
-            min-height: 44px;
-        }
-    }
-
-    /* Loading state */
-    .loading-skeleton {
-        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: loading 1.5s infinite;
-        border-radius: 8px;
-        height: 100px;
-    }
-
-    @keyframes loading {
-        0% { background-position: 200% 0; }
-        100% { background-position: -200% 0; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="earnings-header fade-in">
-    <h1>💰 My Earnings</h1>
-    <p>Track your revenue from bot creations and referrals</p>
-</div>
+<div class="earnings-page">
+    <!-- Page Header -->
+    <div class="page-header fade-in">
+        <h1>💰 My Earnings</h1>
+    </div>
 
-<!-- Summary Cards -->
-<div class="earnings-summary fade-in-on-scroll">
-    <div class="summary-card">
-        <h3>Completed</h3>
-        <div class="amount completed">
-            {{ completed|length|add:0 }}
+    <!-- Summary Stats -->
+    <div class="summary-stats fade-in-on-scroll">
+        <div class="stat-card">
+            <div class="stat-label">Total Earned</div>
+            <div class="stat-value" id="totalEarned">0</div>
         </div>
-        <div class="count">{{ completed|length }} credit{{ completed|length|pluralize }}</div>
-    </div>
-
-    <div class="summary-card">
-        <h3>Pending</h3>
-        <div class="amount pending">
-            {{ pending|length|add:0 }}
+        <div class="stat-card">
+            <div class="stat-label">Settled</div>
+            <div class="stat-value" id="completedCount">{{ completed|length }}</div>
         </div>
-        <div class="count">{{ pending|length }} credit{{ pending|length|pluralize }}</div>
-    </div>
-
-    <div class="summary-card">
-        <h3>Failed</h3>
-        <div class="amount failed">
-            {{ failed|length|add:0 }}
+        <div class="stat-card">
+            <div class="stat-label">Pending</div>
+            <div class="stat-value" id="pendingCount">{{ pending|length }}</div>
         </div>
-        <div class="count">{{ failed|length }} credit{{ failed|length|pluralize }}</div>
     </div>
 
-    <div class="summary-card">
-        <h3>Creator</h3>
-        <div class="amount creator">
-            {{ creator_share|length|add:0 }}
+    <!-- Filter Section -->
+    <div class="filter-section fade-in-on-scroll">
+        <div class="filter-header">
+            <h3>Filter Earnings</h3>
+            <button class="filter-toggle" onclick="toggleFilters()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 4H14M4 8H12M6 12H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <span id="filterToggleText">Show Filters</span>
+            </button>
         </div>
-        <div class="count">{{ creator_share|length }} share{{ creator_share|length|pluralize }}</div>
-    </div>
 
-    <div class="summary-card">
-        <h3>Referral</h3>
-        <div class="amount referral">
-            {{ referral_share|length|add:0 }}
-        </div>
-        <div class="count">{{ referral_share|length }} referral{{ referral_share|length|pluralize }}</div>
-    </div>
-</div>
-
-<!-- Filter Tabs -->
-<div class="filter-tabs fade-in-on-scroll">
-    <a href="#" class="filter-tab active" onclick="showSection('all'); return false;">All</a>
-    <a href="#" class="filter-tab" onclick="showSection('completed'); return false;">Completed</a>
-    <a href="#" class="filter-tab" onclick="showSection('pending'); return false;">Pending</a>
-    <a href="#" class="filter-tab" onclick="showSection('failed'); return false;">Failed</a>
-    <a href="#" class="filter-tab" onclick="showSection('creator'); return false;">Creator</a>
-    <a href="#" class="filter-tab" onclick="showSection('referral'); return false;">Referrals</a>
-</div>
-
-<!-- Completed Earnings -->
-<div id="completed-section" class="earnings-section fade-in-on-scroll">
-    <div class="section-header">
-        <h2>✅ Completed</h2>
-        <span class="section-badge">{{ completed|length }}</span>
-    </div>
-    
-    {% if completed %}
-        <div class="earnings-list">
-            {% for credit in completed %}
-            <div class="earning-item completed">
-                <div class="earning-header">
-                    <h3 class="earning-amount completed">+{{ credit.credit }} credits</h3>
-                    <span class="earning-status status-completed">Completed</span>
-                </div>
-                
-                <div class="earning-details">
-                    <div class="detail-item">
-                        <span class="detail-label">Type</span>
-                        <span class="detail-value">{{ credit.get_credit_reason_display }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">From</span>
-                        <span class="detail-value">{{ credit.credited_from.username|title }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Date</span>
-                        <span class="detail-value">{{ credit.created_at|date:"M d, Y" }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Time</span>
-                        <span class="detail-value">{{ credit.created_at|time:"g:i A" }}</span>
-                    </div>
-                </div>
-                
-                <div class="bot-info">
-                    <div class="bot-name">🤖 {{ credit.bot.name }}</div>
-                    <div class="bot-description">
-                        {{ credit.bot.description|truncatechars:100 }}
-                    </div>
-                </div>
+        <div class="filter-controls" id="filterControls">
+            <div class="filter-group">
+                <label for="dateFrom">From Date(mm/dd/yyyy)</label>
+                <input type="date" id="dateFrom" name="date_from">
             </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="empty-state">
-            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-5-5 1.41-1.41L11 14.17l7.59-7.59L20 8l-9 9z"/></svg>
-            <h3>No completed earnings yet</h3>
-            <p>Your completed transactions will appear here</p>
-        </div>
-    {% endif %}
-</div>
 
-<!-- Pending Earnings -->
-<div id="pending-section" class="earnings-section fade-in-on-scroll">
-    <div class="section-header">
-        <h2>⏳ Pending</h2>
-        <span class="section-badge">{{ pending|length }}</span>
-    </div>
-    
-    {% if pending %}
-        <div class="earnings-list">
-            {% for credit in pending %}
-            <div class="earning-item pending">
-                <div class="earning-header">
-                    <h3 class="earning-amount pending">{{ credit.credit }} credits</h3>
-                    <span class="earning-status status-pending">Pending</span>
-                </div>
-                
-                <div class="earning-details">
-                    <div class="detail-item">
-                        <span class="detail-label">Type</span>
-                        <span class="detail-value">{{ credit.get_credit_reason_display }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">From</span>
-                        <span class="detail-value">{{ credit.credited_from.username|title }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Date</span>
-                        <span class="detail-value">{{ credit.created_at|date:"M d, Y" }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Time</span>
-                        <span class="detail-value">{{ credit.created_at|time:"g:i A" }}</span>
-                    </div>
-                </div>
-                
-                <div class="bot-info">
-                    <div class="bot-name">🤖 {{ credit.bot.name }}</div>
-                    <div class="bot-description">
-                        {{ credit.bot.description|truncatechars:100 }}
-                    </div>
-                </div>
+            <div class="filter-group">
+                <label for="dateTo">To Date(mm/dd/yyyy)</label>
+                <input type="date" id="dateTo" name="date_to">
             </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="empty-state">
-            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/></svg>
-            <h3>No pending earnings</h3>
-            <p>Your pending transactions will appear here</p>
-        </div>
-    {% endif %}
-</div>
 
-<!-- Failed Earnings -->
-<div id="failed-section" class="earnings-section fade-in-on-scroll">
-    <div class="section-header">
-        <h2>❌ Failed</h2>
-        <span class="section-badge">{{ failed|length }}</span>
-    </div>
-    
-    {% if failed %}
-        <div class="earnings-list">
-            {% for credit in failed %}
-            <div class="earning-item failed">
-                <div class="earning-header">
-                    <h3 class="earning-amount failed">{{ credit.credit }} credits</h3>
-                    <span class="earning-status status-failed">Failed</span>
-                </div>
-                
-                <div class="earning-details">
-                    <div class="detail-item">
-                        <span class="detail-label">Type</span>
-                        <span class="detail-value">{{ credit.get_credit_reason_display }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">From</span>
-                        <span class="detail-value">{{ credit.credited_from.username|title }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Date</span>
-                        <span class="detail-value">{{ credit.created_at|date:"M d, Y" }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Time</span>
-                        <span class="detail-value">{{ credit.created_at|time:"g:i A" }}</span>
-                    </div>
-                </div>
-                
-                <div class="bot-info">
-                    <div class="bot-name">🤖 {{ credit.bot.name }}</div>
-                    <div class="bot-description">
-                        {{ credit.bot.description|truncatechars:100 }}
-                    </div>
-                </div>
+            <div class="filter-group">
+                <label for="status">Status</label>
+                <select id="status" name="status">
+                    <option value="">All Statuses</option>
+                    <option value="completed">Settled</option>
+                    <option value="pending">Pending</option>
+                    <option value="failed">Failed</option>
+                </select>
             </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="empty-state">
-            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-            <h3>No failed transactions</h3>
-            <p>Failed earnings will appear here</p>
-        </div>
-    {% endif %}
-</div>
 
-<!-- Creator Share Section -->
-<div id="creator-section" class="earnings-section fade-in-on-scroll">
-    <div class="section-header">
-        <h2>🎨 Creator Revenue</h2>
-        <span class="section-badge">{{ creator_share|length }}</span>
-    </div>
-    
-    {% if creator_share %}
-        <div class="earnings-list">
-            {% for credit in creator_share %}
-            <div class="earning-item {% if credit.settlement_status == 'completed' %}completed{% elif credit.settlement_status == 'pending' %}pending{% else %}failed{% endif %}">
-                <div class="earning-header">
-                    <h3 class="earning-amount {% if credit.settlement_status == 'completed' %}completed{% elif credit.settlement_status == 'pending' %}pending{% else %}failed{% endif %}">
-                        {% if credit.settlement_status == 'completed' %}+{% endif %}{{ credit.credit }} credits
-                    </h3>
-                    <span class="earning-status status-{{ credit.settlement_status }}">{{ credit.get_settlement_status_display }}</span>
-                </div>
-                
-                <div class="earning-details">
-                    <div class="detail-item">
-                        <span class="detail-label">From</span>
-                        <span class="detail-value">{{ credit.credited_from.username|title }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Date</span>
-                        <span class="detail-value">{{ credit.created_at|date:"M d, Y" }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Time</span>
-                        <span class="detail-value">{{ credit.created_at|time:"g:i A" }}</span>
-                    </div>
-                </div>
-                
-                <div class="bot-info">
-                    <div class="bot-name">🤖 {{ credit.bot.name }}</div>
-                    <div class="bot-description">
-                        Revenue from your bot creation
-                    </div>
-                </div>
+            <div class="filter-group">
+                <label for="type">Type</label>
+                <select id="type" name="type">
+                    <option value="">All Types</option>
+                    <option value="creator_share">Creator Share</option>
+                    <option value="referral_share">Referral Share</option>
+                </select>
             </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="empty-state">
-            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <h3>No creator earnings yet</h3>
-            <p>Start creating bots to earn revenue</p>
-        </div>
-    {% endif %}
-</div>
 
-<!-- Referral Share Section -->
-<div id="referral-section" class="earnings-section fade-in-on-scroll">
-    <div class="section-header">
-        <h2>🤝 Referral Revenue</h2>
-        <span class="section-badge">{{ referral_share|length }}</span>
-    </div>
-    
-    {% if referral_share %}
-        <div class="earnings-list">
-            {% for credit in referral_share %}
-            <div class="earning-item {% if credit.settlement_status == 'completed' %}completed{% elif credit.settlement_status == 'pending' %}pending{% else %}failed{% endif %}">
-                <div class="earning-header">
-                    <h3 class="earning-amount {% if credit.settlement_status == 'completed' %}completed{% elif credit.settlement_status == 'pending' %}pending{% else %}failed{% endif %}">
-                        {% if credit.settlement_status == 'completed' %}+{% endif %}{{ credit.credit }}₹
-                    </h3>
-                    <span class="earning-status status-{{ credit.settlement_status }}">{{ credit.get_settlement_status_display }}</span>
-                </div>
-                
-                <div class="earning-details">
-                    <div class="detail-item">
-                        <span class="detail-label">From</span>
-                        <span class="detail-value">{{ credit.credited_from.username|title }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Date</span>
-                        <span class="detail-value">{{ credit.created_at|date:"M d, Y" }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Time</span>
-                        <span class="detail-value">{{ credit.created_at|time:"g:i A" }}</span>
-                    </div>
-                </div>
-                
-                <div class="bot-info">
-                    <div class="bot-name">🤖 {{ credit.bot.name }}</div>
-                    <div class="bot-description">
-                        Commission from referral usage
-                    </div>
-                </div>
+            <div class="filter-actions">
+                <button class="btn-filter btn-apply" onclick="applyFilters()">Apply Filters</button>
+                <button class="btn-filter btn-reset" onclick="resetFilters()">Reset</button>
             </div>
-            {% endfor %}
         </div>
-    {% else %}
-        <div class="empty-state">
-            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A1.5 1.5 0 0 0 18.54 8H16c-.8 0-1.54.37-2.01 1l-2.8 3.73A1 1 0 0 0 12 14h2l-1.8 7H15l.9-3.6L17 22h3zM12.5 11.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5S11 9.17 11 10s.67 1.5 1.5 1.5zM5.5 6c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2zm2 16v-7H5V9.5C5 8.12 6.12 7 7.5 7S10 8.12 10 9.5V11h2.5c.28 0 .5.22.5.5s-.22.5-.5.5H10V15h-2.5z"/></svg>
-            <h3>No referral earnings yet</h3>
-            <p>Share bots to earn referral commissions</p>
+    </div>
+
+    <!-- Earnings List -->
+    <div class="earnings-container fade-in-on-scroll">
+        <div class="earnings-header">
+            <h3>Recent Earnings</h3>
+            <span class="results-count" id="resultsCount">Showing all results</span>
         </div>
-    {% endif %}
+
+        <div class="earnings-list" id="earningsList">
+            {% if completed or pending or failed %}
+                <!-- Combine all earnings for display -->
+                {% for credit in completed %}
+                <div class="earning-card completed" data-date="{{ credit.created_at|date:'Y-m-d' }}" data-status="completed" data-type="{{ credit.credit_reason }}">
+                    <div class="earning-top">
+                        <div class="earning-amount completed">+{{ credit.credit }} credits</div>
+                        <span class="earning-status status-completed">Completed</span>
+                    </div>
+                    <div class="earning-meta">
+                        <span class="meta-item">📅 {{ credit.created_at|date:"M d, Y" }}</span>
+                        <span class="meta-item">⏰ {{ credit.created_at|time:"g:i A" }}</span>
+                        <span class="meta-item">📝 {{ credit.get_credit_reason_display }}</span>
+                        <span class="meta-item">👤 {{ credit.credited_from.username|title }}</span>
+                    </div>
+                    <div class="earning-bot">
+                        <div class="bot-name">🤖 {{ credit.bot.name }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% for credit in pending %}
+                <div class="earning-card pending" data-date="{{ credit.created_at|date:'Y-m-d' }}" data-status="pending" data-type="{{ credit.credit_reason }}">
+                    <div class="earning-top">
+                        <div class="earning-amount pending">{{ credit.credit }} credits</div>
+                        <span class="earning-status status-pending">Pending</span>
+                    </div>
+                    <div class="earning-meta">
+                        <span class="meta-item">📅 {{ credit.created_at|date:"M d, Y" }}</span>
+                        <span class="meta-item">⏰ {{ credit.created_at|time:"g:i A" }}</span>
+                        <span class="meta-item">📝 {{ credit.get_credit_reason_display }}</span>
+                        <span class="meta-item">👤 {{ credit.credited_from.username|title }}</span>
+                    </div>
+                    <div class="earning-bot">
+                        <div class="bot-name">🤖 {{ credit.bot.name }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% for credit in failed %}
+                <div class="earning-card failed" data-date="{{ credit.created_at|date:'Y-m-d' }}" data-status="failed" data-type="{{ credit.credit_reason }}">
+                    <div class="earning-top">
+                        <div class="earning-amount failed">{{ credit.credit }} credits</div>
+                        <span class="earning-status status-failed">Failed</span>
+                    </div>
+                    <div class="earning-meta">
+                        <span class="meta-item">📅 {{ credit.created_at|date:"M d, Y" }}</span>
+                        <span class="meta-item">⏰ {{ credit.created_at|time:"g:i A" }}</span>
+                        <span class="meta-item">📝 {{ credit.get_credit_reason_display }}</span>
+                        <span class="meta-item">👤 {{ credit.credited_from.username|title }}</span>
+                    </div>
+                    <div class="earning-bot">
+                        <div class="bot-name">🤖 {{ credit.bot.name }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">💰</div>
+                    <h3>No earnings yet</h3>
+                    <p>Start creating bots or sharing them to earn credits</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    function showSection(sectionType) {
-        // Remove active class from all tabs
-        document.querySelectorAll('.filter-tab').forEach(tab => {
-            tab.classList.remove('active');
-        });
-        
-        // Add active class to clicked tab
-        event.target.classList.add('active');
-        
-        // Hide all sections
-        document.querySelectorAll('.earnings-section').forEach(section => {
-            section.style.display = 'none';
-        });
-        
-        // Show selected sections
-        if (sectionType === 'all') {
-            document.querySelectorAll('.earnings-section').forEach(section => {
-                section.style.display = 'block';
-            });
-        } else if (sectionType === 'creator') {
-            document.getElementById('creator-section').style.display = 'block';
-        } else if (sectionType === 'referral') {
-            document.getElementById('referral-section').style.display = 'block';
-        } else {
-            document.getElementById(sectionType + '-section').style.display = 'block';
-        }
+let filtersVisible = true;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Set form values from URL params if they exist
+    const params = new URLSearchParams(window.location.search);
+    
+    if (params.get('date_from')) {
+        document.getElementById('dateFrom').value = params.get('date_from');
+    } else {
+        // Set default last 30 days
+        const today = new Date();
+        const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
+        document.getElementById('dateTo').value = today.toISOString().split('T')[0];
+        document.getElementById('dateFrom').value = thirtyDaysAgo.toISOString().split('T')[0];
+    }
+    
+    if (params.get('date_to')) {
+        document.getElementById('dateTo').value = params.get('date_to');
+    }
+    
+    if (params.get('status')) {
+        document.getElementById('status').value = params.get('status');
+    }
+    
+    if (params.get('type')) {
+        document.getElementById('type').value = params.get('type');
     }
 
-    // Calculate and display actual totals
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize with all sections visible
-        showSection('all');
+        document.getElementById('filterControls').classList.add('active');
+    document.getElementById('filterToggleText').textContent = 'Hide Filters';
+    
+    // Calculate totals from server-rendered data
+    calculateTotals();
+    updateResultsCount();
+});
+
+function toggleFilters() {
+    filtersVisible = !filtersVisible;
+    const controls = document.getElementById('filterControls');
+    const toggleText = document.getElementById('filterToggleText');
+    
+    if (filtersVisible) {
+        controls.classList.add('active');
+        toggleText.textContent = 'Hide Filters';
+    } else {
+        controls.classList.remove('active');
+        toggleText.textContent = 'Show Filters';
+    }
+}
+
+function applyFilters() {
+    const params = new URLSearchParams();
+    
+    const dateFrom = document.getElementById('dateFrom').value;
+    const dateTo = document.getElementById('dateTo').value;
+    const status = document.getElementById('status').value;
+    const type = document.getElementById('type').value;
+    
+    if (dateFrom) params.append('date_from', dateFrom);
+    if (dateTo) params.append('date_to', dateTo);
+    if (status) params.append('status', status);
+    if (type) params.append('type', type);
+    
+    // Reload page with filters as URL parameters
+    window.location.href = `?${params.toString()}`;
+}
+
+function resetFilters() {
+    // Redirect to page without any filters (will use default 30 days)
+    window.location.href = window.location.pathname;
+}
+
+function calculateTotals() {
+    let totalEarned = 0;
+    let completedCredits = 0;
+    let pendingCredits = 0;
+    
+    // Calculate from all visible cards
+    const allCards = document.querySelectorAll('.earning-card');
+    
+    allCards.forEach(card => {
+        const amountText = card.querySelector('.earning-amount').textContent;
+        const amount = parseInt(amountText.replace(/[^\d]/g, ''));
+        const status = card.getAttribute('data-status');
         
-        // Calculate completed total
-        const completedItems = document.querySelectorAll('#completed-section .earning-amount');
-        let completedTotal = 0;
-        completedItems.forEach(item => {
-            const amount = parseInt(item.textContent.replace(/[^\d]/g, ''));
-            completedTotal += amount;
-        });
-        
-        // Calculate pending total
-        const pendingItems = document.querySelectorAll('#pending-section .earning-amount');
-        let pendingTotal = 0;
-        pendingItems.forEach(item => {
-            const amount = parseInt(item.textContent.replace(/[^\d]/g, ''));
-            pendingTotal += amount;
-        });
-        
-        // Calculate failed total
-        const failedItems = document.querySelectorAll('#failed-section .earning-amount');
-        let failedTotal = 0;
-        failedItems.forEach(item => {
-            const amount = parseInt(item.textContent.replace(/[^\d]/g, ''));
-            failedTotal += amount;
-        });
-        
-        // Calculate creator total
-        const creatorItems = document.querySelectorAll('#creator-section .earning-amount');
-        let creatorTotal = 0;
-        creatorItems.forEach(item => {
-            const amount = parseInt(item.textContent.replace(/[^\d]/g, ''));
-            creatorTotal += amount;
-        });
-        
-        // Calculate referral total
-        const referralItems = document.querySelectorAll('#referral-section .earning-amount');
-        let referralTotal = 0;
-        referralItems.forEach(item => {
-            const amount = parseInt(item.textContent.replace(/[^\d]/g, ''));
-            referralTotal += amount;
-        });
-        
-        // Update summary cards
-        const summaryCards = document.querySelectorAll('.summary-card .amount');
-        if (summaryCards.length >= 5) {
-            summaryCards[0].textContent = completedTotal + ' credits';
-            summaryCards[1].textContent = pendingTotal + ' credits';
-            summaryCards[2].textContent = failedTotal + ' credits';
-            summaryCards[3].textContent = creatorTotal + ' credits';
-            summaryCards[4].textContent = referralTotal + ' credits';
+        if (status === 'completed') {
+            completedCredits += amount;
+            totalEarned += amount;
+        } else if (status === 'pending') {
+            pendingCredits += amount;
+            totalEarned += amount;
         }
     });
+    
+    // Update the display
+    document.getElementById('totalEarned').textContent = totalEarned + ' credits';
+    document.getElementById('completedCount').textContent = completedCredits + ' credits';
+    document.getElementById('pendingCount').textContent = pendingCredits + ' credits';
+}
+
+function updateResultsCount() {
+    const allCards = document.querySelectorAll('.earning-card');
+    const count = allCards.length;
+    document.getElementById('resultsCount').textContent = `Showing ${count} result${count !== 1 ? 's' : ''}`;
+}
 </script>
 {% endblock %}

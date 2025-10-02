@@ -54,7 +54,7 @@
     }
 
     .profile-name {
-        font-size: 2.5rem;
+        font-size: 1.2rem;
         font-weight: 800;
         margin-bottom: 0.5rem;
         position: relative;
@@ -293,7 +293,7 @@
         }
 
         .profile-name {
-            font-size: 2rem;
+            font-size: 1.2rem;
         }
 
         .profile-avatar {
@@ -405,6 +405,23 @@
                     📊 View History
                 </a>
             </div>
+
+
+        </div>
+
+                <div class="profile-section">
+            <div class="section-header">
+                <h2 class="section-title">Logout</h2>
+            </div>
+            
+            <div class="info-row">
+                    <form method="post" action="{% url 'logout' %}" style="display: inline; margin: 0;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger">Logout</button>
+        </form>
+            </div>
+
+
         </div>
 
         {% comment %} <!-- Achievements -->
