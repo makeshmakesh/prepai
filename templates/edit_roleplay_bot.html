@@ -525,7 +525,7 @@
                           name="system_prompt" 
                           class="form-control system-prompt-textarea" 
                           required>{{ bot.system_prompt }}</textarea>
-                <div class="character-count" id="char-count">0 / 2000 characters</div>
+                <div class="character-count" id="char-count">0 / 15,000 characters</div>
                 <div class="help-text">Define your bot's personality, expertise, and behavior</div>
             </div>
 
@@ -605,13 +605,13 @@ $(document).ready(function() {
     // Character counter
     function updateCharCount() {
         const count = systemPrompt.val().length;
-        charCount.text(count + ' / 2000 characters');
+        charCount.text(count + ' / 15,000 characters');
         
-        if (count > 2000) {
+        if (count > 15000) {
             charCount.css('color', '#dc2626');
-        } else if (count > 1500) {
+        } else if (count > 7500) {
             charCount.css('color', '#f59e0b');
-        } else if (count >= 50) {
+        } else if (count >= 500) {
             charCount.css('color', '#10b981');
         } else {
             charCount.css('color', '#64748b');
@@ -647,9 +647,9 @@ $(document).ready(function() {
             return false;
         }
 
-        if (prompt.length > 2000) {
+        if (prompt.length > 15000) {
             e.preventDefault();
-            alert('System prompt is too long. Please keep it under 2000 characters.');
+            alert('System prompt is too long. Please keep it under 15,000 characters.');
             systemPrompt.focus();
             return false;
         }
