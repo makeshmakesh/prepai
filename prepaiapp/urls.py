@@ -6,6 +6,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('api/bots/bulk-create/', views.BulkCreateBotsAPIView.as_view(), name='bulk_create_bots'),
     path("", views.HomePage.as_view(), name="entry"),
     path("early-access/", views.EarlyAccessSignupView.as_view(), name="early_access"),
     path("voice/", views.voice_agent_view, name="voice_agent"),

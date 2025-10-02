@@ -306,7 +306,7 @@ class EditRolePlayBotView(LoginRequiredMixin, View):
                 description = request.POST.get('description', '').strip()
                 avatar_url = request.POST.get('avatar_url', '').strip()
                 system_prompt = request.POST.get('system_prompt', '').strip()
-                feedback_prompt = request.POST.get('feedback_prompt', '').strip()
+                category = request.POST.get('category', '').strip()
                 custom_configuration = request.POST.get('custom_configuration', '').strip()
                 order = request.POST.get('order', 0)
                 is_active = request.POST.get('is_active') == 'on'
@@ -1675,5 +1675,105 @@ def sub_topic(request):
     return render(request, "subtopic.html")
 
 
+
+
+
+
+
+# views.py
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import AllowAny
+from django.contrib.auth.models import User
+from django.db import transaction
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+class BulkCreateBotsAPIView(APIView):
+    """
+    API endpoint for bulk creating bots via script
+    Requires API key authentication
+    """
+    permission_classes = [AllowAny]  # We'll handle auth manually with API key
+    
+    def post(self, request):
+        
+        # Get admin user (or specified user)
+        admin_username = request.data.get('admin_username', 'admin')
+        try:
+            admin_user = User.objects.get(username=admin_username, is_staff=True)
+        except User.DoesNotExist:
+            return Response(
+                {"error": f"Admin user '{admin_username}' not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        # Get bots data
+        bots_data = request.data.get('bots', [])
+        
+        if not bots_data or not isinstance(bots_data, list):
+            return Response(
+                {"error": "Invalid data format. Expected 'bots' array"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        created_bots = []
+        errors = []
+        
+        # Bulk create bots
+        with transaction.atomic():
+            for idx, bot_data in enumerate(bots_data):
+                try:
+                    # Validate required fields
+                    if not bot_data.get('name') or not bot_data.get('system_prompt'):
+                        errors.append({
+                            'index': idx,
+                            'error': 'Missing required fields: name and system_prompt'
+                        })
+                        continue
+                    
+                    # Build custom configuration
+                    custom_config = {}
+                    
+                    # Create bot
+                    bot = RolePlayBots.objects.create(
+                        name=bot_data['name'],
+                        description=bot_data.get('description', ''),
+                        avatar_url=bot_data.get('avatar_url', ''),
+                        system_prompt=bot_data['system_prompt'],
+                        feedback_prompt=bot_data.get('feedback_prompt', ''),
+                        custom_configuration=custom_config,
+                        voice=bot_data.get('voice', 'alloy'),
+                        category=bot_data.get('category', 'other'),
+                        is_active=bot_data.get('is_active', True),
+                        is_public=bot_data.get('is_public', True),
+                        order=bot_data.get('order', 0),
+                        created_by=admin_user
+                    )
+                    
+                    created_bots.append({
+                        'id': str(bot.id),
+                        'name': bot.name,
+                        'category': bot.category
+                    })
+                    
+                except Exception as e:
+                    logger.error(f"Error creating bot at index {idx}: {e}")
+                    errors.append({
+                        'index': idx,
+                        'name': bot_data.get('name', 'Unknown'),
+                        'error': str(e)
+                    })
+        
+        return Response({
+            'success': True,
+            'created_count': len(created_bots),
+            'error_count': len(errors),
+            'created_bots': created_bots,
+            'errors': errors
+        }, status=status.HTTP_201_CREATED if created_bots else status.HTTP_400_BAD_REQUEST)
 
 
