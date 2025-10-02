@@ -1,95 +1,258 @@
 {% extends 'base.html' %}
 
-{% block title %}AI Voice Roleplay - PrepAI{% endblock %}
+{% block title %}Explore AI Voice Bots - PrepAI{% endblock %}
 
 {% block extra_css %}
 <style>
-    .roleplay-container {
-        max-width: 1200px;
+    .explore-container {
+        max-width: 1400px;
         margin: 0 auto;
         padding: clamp(1rem, 3vw, 2rem);
     }
 
-    /* Page Header */
-    .page-header {
+    /* Hero Section */
+    .hero-section {
         text-align: center;
         margin-bottom: clamp(2rem, 5vw, 3rem);
+        padding: clamp(2rem, 5vw, 3rem) clamp(1rem, 3vw, 2rem);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        color: white;
     }
 
-    .page-title {
-        font-size: clamp(1.75rem, 6vw, 3rem);
-        font-weight: 700;
-        color: #1e293b;
+    .hero-title {
+        font-size: clamp(2rem, 6vw, 3.5rem);
+        font-weight: 800;
         margin-bottom: 0.75rem;
-        line-height: 1.2;
+        line-height: 1.1;
     }
+    /* Load More Button */
+.load-more-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 1rem 3rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
 
-    .page-subtitle {
-        font-size: clamp(0.95rem, 2.5vw, 1.125rem);
-        color: #64748b;
-        max-width: 600px;
-        margin: 0 auto;
-        line-height: 1.6;
+.load-more-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.load-more-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+    .hero-subtitle {
+        font-size: clamp(1rem, 2.5vw, 1.25rem);
+        opacity: 0.95;
+        max-width: 700px;
+        margin: 0 auto 2rem;
     }
 
     /* Search Bar */
     .search-container {
-        background: white;
-        border-radius: 16px;
-        padding: clamp(1rem, 3vw, 1.5rem);
-        margin-bottom: clamp(1.5rem, 4vw, 2rem);
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
     }
 
     .search-form {
         display: flex;
         gap: 0.75rem;
-        flex-wrap: wrap;
     }
 
     .search-input {
         flex: 1;
-        min-width: 200px;
-        padding: 0.875rem 1rem;
-        border: 2px solid #e2e8f0;
+        padding: 1rem 1.25rem;
+        border: none;
         border-radius: 12px;
-        font-size: clamp(0.9rem, 2vw, 1rem);
-        transition: all 0.2s;
+        font-size: clamp(0.95rem, 2vw, 1.05rem);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
     .search-input:focus {
         outline: none;
-        border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     }
 
     .search-btn {
-        padding: 0.875rem 1.75rem;
-        background: #2563eb;
-        color: white;
+        padding: 1rem 2rem;
+        background: white;
+        color: #667eea;
         border: none;
         border-radius: 12px;
-        font-size: clamp(0.9rem, 2vw, 0.95rem);
-        font-weight: 600;
+        font-size: clamp(0.9rem, 2vw, 1rem);
+        font-weight: 700;
         cursor: pointer;
         transition: all 0.2s;
         white-space: nowrap;
     }
 
     .search-btn:hover {
-        background: #1d4ed8;
-        transform: translateY(-1px);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     }
 
-    /* Bots Grid */
-    .bots-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
-        gap: clamp(1rem, 3vw, 1.5rem);
-        margin-bottom: clamp(2rem, 5vw, 3rem);
+    /* Category Filter Pills */
+    .category-filters {
+        display: flex;
+        gap: 0.75rem;
+        overflow-x: auto;
+        padding: 1rem 0;
+        margin-bottom: 2rem;
+        scrollbar-width: thin;
     }
 
-    /* Bot Card with Background Image */
+    .category-filters::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .category-filters::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 10px;
+    }
+
+    .category-filters::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+
+    .category-pill {
+        padding: 0.75rem 1.5rem;
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 24px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #64748b;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .category-pill:hover {
+        border-color: #667eea;
+        color: #667eea;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .category-pill.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: transparent;
+    }
+
+    /* Category Section */
+    .category-section {
+        margin-bottom: clamp(3rem, 6vw, 4rem);
+    }
+
+    .category-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .category-title {
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        font-weight: 800;
+        color: #e0e7f1ff;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .category-emoji {
+        font-size: clamp(1.75rem, 5vw, 2.25rem);
+    }
+
+    .view-all-link {
+        color: #667eea;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        transition: all 0.2s;
+    }
+
+    .view-all-link:hover {
+        color: #5568d3;
+        text-decoration: none;
+        transform: translateX(3px);
+    }
+
+    /* Horizontal Scroll Grid */
+    .bots-scroll {
+        display: flex;
+        gap: clamp(1rem, 2.5vw, 1.5rem);
+        overflow-x: auto;
+        padding-bottom: 1rem;
+        scrollbar-width: thin;
+        scroll-behavior: smooth;
+    }
+
+    .bots-scroll::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .bots-scroll::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 10px;
+    }
+
+    .bots-scroll::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+
+    .bots-scroll::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    /* All Bots Grid - Standard Grid Layout */
+.all-bots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: clamp(1rem, 2.5vw, 1.5rem);
+    margin-bottom: 2rem;
+}
+
+/* Ensure bot cards in grid don't have scroll constraints */
+.all-bots-grid .bot-card {
+    min-width: auto;
+    max-width: none;
+}
+
+@media (max-width: 768px) {
+    .all-bots-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    }
+}
+
+    /* Bot Card */
     .bot-card {
         background: white;
         border: 1px solid #e2e8f0;
@@ -99,17 +262,18 @@
         cursor: pointer;
         display: flex;
         flex-direction: column;
-        min-height: 320px;
-        position: relative;
+        min-width: 280px;
+        max-width: 320px;
+        flex-shrink: 0;
     }
 
     .bot-card:hover {
         transform: translateY(-4px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
         border-color: #cbd5e1;
     }
 
-    /* Background Image Section */
+    /* Background Image */
     .bot-card-bg {
         position: relative;
         height: 140px;
@@ -143,37 +307,50 @@
         filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
     }
 
+    /* Category Badge on Card */
+    .bot-category-badge {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 0.375rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #667eea;
+        z-index: 2;
+    }
+
     /* Card Content */
     .bot-card-content {
-        padding: clamp(1.25rem, 3vw, 1.5rem);
+        padding: 1.25rem;
         display: flex;
         flex-direction: column;
         flex: 1;
-        background: white;
     }
 
-    .bot-header {
+    .bot-card-header {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: space-between;
-        margin-bottom: 1rem;
-        gap: 1rem;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
     }
 
     .bot-name {
-        font-size: clamp(1.1rem, 3vw, 1.25rem);
+        font-size: 1.15rem;
         font-weight: 700;
         color: #1e293b;
         line-height: 1.3;
-        word-break: break-word;
         flex: 1;
     }
 
     .status-badge {
-        padding: 0.35rem 0.75rem;
+        padding: 0.3rem 0.65rem;
         border-radius: 6px;
-        font-size: 0.7rem;
-        font-weight: 600;
+        font-size: 0.65rem;
+        font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         white-space: nowrap;
@@ -190,33 +367,31 @@
     }
 
     .bot-description {
-        color: #475569;
-        font-size: clamp(0.875rem, 2vw, 0.95rem);
+        color: #64748b;
+        font-size: 0.9rem;
         line-height: 1.6;
         margin-bottom: 1rem;
         display: -webkit-box;
-        -webkit-line-clamp: 3;
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
         flex: 1;
     }
 
-    /* Bot Actions */
-    .bot-actions {
-        display: grid;
-        grid-template-columns: 2fr 1fr 1fr;
+    .bot-card-footer {
+        display: flex;
         gap: 0.5rem;
-        margin-top: auto;
     }
 
     .btn-start {
-        background: #2563eb;
+        flex: 2;
+        background: #667eea;
         color: white;
         border: none;
         border-radius: 10px;
-        padding: 0.75rem 0.5rem;
+        padding: 0.75rem;
         font-weight: 600;
-        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        font-size: 0.9rem;
         text-decoration: none;
         display: flex;
         align-items: center;
@@ -226,7 +401,7 @@
     }
 
     .btn-start:hover {
-        background: #1d4ed8;
+        background: #5568d3;
         transform: translateY(-1px);
         color: white;
         text-decoration: none;
@@ -239,150 +414,81 @@
         transform: none;
     }
 
-    .btn-secondary {
+    .btn-view {
+        flex: 1;
         background: white;
         color: #64748b;
         border: 2px solid #e2e8f0;
         border-radius: 10px;
-        padding: 0.75rem 0.5rem;
-        font-weight: 600;
-        font-size: clamp(0.85rem, 2vw, 0.95rem);
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-        cursor: pointer;
-    }
-
-    .btn-secondary:hover {
-        background: #f8fafc;
-        border-color: #cbd5e1;
-        color: #475569;
-        text-decoration: none;
-    }
-
-    /* Pagination */
-    .pagination-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: clamp(2rem, 5vw, 3rem);
-        padding: 1rem;
-    }
-
-    .pagination {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .page-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 40px;
-        min-height: 40px;
-        padding: 0.5rem 0.75rem;
-        background: white;
-        color: #64748b;
-        border: 2px solid #e2e8f0;
-        border-radius: 10px;
+        padding: 0.75rem;
         font-weight: 600;
         font-size: 0.9rem;
         text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         transition: all 0.2s;
         cursor: pointer;
     }
 
-    .page-btn:hover:not(.page-btn-disabled):not(.page-btn-active) {
+    .btn-view:hover {
         background: #f8fafc;
         border-color: #cbd5e1;
         color: #475569;
         text-decoration: none;
-    }
-
-    .page-btn-active {
-        background: #2563eb;
-        color: white;
-        border-color: #2563eb;
-        cursor: default;
-    }
-
-    .page-btn-disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-        pointer-events: none;
-    }
-
-    .page-dots {
-        padding: 0.5rem;
-        color: #94a3b8;
-        font-weight: 600;
     }
 
     /* Empty State */
     .empty-state {
         text-align: center;
-        padding: clamp(3rem, 8vw, 4rem) clamp(1rem, 4vw, 2rem);
+        padding: 3rem 2rem;
         background: white;
         border: 2px dashed #e2e8f0;
         border-radius: 16px;
         margin: 2rem 0;
     }
 
-    .empty-state-icon {
-        font-size: clamp(3rem, 10vw, 4rem);
+    .empty-icon {
+        font-size: 3rem;
         margin-bottom: 1rem;
         opacity: 0.5;
     }
 
     .empty-state h3 {
-        font-size: clamp(1.25rem, 4vw, 1.5rem);
+        font-size: 1.5rem;
         font-weight: 700;
         color: #1e293b;
         margin-bottom: 0.5rem;
     }
 
     .empty-state p {
-        font-size: clamp(0.9rem, 2.5vw, 1rem);
         color: #64748b;
         margin-bottom: 1.5rem;
     }
 
-    /* Mobile Optimizations */
-    @media (max-width: 640px) {
-        .bot-actions {
-            grid-template-columns: 1fr;
-        }
-
-        .btn-secondary {
-            order: 2;
+    /* Mobile */
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 2rem 1rem;
         }
 
         .search-form {
             flex-direction: column;
         }
 
-        .search-input {
-            min-width: 100%;
-        }
-
         .search-btn {
             width: 100%;
         }
 
-        .page-btn {
-            min-width: 36px;
-            min-height: 36px;
-            padding: 0.4rem 0.6rem;
-            font-size: 0.85rem;
+        .category-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
         }
 
-        .pagination {
-            gap: 0.375rem;
+        .bot-card {
+            min-width: 260px;
+            max-width: 280px;
         }
 
         .bot-card-bg {
@@ -402,179 +508,288 @@
         }
     }
 
-    .bot-card {
-        animation: fadeIn 0.3s ease-out;
+    .category-section {
+        animation: fadeIn 0.4s ease-out;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="roleplay-container">
-    <!-- Page Header -->
-    <div class="page-header">
-        <h1 class="page-title">AI Voice Roleplay</h1>
-        <p class="page-subtitle">
-            Practice real conversations with AI-powered bots. Improve your skills through immersive roleplay scenarios.
+<div class="explore-container">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <h1 class="hero-title">Explore AI Voice Bots</h1>
+        <p class="hero-subtitle">
+            Discover AI companions for every need — from career growth to creative adventures
         </p>
+        
+        <!-- Search Bar -->
+        <div class="search-container">
+            <form method="get" action="" class="search-form">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    placeholder="Search by name, scenario, or use case..."
+                    name="search"
+                    value="{{ search_query }}"
+                >
+                <button type="submit" class="search-btn">Search</button>
+            </form>
+        </div>
     </div>
 
-    <!-- Search Container -->
-    <div class="search-container">
-        <form method="get" action="" class="search-form">
-            <input 
-                type="text" 
-                class="search-input" 
-                placeholder="Search bots by name, scenarios, use case etc..."
-                name="search"
-                value="{{ search_query }}"
-            >
-            <button type="submit" class="search-btn">Search</button>
-        </form>
+    <!-- Category Filter Pills -->
+    <div class="category-filters">
+        <a href="?category=all" class="category-pill {% if not selected_category or selected_category == 'all' %}active{% endif %}">
+            All Bots
+        </a>
+        <a href="?category=professional" class="category-pill {% if selected_category == 'professional' %}active{% endif %}">
+            💼 Professional
+        </a>
+                <a href="?category=entertainment" class="category-pill {% if selected_category == 'entertainment' %}active{% endif %}">
+            🎮 Entertainment & Creative
+        </a>
+        <a href="?category=learning" class="category-pill {% if selected_category == 'learning' %}active{% endif %}">
+            📚 Learning
+        </a>
+        <a href="?category=personal" class="category-pill {% if selected_category == 'personal' %}active{% endif %}">
+            🌱 Personal Growth
+        </a>
+
     </div>
 
-    <!-- Bots Grid -->
-    {% if roleplay_bots %}
-    <div class="bots-grid">
-        {% for bot in roleplay_bots %}
+    <!-- Career Boost Section -->
+    {% if career_bots %}
+    <div class="category-section">
+        <div class="category-header">
+            <h2 class="category-title">
+                <span class="category-emoji">💼</span>
+                Career Boost
+            </h2>
+            <a href="?category=professional" class="view-all-link">
+                View All →
+            </a>
+        </div>
+        <div class="bots-scroll">
+            {% for bot in career_bots %}
+            <div class="bot-card" onclick="handleCardClick(event, '{% url 'start_roleplay' bot.id %}', {{ bot.is_active|yesno:'true,false' }})">
+                <div class="bot-card-bg">
+                    {% if bot.avatar_url %}
+                        <img src="{{ bot.avatar_url }}" alt="{{ bot.name }}">
+                    {% else %}
+                        <span class="bot-card-bg-emoji">💼</span>
+                    {% endif %}
+                    <span class="bot-category-badge">{{ bot.get_category_display }}</span>
+                </div>
+                <div class="bot-card-content">
+                    <div class="bot-card-header">
+                        <h3 class="bot-name">{{ bot.name }}</h3>
+                        {% if bot.is_active %}
+                            <span class="status-badge status-active">Live</span>
+                        {% else %}
+                            <span class="status-badge status-inactive">Soon</span>
+                        {% endif %}
+                    </div>
+                    <p class="bot-description">{{ bot.description|default:"Practice and improve your professional skills" }}</p>
+                    <div class="bot-card-footer">
+                        {% if bot.is_active %}
+                            <a href="{% url 'start_roleplay' bot.id %}" class="btn-start" onclick="event.stopPropagation()">
+                                Start
+                            </a>
+                            <a href="{% url 'bot-detail' bot.id %}" class="btn-view" onclick="event.stopPropagation()">
+                                View
+                            </a>
+                        {% else %}
+                            <button class="btn-start" disabled>Coming Soon</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Learn & Grow Section -->
+    {% if learning_bots %}
+    <div class="category-section">
+        <div class="category-header">
+            <h2 class="category-title">
+                <span class="category-emoji">📚</span>
+                Learn & Grow
+            </h2>
+            <a href="?category=learning" class="view-all-link">
+                View All →
+            </a>
+        </div>
+        <div class="bots-scroll">
+            {% for bot in learning_bots %}
+            <div class="bot-card" onclick="handleCardClick(event, '{% url 'start_roleplay' bot.id %}', {{ bot.is_active|yesno:'true,false' }})">
+                <div class="bot-card-bg">
+                    {% if bot.avatar_url %}
+                        <img src="{{ bot.avatar_url }}" alt="{{ bot.name }}">
+                    {% else %}
+                        <span class="bot-card-bg-emoji">📚</span>
+                    {% endif %}
+                    <span class="bot-category-badge">{{ bot.get_category_display }}</span>
+                </div>
+                <div class="bot-card-content">
+                    <div class="bot-card-header">
+                        <h3 class="bot-name">{{ bot.name }}</h3>
+                        {% if bot.is_active %}
+                            <span class="status-badge status-active">Live</span>
+                        {% else %}
+                            <span class="status-badge status-inactive">Soon</span>
+                        {% endif %}
+                    </div>
+                    <p class="bot-description">{{ bot.description|default:"Expand your knowledge and skills" }}</p>
+                    <div class="bot-card-footer">
+                        {% if bot.is_active %}
+                            <a href="{% url 'start_roleplay' bot.id %}" class="btn-start" onclick="event.stopPropagation()">
+                                Start
+                            </a>
+                            <a href="{% url 'bot-detail' bot.id %}" class="btn-view" onclick="event.stopPropagation()">
+                                View
+                            </a>
+                        {% else %}
+                            <button class="btn-start" disabled>Coming Soon</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Fun & Fantasy Section -->
+    {% if entertainment_bots %}
+    <div class="category-section">
+        <div class="category-header">
+            <h2 class="category-title">
+                <span class="category-emoji">🎮</span>
+                Fun & Fantasy
+            </h2>
+            <a href="?category=entertainment" class="view-all-link">
+                View All →
+            </a>
+        </div>
+        <div class="bots-scroll">
+            {% for bot in entertainment_bots %}
+            <div class="bot-card" onclick="handleCardClick(event, '{% url 'start_roleplay' bot.id %}', {{ bot.is_active|yesno:'true,false' }})">
+                <div class="bot-card-bg">
+                    {% if bot.avatar_url %}
+                        <img src="{{ bot.avatar_url }}" alt="{{ bot.name }}">
+                    {% else %}
+                        <span class="bot-card-bg-emoji">🎮</span>
+                    {% endif %}
+                    <span class="bot-category-badge">{{ bot.get_category_display }}</span>
+                </div>
+                <div class="bot-card-content">
+                    <div class="bot-card-header">
+                        <h3 class="bot-name">{{ bot.name }}</h3>
+                        {% if bot.is_active %}
+                            <span class="status-badge status-active">Live</span>
+                        {% else %}
+                            <span class="status-badge status-inactive">Soon</span>
+                        {% endif %}
+                    </div>
+                    <p class="bot-description">{{ bot.description|default:"Immerse yourself in creative adventures" }}</p>
+                    <div class="bot-card-footer">
+                        {% if bot.is_active %}
+                            <a href="{% url 'start_roleplay' bot.id %}" class="btn-start" onclick="event.stopPropagation()">
+                                Start
+                            </a>
+                            <a href="{% url 'bot-detail' bot.id %}" class="btn-view" onclick="event.stopPropagation()">
+                                View
+                            </a>
+                        {% else %}
+                            <button class="btn-start" disabled>Coming Soon</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- All Bots Section (Full Catalog) -->
+{% if all_bots %}
+<div class="category-section">
+    <div class="category-header">
+        <h2 class="category-title">
+            <span class="category-emoji">🌐</span>
+            All Bots
+        </h2>
+        <span style="color: #64748b; font-size: 0.9rem;">{{ all_bots|length }} bots available</span>
+    </div>
+    
+    <!-- Grid Layout for All Bots -->
+    <div class="all-bots-grid">
+        {% for bot in all_bots %}
         <div class="bot-card" onclick="handleCardClick(event, '{% url 'start_roleplay' bot.id %}', {{ bot.is_active|yesno:'true,false' }})">
-            <!-- Background Image Section -->
             <div class="bot-card-bg">
                 {% if bot.avatar_url %}
                     <img src="{{ bot.avatar_url }}" alt="{{ bot.name }}">
                 {% else %}
                     <span class="bot-card-bg-emoji">🤖</span>
                 {% endif %}
+                <span class="bot-category-badge">{{ bot.get_category_display }}</span>
             </div>
-
-            <!-- Card Content -->
             <div class="bot-card-content">
-                <div class="bot-header">
+                <div class="bot-card-header">
                     <h3 class="bot-name">{{ bot.name }}</h3>
                     {% if bot.is_active %}
-                        <span class="status-badge status-active">Active</span>
+                        <span class="status-badge status-active">Live</span>
                     {% else %}
-                        <span class="status-badge status-inactive">Inactive</span>
+                        <span class="status-badge status-inactive">Soon</span>
                     {% endif %}
                 </div>
-
-                {% if bot.description %}
-                <p class="bot-description">{{ bot.description }}</p>
-                {% endif %}
-
-                <div class="bot-actions">
+                <p class="bot-description">{{ bot.description|default:"Discover this AI companion" }}</p>
+                <div class="bot-card-footer">
                     {% if bot.is_active %}
                         <a href="{% url 'start_roleplay' bot.id %}" class="btn-start" onclick="event.stopPropagation()">
                             Start
                         </a>
-                        <a href="{% url 'share-roleplay-bot' bot.id %}" class="btn-secondary" onclick="event.stopPropagation()">
-                            Share
-                        </a>
-                        <a href="{% url 'bot-detail' bot.id %}" class="btn-secondary" onclick="event.stopPropagation()">
+                        <a href="{% url 'bot-detail' bot.id %}" class="btn-view" onclick="event.stopPropagation()">
                             View
                         </a>
                     {% else %}
-                        <button class="btn-start" disabled>Unavailable</button>
+                        <button class="btn-start" disabled>Coming Soon</button>
                     {% endif %}
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
-
-    <!-- Pagination -->
-    {% if roleplay_bots.paginator.num_pages > 1 %}
-    <div class="pagination-wrapper">
-        <div class="pagination">
-            <!-- Previous Button -->
-            {% if roleplay_bots.has_previous %}
-                <a href="?page={{ roleplay_bots.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" 
-                   class="page-btn">
-                    ‹
-                </a>
-            {% else %}
-                <span class="page-btn page-btn-disabled">‹</span>
-            {% endif %}
-
-            <!-- Page Numbers -->
-            {% with page_num=roleplay_bots.number total_pages=roleplay_bots.paginator.num_pages %}
-                {% if total_pages <= 7 %}
-                    <!-- Show all pages if 7 or fewer -->
-                    {% for num in roleplay_bots.paginator.page_range %}
-                        {% if num == page_num %}
-                            <span class="page-btn page-btn-active">{{ num }}</span>
-                        {% else %}
-                            <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}" 
-                               class="page-btn">{{ num }}</a>
-                        {% endif %}
-                    {% endfor %}
-                {% else %}
-                    <!-- Show condensed pagination for many pages -->
-                    {% if page_num <= 3 %}
-                        <!-- Near start -->
-                        {% for num in "12345" %}
-                            {% if forloop.counter == page_num %}
-                                <span class="page-btn page-btn-active">{{ forloop.counter }}</span>
-                            {% else %}
-                                <a href="?page={{ forloop.counter }}{% if search_query %}&search={{ search_query }}{% endif %}" 
-                                   class="page-btn">{{ forloop.counter }}</a>
-                            {% endif %}
-                        {% endfor %}
-                        <span class="page-dots">...</span>
-                        <a href="?page={{ total_pages }}{% if search_query %}&search={{ search_query }}{% endif %}" 
-                           class="page-btn">{{ total_pages }}</a>
-                    {% elif page_num >= total_pages|add:"-2" %}
-                        <!-- Near end -->
-                        <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}" 
-                           class="page-btn">1</a>
-                        <span class="page-dots">...</span>
-                        {% for i in "01234"|make_list %}
-                            {% with num=total_pages|add:"-4"|add:forloop.counter0 %}
-                                {% if num == page_num %}
-                                    <span class="page-btn page-btn-active">{{ num }}</span>
-                                {% else %}
-                                    <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}" 
-                                       class="page-btn">{{ num }}</a>
-                                {% endif %}
-                            {% endwith %}
-                        {% endfor %}
-                    {% else %}
-                        <!-- In middle -->
-                        <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}" 
-                           class="page-btn">1</a>
-                        <span class="page-dots">...</span>
-                        <a href="?page={{ page_num|add:"-1" }}{% if search_query %}&search={{ search_query }}{% endif %}" 
-                           class="page-btn">{{ page_num|add:"-1" }}</a>
-                        <span class="page-btn page-btn-active">{{ page_num }}</span>
-                        <a href="?page={{ page_num|add:"1" }}{% if search_query %}&search={{ search_query }}{% endif %}" 
-                           class="page-btn">{{ page_num|add:"1" }}</a>
-                        <span class="page-dots">...</span>
-                        <a href="?page={{ total_pages }}{% if search_query %}&search={{ search_query }}{% endif %}" 
-                           class="page-btn">{{ total_pages }}</a>
-                    {% endif %}
-                {% endif %}
-            {% endwith %}
-
-            <!-- Next Button -->
-            {% if roleplay_bots.has_next %}
-                <a href="?page={{ roleplay_bots.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" 
-                   class="page-btn">
-                    ›
-                </a>
-            {% else %}
-                <span class="page-btn page-btn-disabled">›</span>
-            {% endif %}
-        </div>
+        {% if has_more_bots %}
+    <div style="text-align: center; margin-top: 2rem;">
+        <button id="loadMoreBtn" class="load-more-btn" onclick="loadMoreBots()">
+            <span id="loadMoreText">Load More Bots</span>
+            <span id="loadMoreSpinner" style="display: none;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="animation: spin 1s linear infinite;">
+                    <circle cx="12" cy="12" r="10" stroke-width="4" stroke-opacity="0.25"/>
+                    <path d="M12 2a10 10 0 0 1 10 10" stroke-width="4" stroke-linecap="round"/>
+                </svg>
+            </span>
+        </button>
+        <p style="color: #64748b; font-size: 0.85rem; margin-top: 0.75rem;">
+            Showing {{ all_bots|length }} of {{ all_bots_count }} bots
+        </p>
     </div>
     {% endif %}
+</div>
+{% endif %}
 
-    {% else %}
     <!-- Empty State -->
+    {% if not career_bots and not learning_bots and not entertainment_bots %}
     <div class="empty-state">
-        <div class="empty-state-icon">🤖</div>
-        <h3>No Roleplay Bots Available</h3>
-        <p>We're working on adding exciting roleplay scenarios. Check back soon!</p>
-        <a href="{% url 'dashboard' %}" class="btn-start" style="display: inline-flex; padding: 0.75rem 2rem;">
-            Back to Dashboard
+        <div class="empty-icon">🤖</div>
+        <h3>No Bots Found</h3>
+        <p>Try adjusting your search or explore different categories</p>
+        <a href="{% url 'voice_roleplay' %}" class="btn-start" style="display: inline-flex; padding: 0.75rem 2rem;">
+            View All Bots
         </a>
     </div>
     {% endif %}
@@ -583,14 +798,99 @@
 
 {% block extra_js %}
 <script>
+let currentOffset = {{ all_bots|length }};
+const batchSize = 50;
+
 function handleCardClick(event, url, isActive) {
-    // Don't navigate if clicking on action buttons
-    if (event.target.closest('.bot-actions')) return;
-    
-    // Only navigate if bot is active
+    if (event.target.closest('.bot-card-footer')) return;
     if (isActive) {
         window.location.href = url;
     }
 }
+
+async function loadMoreBots() {
+    const btn = document.getElementById('loadMoreBtn');
+    const text = document.getElementById('loadMoreText');
+    const spinner = document.getElementById('loadMoreSpinner');
+    
+    // Disable button and show loading
+    btn.disabled = true;
+    text.style.display = 'none';
+    spinner.style.display = 'inline-block';
+    
+    try {
+        const params = new URLSearchParams(window.location.search);
+        params.set('offset', currentOffset);
+        params.set('limit', batchSize);
+        params.set('ajax', 'true');
+        
+        const response = await fetch(`${window.location.pathname}?${params.toString()}`);
+        const data = await response.json();
+        
+        if (data.bots && data.bots.length > 0) {
+            const grid = document.getElementById('allBotsGrid');
+            
+            data.bots.forEach(bot => {
+                const card = createBotCard(bot);
+                grid.insertAdjacentHTML('beforeend', card);
+            });
+            
+            currentOffset += data.bots.length;
+            
+            // Update count text
+            document.querySelector('.load-more-btn + p').textContent = 
+                `Showing ${currentOffset} of ${data.total_count} bots`;
+            
+            // Hide button if no more bots
+            if (!data.has_more) {
+                btn.parentElement.style.display = 'none';
+            }
+        }
+    } catch (error) {
+        console.error('Error loading bots:', error);
+        alert('Failed to load more bots. Please try again.');
+    } finally {
+        // Re-enable button
+        btn.disabled = false;
+        text.style.display = 'inline';
+        spinner.style.display = 'none';
+    }
+}
+
+function createBotCard(bot) {
+    const isActive = bot.is_active;
+    const statusBadge = isActive 
+        ? '<span class="status-badge status-active">Live</span>'
+        : '<span class="status-badge status-inactive">Soon</span>';
+    
+    const buttons = isActive
+        ? `<a href="/roleplay/start/${bot.id}/" class="btn-start" onclick="event.stopPropagation()">Start</a>
+           <a href="/bots/${bot.id}/" class="btn-view" onclick="event.stopPropagation()">View</a>`
+        : '<button class="btn-start" disabled>Coming Soon</button>';
+    
+    const bgContent = bot.avatar_url
+        ? `<img src="${bot.avatar_url}" alt="${bot.name}">`
+        : '<span class="bot-card-bg-emoji">🤖</span>';
+    
+    return `
+        <div class="bot-card" onclick="handleCardClick(event, '/roleplay/start/${bot.id}/', ${isActive})">
+            <div class="bot-card-bg">
+                ${bgContent}
+                <span class="bot-category-badge">${bot.category_display}</span>
+            </div>
+            <div class="bot-card-content">
+                <div class="bot-card-header">
+                    <h3 class="bot-name">${bot.name}</h3>
+                    ${statusBadge}
+                </div>
+                <p class="bot-description">${bot.description || 'Discover this AI companion'}</p>
+                <div class="bot-card-footer">
+                    ${buttons}
+                </div>
+            </div>
+        </div>
+    `;
+}
 </script>
 {% endblock %}
+

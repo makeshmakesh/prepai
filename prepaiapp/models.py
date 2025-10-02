@@ -333,7 +333,7 @@ class Transaction(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
 
     def __str__(self):
         return f"{self.user.username} - {self.transaction_id} - {self.status}"
@@ -351,6 +351,38 @@ class RolePlayBots(models.Model):
         ("onyx", "Onyx (Male)"),
         ("sage", "Sage (Male)"),
         ("shimmer", "Shimmer (Female)"),
+    ]
+    CATEGORY_CHOICES = [
+        ("interview_prep", "Interview Preparation"),
+        ("language_learning", "Language Learning"),
+        ("professional_training", "Professional Training"),
+        ("customer_service", "Customer Service & Sales"),
+        ("personal_development", "Personal Development"),
+        ("public_speaking", "Public Speaking & Communication"),
+        ("healthcare", "Healthcare & Medical"),
+        ("education", "Education & Tutoring"),
+        ("business", "Business & Entrepreneurship"),
+        ("dating_social", "Dating & Social Skills"),
+        ("legal", "Legal & Compliance"),
+        ("fitness_wellness", "Fitness & Wellness"),
+        ("technical_skills", "Technical Skills & Coding"),
+        ("exam_prep", "Exam Preparation"),
+        ("therapy_counseling", "Therapy & Counseling Practice"),
+        ("negotiation", "Negotiation & Conflict Resolution"),
+        ("mentorship", "Mentorship & Career Coaching"),
+        # Entertainment & Creative Categories
+        ("fantasy", "Fantasy & Adventure"),
+        ("sci_fi", "Science Fiction"),
+        ("anime_manga", "Anime & Manga Characters"),
+        ("historical", "Historical Figures & Periods"),
+        ("mythology", "Mythology & Folklore"),
+        ("celebrity", "Celebrity & Famous Personalities"),
+        ("gaming", "Gaming & Esports"),
+        ("movie_tv", "Movies & TV Shows"),
+        ("dnd_rpg", "D&D & Tabletop RPG"),
+        ("storytelling", "Interactive Storytelling"),
+        ("creative_writing", "Creative Writing & Brainstorming"),
+        ("other", "Other"),
     ]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=200)
@@ -372,6 +404,14 @@ class RolePlayBots(models.Model):
         help_text="Voice setting for TTS",
         default="alloy",
         choices=VOICE_CHOICES,
+    )
+    category = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text="Bot category",
+        default="Other",
+        choices=CATEGORY_CHOICES,
     )
     is_active = models.BooleanField(default=True)
     is_public = models.BooleanField(default=True)
@@ -410,6 +450,7 @@ class RoleplaySession(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.bot.name}"
 
+
 class RolePlayShare(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     bot = models.ForeignKey(RolePlayBots, on_delete=models.CASCADE)
@@ -417,11 +458,12 @@ class RolePlayShare(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('bot', 'shared_by')
+        unique_together = ("bot", "shared_by")
 
     def __str__(self):
         return f"{self.bot.name} shared by {self.shared_by.username}"
-    
+
+
 class MyInvitedRolePlayShare(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     share = models.ForeignKey(RolePlayShare, on_delete=models.CASCADE)
@@ -430,12 +472,11 @@ class MyInvitedRolePlayShare(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('share','invited_to')
+        unique_together = ("share", "invited_to")
 
     def __str__(self):
         return f"{self.share.bot.name} invited by {self.share.shared_by} to {self.invited_to.username}"
-    
-    
+
 
 class CreditShare(models.Model):
     CREDITED_FOR_CHOICES = [
@@ -450,12 +491,20 @@ class CreditShare(models.Model):
     ]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     credit = models.IntegerField(default=0)
-    share = models.ForeignKey(RolePlayShare, on_delete=models.CASCADE, null=True, blank=True)
+    share = models.ForeignKey(
+        RolePlayShare, on_delete=models.CASCADE, null=True, blank=True
+    )
     bot = models.ForeignKey(RolePlayBots, on_delete=models.CASCADE)
     credited_to = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
-    credited_from = models.ForeignKey(User, on_delete=models.CASCADE, related_name='credited_from', default=None)
-    credit_reason = models.CharField(max_length=50, choices=CREDITED_FOR_CHOICES, default="other")
-    settlement_status = models.CharField(max_length=20, choices=SETTLEMENT_STATUS_CHOICES, default="pending")
+    credited_from = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="credited_from", default=None
+    )
+    credit_reason = models.CharField(
+        max_length=50, choices=CREDITED_FOR_CHOICES, default="other"
+    )
+    settlement_status = models.CharField(
+        max_length=20, choices=SETTLEMENT_STATUS_CHOICES, default="pending"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

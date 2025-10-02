@@ -376,6 +376,61 @@ select.form-control:focus {
         
         <!-- Basic Information -->
         <div class="form-group">
+    <label for="category">Category</label>
+    <select id="category" name="category" class="form-control">
+        <option value="" disabled selected>Select a category...</option>
+        
+        <optgroup label="Professional & Career">
+            <option value="interview_prep">Interview Preparation</option>
+            <option value="professional_training">Professional Training</option>
+            <option value="customer_service">Customer Service & Sales</option>
+            <option value="business">Business & Entrepreneurship</option>
+            <option value="negotiation">Negotiation & Conflict Resolution</option>
+            <option value="mentorship">Mentorship & Career Coaching</option>
+        </optgroup>
+        
+        <optgroup label="Education & Learning">
+            <option value="language_learning">Language Learning</option>
+            <option value="education">Education & Tutoring</option>
+            <option value="exam_prep">Exam Preparation</option>
+            <option value="technical_skills">Technical Skills & Coding</option>
+        </optgroup>
+        
+        <optgroup label="Personal Development">
+            <option value="personal_development">Personal Development</option>
+            <option value="public_speaking">Public Speaking & Communication</option>
+            <option value="dating_social">Dating & Social Skills</option>
+            <option value="fitness_wellness">Fitness & Wellness</option>
+        </optgroup>
+        
+        <optgroup label="Healthcare & Professional Services">
+            <option value="healthcare">Healthcare & Medical</option>
+            <option value="therapy_counseling">Therapy & Counseling Practice</option>
+            <option value="legal">Legal & Compliance</option>
+        </optgroup>
+        
+        <optgroup label="Entertainment & Fantasy">
+            <option value="fantasy">Fantasy & Adventure</option>
+            <option value="sci_fi">Science Fiction</option>
+            <option value="anime_manga">Anime & Manga Characters</option>
+            <option value="dnd_rpg">D&D & Tabletop RPG</option>
+            <option value="gaming">Gaming & Esports</option>
+            <option value="movie_tv">Movies & TV Shows</option>
+            <option value="celebrity">Celebrity & Famous Personalities</option>
+        </optgroup>
+        
+        <optgroup label="Creative & Storytelling">
+            <option value="historical">Historical Figures & Periods</option>
+            <option value="mythology">Mythology & Folklore</option>
+            <option value="storytelling">Interactive Storytelling</option>
+            <option value="creative_writing">Creative Writing & Brainstorming</option>
+        </optgroup>
+        
+        <option value="other">Other</option>
+    </select>
+    <div class="help-text">Choose the category that best fits your bot's purpose</div>
+</div>
+        <div class="form-group">
             <label for="name">Bot Name *</label>
             <input type="text" 
                    id="name" 

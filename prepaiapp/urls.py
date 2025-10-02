@@ -69,6 +69,8 @@ urlpatterns = [
         views.RolePlaySessionView.as_view(),
         name="roleplay_session",
     ),
+    path("withdraw-info/", TemplateView.as_view(template_name="withdrawl_info.html"), name="withdraw-info"),
+    path("creator-program/", TemplateView.as_view(template_name="creator_program.html"), name="creator-program")
 ]
 # # Wire up our API using automatic URL routing.
 # urlpatterns = [

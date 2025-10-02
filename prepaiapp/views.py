@@ -398,11 +398,17 @@ class MyRolePlayBotView(LoginRequiredMixin, View):
 class CreateRolePlayBotView(LoginRequiredMixin, View):
     login_url = "/login/"
     def post(self, request):
+        profile = Profile.objects.get(user=request.user)
+        credit_required_to_create_bot = 10
+        if profile.credits < credit_required_to_create_bot:
+            messages.error(request, f"Low credits- Required credit {credit_required_to_create_bot}")
+            return redirect('purchase_credits')
         name = request.POST.get('name')
         avatar_url = request.POST.get('avatar_url')
         system_prompt = request.POST.get('system_prompt')
         description = request.POST.get('description')
         feedback_prompt = request.POST.get('feedback_prompt')
+        category= request.POST.get('category')
         is_active = request.POST.get('is_active') == 'on'
         is_public = request.POST.get('is_public') == 'on'
         # scenario_description = request.POST.get('scenario_description') --- IGNORE ---
@@ -430,8 +436,11 @@ class CreateRolePlayBotView(LoginRequiredMixin, View):
                 created_by=request.user,
                 is_active=is_active,
                 is_public=is_public,
+                category=category
             )
             messages.success(request, f"Roleplay Bot '{bot.name}' created successfully!")
+            profile.credits -= credit_required_to_create_bot
+            profile.save(update_fields=['credits'])
             return redirect('voice_roleplay')
         except Exception as e:
             logger.error(f"Error creating Roleplay Bot: {e}")
@@ -525,53 +534,130 @@ class RolePlayStartView(LoginRequiredMixin, View):
 
 
 
+from django.http import JsonResponse
+
 class VoiceRolePlayView(LoginRequiredMixin, View):
     """
-    View to display voice roleplay options with search, filter, and pagination
+    Category-based explore view for voice roleplay bots
     """
     login_url = "/login/"
     
     def get(self, request):
+        # Check if AJAX request
+        is_ajax = request.GET.get('ajax') == 'true'
+        
         # Get query parameters
         search_query = request.GET.get('search', '').strip()
-        filter_status = request.GET.get('filter', 'all')
-        page_number = request.GET.get('page', 1)
+        selected_category = request.GET.get('category', 'all')
+        offset = int(request.GET.get('offset', 0))
+        limit = int(request.GET.get('limit', 50))
         
         # Base queryset
-        roleplay_bots = RolePlayBots.objects.filter(is_public=True)
+        all_bots = RolePlayBots.objects.filter(is_public=True, is_active=True)
+        all_bots_count = all_bots.count()
         
-        # Apply search filter (searches in name and description)
+        # Handle AJAX load more request
+        if is_ajax:
+            bots = all_bots.order_by('order', '-created_at')[offset:offset + limit]
+            has_more = all_bots_count > (offset + limit)
+            
+            bots_data = [{
+                'id': str(bot.id),
+                'name': bot.name,
+                'description': bot.description,
+                'avatar_url': bot.avatar_url,
+                'category_display': bot.get_category_display(),
+                'is_active': bot.is_active,
+            } for bot in bots]
+            
+            return JsonResponse({
+                'bots': bots_data,
+                'has_more': has_more,
+                'total_count': all_bots_count,
+            })
+        
+        # Regular page load
+        all_bots_list = all_bots.order_by('order', '-created_at')[:50]  # First 50
+        has_more_bots = all_bots_count > 50
+        
+        # Apply search filter
         if search_query:
-            roleplay_bots = roleplay_bots.filter(
+            all_bots = all_bots.filter(
                 Q(name__icontains=search_query) | 
-                Q(description__icontains=search_query)
+                Q(description__icontains=search_query) |
+                Q(category__icontains=search_query)
             )
+            
+            context = {
+                'search_query': search_query,
+                'selected_category': selected_category,
+                'career_bots': all_bots.order_by('order', '-created_at')[:20],
+                'learning_bots': [],
+                'entertainment_bots': [],
+                'personal_bots': [],
+                'all_bots': [],
+                'all_bots_count': 0,
+                'has_more_bots': False,
+            }
+            return render(request, 'voice_roleplay_list.html', context)
         
-        # Apply status filter
-        if filter_status == 'active':
-            roleplay_bots = roleplay_bots.filter(is_active=True)
-        elif filter_status == 'inactive':
-            roleplay_bots = roleplay_bots.filter(is_active=False)
-        # 'all' shows everything (no additional filter)
+        # Category groupings (keep your existing code)
+        career_categories = [
+            'interview_prep', 'professional_training', 'customer_service',
+            'business', 'negotiation', 'mentorship', 'public_speaking'
+        ]
         
-        # Order by priority and recency
-        roleplay_bots = roleplay_bots.order_by('order', '-created_at')
+        learning_categories = [
+            'language_learning', 'education', 'exam_prep', 'technical_skills'
+        ]
         
-        # Pagination (10 items per page)
-        paginator = Paginator(roleplay_bots, 100)
+        entertainment_categories = [
+            'fantasy', 'sci_fi', 'anime_manga', 'dnd_rpg', 'gaming',
+            'movie_tv', 'celebrity', 'storytelling', 'creative_writing',
+            'historical', 'mythology'
+        ]
         
-        try:
-            bots_page = paginator.page(page_number)
-        except PageNotAnInteger:
-            bots_page = paginator.page(1)
-        except EmptyPage:
-            bots_page = paginator.page(paginator.num_pages)
+        personal_categories = [
+            'personal_development', 'dating_social', 'fitness_wellness'
+        ]
+        
+        # Filter by selected category group (keep your existing logic)
+        if selected_category == 'professional':
+            career_bots = all_bots.filter(category__in=career_categories).order_by('order', '-created_at')
+            learning_bots = []
+            personal_bots = []
+            entertainment_bots = []
+        elif selected_category == 'learning':
+            career_bots = []
+            personal_bots = []
+            learning_bots = all_bots.filter(category__in=learning_categories).order_by('order', '-created_at')
+            entertainment_bots = []
+        elif selected_category in ['entertainment', 'creative']:
+            career_bots = []
+            personal_bots = []
+            learning_bots = []
+            entertainment_bots = all_bots.filter(category__in=entertainment_categories).order_by('order', '-created_at')
+        elif selected_category == 'personal':
+            personal_bots = all_bots.filter(category__in=personal_categories).order_by('order', '-created_at')
+            career_bots = []
+            learning_bots = []
+            entertainment_bots = []
+        else:  # 'all' - show mixed sections
+            career_bots = all_bots.filter(category__in=career_categories).order_by('order', '-created_at')
+            learning_bots = all_bots.filter(category__in=learning_categories).order_by('order', '-created_at')
+            entertainment_bots = all_bots.filter(category__in=entertainment_categories).order_by('order', '-created_at')
+            personal_bots = all_bots.filter(category__in=personal_categories).order_by('order', '-created_at')
         
         context = {
-            'roleplay_bots': bots_page,
+            'career_bots': career_bots,
+            'learning_bots': learning_bots,
+            'entertainment_bots': entertainment_bots,
+            'personal_bots': personal_bots,
+            'all_bots': all_bots_list,
+            'all_bots_count': all_bots_count,
+            'has_more_bots': has_more_bots,
             'search_query': search_query,
-            'filter_status': filter_status,
-            'total_bots': paginator.count,
+            'selected_category': selected_category,
         }
         
         return render(request, 'voice_roleplay_list.html', context)
@@ -1483,7 +1569,7 @@ class SignupView(View):
         user = User.objects.create_user(
             username=username, email=email, password=password1
         )
-        Profile.objects.get_or_create(user=user, credits=10)
+        Profile.objects.get_or_create(user=user, credits=50)
         login(request, user)  # Auto login after signup
         messages.success(request, "Signup successful!")
         if next_url and next_url != '/login/':

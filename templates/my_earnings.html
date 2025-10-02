@@ -414,6 +414,12 @@
             <div class="stat-label">Pending</div>
             <div class="stat-value" id="pendingCount">{{ pending|length }}</div>
         </div>
+                <div class="stat-card">
+            <div class="stat-label">Withdraw My Credit</div>
+                    <a href="{% url 'withdraw-info' %}" class="btn-filter btn-reset">
+            Withdraw
+        </a>
+        </div>
     </div>
 
     <!-- Filter Section -->

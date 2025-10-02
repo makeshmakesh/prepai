@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create AI Voice Bots & Earn Money - PrepAI Creator Program</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            background: #f8fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 clamp(1rem, 3vw, 2rem);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: clamp(3rem, 8vw, 5rem) 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="2" fill="white" opacity="0.1"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 7vw, 3.5rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .cta-primary {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 1.25rem 3rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Stats Section */
+        .stats {
+            background: white;
+            padding: clamp(2rem, 5vw, 3rem) 0;
+            margin-top: -3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 1.5rem;
+        }
+
+        .stat-number {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* Section */
+        .section {
+            padding: clamp(3rem, 8vw, 5rem) 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: clamp(2rem, 6vw, 4rem);
+        }
+
+        .section-title {
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+
+        .section-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            color: #64748b;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Use Cases Grid */
+        .use-cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .use-case-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .use-case-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .use-case-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .use-case-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: #1e293b;
+        }
+
+        .use-case-card p {
+            color: #64748b;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .use-case-examples {
+            background: rgba(102, 126, 234, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        .use-case-examples strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        /* How It Works */
+        .steps-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .step {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            align-items: start;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .step-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .step-content h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: #1e293b;
+        }
+
+        .step-content p {
+            color: #64748b;
+            line-height: 1.7;
+        }
+
+        /* Earnings Section */
+        .earnings-bg {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(240, 147, 251, 0.05) 100%);
+        }
+
+        .earnings-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .earnings-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .earnings-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+        }
+
+        .earnings-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+
+        .earnings-breakdown {
+            margin-bottom: 1.5rem;
+        }
+
+        .earnings-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .earnings-row:last-child {
+            border-bottom: none;
+        }
+
+        .earnings-label {
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .earnings-value {
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .earnings-total {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-top: 1rem;
+        }
+
+        .earnings-note {
+            background: rgba(102, 126, 234, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #475569;
+            border-left: 3px solid #667eea;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+        }
+
+        .feature-content h4 {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+
+        .feature-content p {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: clamp(3rem, 8vw, 5rem) 0;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1.25rem 2.5rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-white {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .step {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .step-number {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+                margin: 0 auto;
+            }
+
+            .earnings-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Turn Your Expertise Into Income</h1>
+                <p class="hero-subtitle">Create AI voice bots, share them, and earn real money from every conversation</p>
+                <a href="{% url 'dashboard' %}" class="cta-primary">Start Creating Today</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">20-30%</div>
+                    <div class="stat-label">Revenue Share</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">Unlimited</div>
+                    <div class="stat-label">Earning Potential</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">Free</div>
+                    <div class="stat-label">Sign up and get 50 free credits — enough to create 5 bots.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Create Bots for Any Niche</h2>
+                <p class="section-subtitle">Whatever your expertise, there's an audience waiting to learn from your AI bot</p>
+            </div>
+
+            <div class="use-cases-grid">
+                <div class="use-case-card">
+                    <div class="use-case-icon">💼</div>
+                    <h3>Interview Preparation</h3>
+                    <p>Help job seekers practice interviews with realistic AI conversations tailored to specific roles and industries.</p>
+                    <div class="use-case-examples">
+                        <strong>Examples:</strong>
+                        Software Engineer interviews, Product Manager mock interviews, Sales role-plays, Consulting case practices
+                    </div>
+                </div>
+
+                <div class="use-case-card">
+                    <div class="use-case-icon">🗣️</div>
+                    <h3>Language Learning</h3>
+                    <p>Create conversational partners that help learners practice speaking in any language with natural dialogue.</p>
+                    <div class="use-case-examples">
+                        <strong>Examples:</strong>
+                        Spanish tutor, Business English coach, IELTS speaking prep, Casual conversation practice
+                    </div>
+                </div>
+
+                <div class="use-case-card">
+                    <div class="use-case-icon">🎓</div>
+                    <h3>Professional Training</h3>
+                    <p>Build scenario-based training bots for workplace skills, customer service, sales, and more.</p>
+                    <div class="use-case-examples">
+                        <strong>Examples:</strong>
+                        Customer support scenarios, Sales pitch practice, Difficult conversation training, Presentation coaching
+                    </div>
+                </div>
+
+                <div class="use-case-card">
+                    <div class="use-case-icon">🧠</div>
+                    <h3>Personal Development</h3>
+                    <p>Design bots that coach users through personal growth, confidence building, and communication skills.</p>
+                    <div class="use-case-examples">
+                        <strong>Examples:</strong>
+                        Public speaking coach, Negotiation trainer, Conflict resolution practice, Dating conversation prep
+                    </div>
+                </div>
+
+                <div class="use-case-card">
+                    <div class="use-case-icon">🏥</div>
+                    <h3>Healthcare & Wellness</h3>
+                    <p>Create supportive bots for medical exam prep, patient communication, or wellness coaching.</p>
+                    <div class="use-case-examples">
+                        <strong>Examples:</strong>
+                        Medical exam prep, Patient consultation practice, Therapy conversation skills, Wellness check-ins
+                    </div>
+                </div>
+
+                <div class="use-case-card">
+                    <div class="use-case-icon">🎭</div>
+                    <h3>Creative & Entertainment</h3>
+                    <p>Build character roleplay bots, storytelling companions, or creative practice partners.</p>
+                    <div class="use-case-examples">
+                        <strong>Examples:</strong>
+                        Fictional character chats, Improv practice, Creative writing prompts, D&D dungeon master
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-subtitle">Four simple steps to start earning</p>
+            </div>
+
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Create Your Bot</h3>
+                        <p>Design an AI voice bot with custom personality, expertise, and conversation style. Set up scenarios, define responses, and configure the voice. No coding required.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Publish & Share</h3>
+                        <p>Make your bot public on PrepAI's marketplace. Share your unique bot link on social media, with your audience, or through affiliate programs.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Users Engage</h3>
+                        <p>When people use your bot, they spend credits for each conversation. Every interaction generates revenue that's automatically tracked.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Earn & Withdraw</h3>
+                        <p>Receive your share of credits from every conversation. Convert your earnings to real money and withdraw anytime.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Earnings Section -->
+    <section class="section earnings-bg">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Transparent Earnings Model</h2>
+                <p class="section-subtitle">See exactly how much you earn from every interaction</p>
+            </div>
+
+            <div class="earnings-cards">
+                <div class="earnings-card">
+                    <h3>Direct Usage</h3>
+                    <p style="color: #64748b; margin-bottom: 1.5rem;">When users discover and use your bot directly</p>
+                    
+                    <div class="earnings-breakdown">
+                        <div class="earnings-row">
+                            <span class="earnings-label">User Pays</span>
+                            <span class="earnings-value">10 credits</span>
+                        </div>
+                        <div class="earnings-row">
+                            <span class="earnings-label">Infrastructure Cost</span>
+                            <span class="earnings-value">-5 credits</span>
+                        </div>
+                        <div class="earnings-row">
+                            <span class="earnings-label" style="color: #22c55e;">You Earn</span>
+                            <span class="earnings-value" style="color: #22c55e;">3 credits</span>
+                        </div>
+                        <div class="earnings-row">
+                            <span class="earnings-label">Platform</span>
+                            <span class="earnings-value">2 credits</span>
+                        </div>
+                    </div>
+
+                    <div class="earnings-total">
+                        30% Revenue Share
+                    </div>
+
+                    <div class="earnings-note">
+                        Higher earnings when users find your bot organically
+                    </div>
+                </div>
+
+                <div class="earnings-card">
+                    <h3>Referred Usage</h3>
+                    <p style="color: #64748b; margin-bottom: 1.5rem;">When users come through an affiliate referral link</p>
+                    
+                    <div class="earnings-breakdown">
+                        <div class="earnings-row">
+                            <span class="earnings-label">User Pays</span>
+                            <span class="earnings-value">10 credits</span>
+                        </div>
+                        <div class="earnings-row">
+                            <span class="earnings-label">Infrastructure Cost</span>
+                            <span class="earnings-value">-5 credits</span>
+                        </div>
+                        <div class="earnings-row">
+                            <span class="earnings-label" style="color: #22c55e;">You Earn</span>
+                            <span class="earnings-value" style="color: #22c55e;">2 credits</span>
+                        </div>
+                        <div class="earnings-row">
+                            <span class="earnings-label">Referrer Earns</span>
+                            <span class="earnings-value">1 credit</span>
+                        </div>
+                        <div class="earnings-row">
+                            <span class="earnings-label">Platform</span>
+                            <span class="earnings-value">2 credits</span>
+                        </div>
+                    </div>
+
+                    <div class="earnings-total">
+                        20% Revenue Share
+                    </div>
+
+                    <div class="earnings-note">
+                        Referrers help promote your bot to wider audiences
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 3rem; max-width: 700px; margin-left: auto; margin-right: auto;">
+                <p style="font-size: 1.1rem; color: #64748b; line-height: 1.8;">
+                    <strong style="color: #667eea;">Passive Income Potential:</strong> Create once, earn forever. Your bots work 24/7, generating revenue while you sleep. Scale your income by creating multiple bots across different niches.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Why Creators Choose PrepAI</h2>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">💰</div>
+                    <div class="feature-content">
+                        <h4>Real Money</h4>
+                        <p>Convert your credits to cash and withdraw to your bank account</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-content">
+                        <h4>Analytics Dashboard</h4>
+                        <p>Track usage, earnings, and user engagement in real-time</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🔗</div>
+                    <div class="feature-content">
+                        <h4>Affiliate Program</h4>
+                        <p>Let others promote your bots and expand your reach</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🎨</div>
+                    <div class="feature-content">
+                        <h4>Full Customization</h4>
+                        <p>Control personality, voice, scenarios, and conversation flow</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🚀</div>
+                    <div class="feature-content">
+                        <h4>Easy to Start</h4>
+                        <p>No technical skills needed, intuitive bot builder interface</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🔒</div>
+                    <div class="feature-content">
+                        <h4>Your IP Protected</h4>
+                        <p>You maintain ownership of your bot designs and content</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="get-started">
+        <div class="container">
+            <h2>Ready to Start Earning?</h2>
+            <p>Join thousands of creators building profitable AI voice bots</p>
+            <div class="cta-buttons">
+                <a href="{% url 'dashboard' %}" class="btn btn-white">Create Your First Bot</a>
+                <a href="{% url 'login' %}" class="btn btn-outline">Sign In</a>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
