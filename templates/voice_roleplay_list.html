@@ -13,70 +13,106 @@
     .explore-container {
         max-width: 1400px;
         margin: 0 auto;
-        padding: 0 clamp(1rem, 3vw, 2rem);
+        padding: 0 clamp(0.10rem, 0.25vw, 0.15rem);
     }
 
-    /* Hero Section - Glass Morphism */
+    /* Hero Section - Compact with Search Toggle */
     .hero-section {
         text-align: center;
-        margin-bottom: 3rem;
-        padding: 3rem 2rem;
+        margin-bottom: 2rem;
+        padding: 2rem 1.5rem 1.5rem;
         background: rgba(255, 255, 255, 0.15);
         backdrop-filter: blur(30px);
         -webkit-backdrop-filter: blur(30px);
-        border-radius: 32px;
+        border-radius: 24px;
         border: 2px solid rgba(255, 255, 255, 0.25);
         box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
     }
 
     .hero-title {
-        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        font-size: clamp(2rem, 5vw, 3.5rem);
         font-weight: 900;
-        margin-bottom: 1rem;
-        color: white;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary) !important;
         text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         letter-spacing: -0.02em;
     }
 
     .hero-subtitle {
-        font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-        color: rgba(255, 255, 255, 0.95);
-        max-width: 700px;
-        margin: 0 auto 2.5rem;
-        line-height: 1.7;
+        font-size: clamp(0.9rem, 2vw, 1.1rem);
+        color: var(--text-primary) !important;
+        max-width: 600px;
+        margin: 0 auto 1rem;
+        line-height: 1.5;
     }
 
-    /* Search Bar - Glass Effect */
+    /* Search Toggle Button */
+    .search-toggle-btn {
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: var(--text-primary) !important;
+        padding: 0.75rem 1.5rem;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .search-toggle-btn:hover {
+        background: rgba(255, 255, 255, 0.35);
+        transform: translateY(-2px);
+    }
+
+    .search-toggle-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* Collapsible Search Container */
     .search-container {
-        max-width: 600px;
-        margin: 0 auto;
+        max-width: 500px;
+        margin: 1rem auto 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, opacity 0.3s ease;
+        opacity: 0;
+    }
+
+    .search-container.active {
+        max-height: 200px;
+        opacity: 1;
     }
 
     .search-form {
         display: flex;
-        gap: 0.75rem;
+        gap: 0.5rem;
         background: rgba(255, 255, 255, 0.25);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        padding: 0.5rem;
-        border-radius: 20px;
+        padding: 0.4rem;
+        border-radius: 16px;
         border: 2px solid rgba(255, 255, 255, 0.3);
     }
 
     .search-input {
         flex: 1;
-        padding: 1rem 1.5rem;
+        padding: 0.75rem 1rem;
         border: none;
-        border-radius: 16px;
-        font-size: 1rem;
+        border-radius: 12px;
+        font-size: 0.9rem;
         background: white;
         transition: all 0.3s;
     }
 
     .search-input:focus {
         outline: none;
-        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
-        transform: scale(1.01);
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
     }
 
     .search-input::placeholder {
@@ -84,35 +120,37 @@
     }
 
     .search-btn {
-        padding: 1rem 2rem;
+        padding: 0.75rem 1.5rem;
         background: white;
         color: #667eea;
         border: none;
-        border-radius: 16px;
+        border-radius: 12px;
         font-weight: 700;
+        font-size: 0.85rem;
         cursor: pointer;
         transition: all 0.3s;
         white-space: nowrap;
     }
 
     .search-btn:hover {
-        transform: translateY(-2px) scale(1.05);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     }
 
-    /* Category Pills */
+    /* Category Pills - Smaller */
     .category-filters {
         display: flex;
-        gap: 0.75rem;
+        gap: 0.65rem;
         overflow-x: auto;
-        padding: 1.5rem 0;
-        margin-bottom: 2rem;
+        padding: 0.75rem 0 1.25rem;
+        margin-bottom: 1.5rem;
         scrollbar-width: thin;
         scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
+        -webkit-overflow-scrolling: touch;
     }
 
     .category-filters::-webkit-scrollbar {
-        height: 6px;
+        height: 4px;
     }
 
     .category-filters::-webkit-scrollbar-thumb {
@@ -121,15 +159,15 @@
     }
 
     .category-pill {
-        padding: 0.85rem 1.75rem;
+        padding: 0.6rem 1.25rem;
         background: rgba(255, 255, 255, 0.2);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         border: 2px solid rgba(255, 255, 255, 0.3);
-        border-radius: 30px;
+        border-radius: 25px;
         font-weight: 700;
-        font-size: 0.95rem;
-        color: white;
+        font-size: 0.8rem;
+        color: var(--text-primary) !important;
         text-decoration: none;
         white-space: nowrap;
         transition: all 0.3s;
@@ -139,28 +177,27 @@
     .category-pill:hover {
         background: rgba(255, 255, 255, 0.3);
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         text-decoration: none;
         color: white;
     }
 
     .category-pill.active {
-        background: white;
+        background: grey;
         color: #667eea;
         border-color: white;
-        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
 
     /* Category Sections */
     .category-section {
-        margin-bottom: 4rem;
-        animation: fadeInUp 0.6s ease-out;
+        margin-bottom: 3rem;
+        animation: fadeInUp 0.5s ease-out;
     }
 
     @keyframes fadeInUp {
         from {
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(20px);
         }
         to {
             opacity: 1;
@@ -171,68 +208,51 @@
     .category-header {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        margin-bottom: 2rem;
-        padding: 1.5rem;
+        margin-bottom: 1.25rem;
+        padding: 0.5rem 0.25rem;
         background: rgba(255, 255, 255, 0.15);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border-radius: 20px;
+        border-radius: 18px;
         border: 2px solid rgba(255, 255, 255, 0.25);
     }
 
     .category-title {
-        font-size: clamp(1.75rem, 4vw, 2.5rem);
-        font-weight: 900;
-        color: white;
+        font-size: clamp(1.0rem, 2vw, 1rem);
+        font-weight: 300;
+        color: var(--text-primary) !important;
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 0.65rem;
         text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     }
 
     .category-emoji {
-        font-size: clamp(2rem, 5vw, 2.75rem);
+        font-size: clamp(1.5rem, 3.5vw, 2.25rem);
         filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
     }
 
-    .view-all-link {
-        color: white;
-        font-weight: 700;
-        font-size: 1rem;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1.5rem;
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        transition: all 0.3s;
+    /* Horizontal Scroll with Scroll Indicator */
+    .bots-scroll-wrapper {
+        position: relative;
+        margin: 0 -1rem;
+        padding: 0 1rem;
     }
 
-    .view-all-link:hover {
-        background: white;
-        color: #667eea;
-        transform: translateX(5px);
-        text-decoration: none;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-    }
-
-    /* Scroll Container */
     .bots-scroll {
         display: flex;
-        gap: 1.5rem;
+        gap: 1.25rem;
         overflow-x: auto;
-        padding-bottom: 1.5rem;
+        padding-bottom: 1.25rem;
         scrollbar-width: thin;
         scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
         scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
     }
 
     .bots-scroll::-webkit-scrollbar {
-        height: 8px;
+        height: 6px;
     }
 
     .bots-scroll::-webkit-scrollbar-thumb {
@@ -240,34 +260,61 @@
         border-radius: 10px;
     }
 
+    /* Scroll Hint Arrow */
+    .scroll-hint {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.9);
+        color: #667eea;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
+        pointer-events: none;
+        animation: bounceRight 2s ease-in-out infinite;
+        z-index: 10;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: opacity 0.3s;
+    }
+
+    @keyframes bounceRight {
+        0%, 100% { transform: translateY(-50%) translateX(0); }
+        50% { transform: translateY(-50%) translateX(10px); }
+    }
+
     /* All Bots Grid */
     .all-bots-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 2rem;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
         margin-bottom: 2rem;
     }
 
-    /* Bot Card - FULL IMAGE BACKGROUND */
+    /* Bot Card - Mobile Optimized */
     .bot-card {
         background: white;
-        border-radius: 24px;
+        border-radius: 20px;
         overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         cursor: pointer;
         display: flex;
         flex-direction: column;
-        min-width: 300px;
-        max-width: 350px;
-        flex-shrink: 0;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
         position: relative;
-        height: 420px;
+        height: 400px;
+        scroll-snap-align: start;
+        min-width: 280px;
+        flex-shrink: 0;
     }
 
     .bot-card:hover {
-        transform: translateY(-12px) scale(1.03);
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.35);
     }
 
     /* Full Height Image Background */
@@ -278,7 +325,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 5rem;
+        font-size: 4rem;
         overflow: hidden;
     }
 
@@ -288,9 +335,9 @@
         inset: 0;
         background: linear-gradient(180deg, 
             transparent 0%, 
-            rgba(0, 0, 0, 0.2) 40%,
-            rgba(0, 0, 0, 0.6) 70%,
-            rgba(0, 0, 0, 0.9) 100%);
+            rgba(0, 0, 0, 0.1) 30%,
+            rgba(0, 0, 0, 0.5) 60%,
+            rgba(0, 0, 0, 0.85) 100%);
         z-index: 1;
     }
 
@@ -300,11 +347,12 @@
         object-fit: cover;
         position: absolute;
         inset: 0;
-        transition: transform 0.6s ease;
+        transition: transform 0.5s ease;
     }
 
+    .bot-card:active .bot-card-bg img,
     .bot-card:hover .bot-card-bg img {
-        transform: scale(1.15);
+        transform: scale(1.1);
     }
 
     .bot-card-bg-emoji {
@@ -316,23 +364,23 @@
 
     @keyframes float {
         0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
+        50% { transform: translateY(-8px); }
     }
 
     /* Category Badge */
     .bot-category-badge {
         position: absolute;
-        top: 1rem;
-        right: 1rem;
+        top: 0.75rem;
+        right: 0.75rem;
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
-        padding: 0.5rem 1rem;
-        border-radius: 30px;
-        font-size: 0.8rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
         font-weight: 700;
         color: #667eea;
         z-index: 3;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
         border: 2px solid rgba(255, 255, 255, 0.5);
     }
 
@@ -342,27 +390,27 @@
         bottom: 0;
         left: 0;
         right: 0;
-        padding: 2rem 1.5rem 1.5rem;
+        padding: 1.75rem 1.25rem 1.25rem;
         background: linear-gradient(180deg, 
             transparent 0%, 
-            rgba(0, 0, 0, 0.7) 20%,
-            rgba(0, 0, 0, 0.9) 50%,
+            rgba(0, 0, 0, 0.6) 15%,
+            rgba(0, 0, 0, 0.85) 40%,
             rgba(0, 0, 0, 0.95) 100%);
         z-index: 2;
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: 0.85rem;
     }
 
     .bot-card-header {
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
-        gap: 1rem;
+        gap: 0.75rem;
     }
 
     .bot-name {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         font-weight: 800;
         color: white;
         line-height: 1.2;
@@ -371,14 +419,15 @@
     }
 
     .status-badge {
-        padding: 0.4rem 0.8rem;
-        border-radius: 20px;
-        font-size: 0.7rem;
+        padding: 0.35rem 0.7rem;
+        border-radius: 18px;
+        font-size: 0.65rem;
         font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         white-space: nowrap;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        flex-shrink: 0;
     }
 
     .status-active {
@@ -389,7 +438,7 @@
 
     @keyframes pulse {
         0%, 100% { opacity: 1; }
-        50% { opacity: 0.8; }
+        50% { opacity: 0.85; }
     }
 
     .status-inactive {
@@ -399,8 +448,8 @@
 
     .bot-description {
         color: rgba(255, 255, 255, 0.9);
-        font-size: 0.95rem;
-        line-height: 1.6;
+        font-size: 0.85rem;
+        line-height: 1.5;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -410,8 +459,8 @@
 
     .bot-card-footer {
         display: flex;
-        gap: 0.75rem;
-        margin-top: 0.5rem;
+        gap: 0.65rem;
+        margin-top: 0.25rem;
     }
 
     .btn-start {
@@ -419,26 +468,27 @@
         background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         color: white;
         border: none;
-        border-radius: 16px;
-        padding: 1rem;
+        border-radius: 14px;
+        padding: 0.85rem;
         font-weight: 800;
-        font-size: 1rem;
+        font-size: 0.9rem;
         text-decoration: none;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.5rem;
+        gap: 0.4rem;
         transition: all 0.3s;
         cursor: pointer;
-        box-shadow: 0 6px 20px rgba(240, 147, 251, 0.4);
+        box-shadow: 0 5px 18px rgba(240, 147, 251, 0.4);
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
 
+    .btn-start:active,
     .btn-start:hover {
         background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
         transform: translateY(-2px);
-        box-shadow: 0 8px 30px rgba(240, 147, 251, 0.6);
+        box-shadow: 0 7px 25px rgba(240, 147, 251, 0.6);
         color: white;
         text-decoration: none;
     }
@@ -457,10 +507,10 @@
         backdrop-filter: blur(10px);
         color: white;
         border: 2px solid rgba(255, 255, 255, 0.3);
-        border-radius: 16px;
-        padding: 1rem;
+        border-radius: 14px;
+        padding: 0.85rem;
         font-weight: 700;
-        font-size: 0.95rem;
+        font-size: 0.85rem;
         text-decoration: none;
         display: flex;
         align-items: center;
@@ -469,6 +519,7 @@
         cursor: pointer;
     }
 
+    .btn-view:active,
     .btn-view:hover {
         background: rgba(255, 255, 255, 0.3);
         border-color: rgba(255, 255, 255, 0.5);
@@ -482,23 +533,23 @@
         background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         color: white;
         border: none;
-        border-radius: 20px;
-        padding: 1.25rem 3rem;
-        font-size: 1.1rem;
+        border-radius: 18px;
+        padding: 1.1rem 2.5rem;
+        font-size: 1rem;
         font-weight: 800;
         cursor: pointer;
         transition: all 0.3s;
         display: inline-flex;
         align-items: center;
-        gap: 0.75rem;
-        box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
+        gap: 0.65rem;
+        box-shadow: 0 6px 20px rgba(240, 147, 251, 0.4);
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.8px;
     }
 
     .load-more-btn:hover:not(:disabled) {
         transform: translateY(-3px);
-        box-shadow: 0 12px 35px rgba(240, 147, 251, 0.6);
+        box-shadow: 0 10px 30px rgba(240, 147, 251, 0.6);
         background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
     }
 
@@ -515,101 +566,108 @@
     /* Empty State */
     .empty-state {
         text-align: center;
-        padding: 4rem 2rem;
+        padding: 3rem 1.5rem;
         background: rgba(255, 255, 255, 0.15);
         backdrop-filter: blur(20px);
         border: 2px dashed rgba(255, 255, 255, 0.3);
-        border-radius: 24px;
+        border-radius: 20px;
         margin: 2rem 0;
     }
 
     .empty-icon {
-        font-size: 4rem;
-        margin-bottom: 1.5rem;
+        font-size: 3.5rem;
+        margin-bottom: 1.25rem;
         filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
     }
 
     .empty-state h3 {
-        font-size: 2rem;
+        font-size: 1.75rem;
         font-weight: 800;
         color: white;
-        margin-bottom: 1rem;
+        margin-bottom: 0.75rem;
         text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     }
 
     .empty-state p {
         color: rgba(255, 255, 255, 0.9);
-        margin-bottom: 2rem;
-        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        font-size: 1rem;
     }
 
     /* Mobile Responsive */
     @media (max-width: 768px) {
+        .explore-container {
+            padding: 0 0.0rem;
+        }
+
         .hero-section {
-            padding: 2rem 1.5rem;
-            margin-bottom: 2rem;
+            padding: 1.5rem 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 20px;
+        }
+
+        .hero-title {
+            font-size: 1.75rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .hero-subtitle {
+            font-size: 0.85rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .search-toggle-btn {
+            padding: 0.65rem 1.25rem;
+            font-size: 0.85rem;
         }
 
         .search-form {
             flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .search-input {
+            padding: 0.85rem 1rem;
+            font-size: 16px;
         }
 
         .search-btn {
             width: 100%;
+            padding: 0.85rem;
+            font-size: 0.9rem;
         }
 
-        .category-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1rem;
-            padding: 1.25rem;
-        }
-
-        .view-all-link {
-            align-self: stretch;
-            justify-content: center;
-        }
-
-        .bot-card {
-            min-width: 280px;
-            max-width: 320px;
-            height: 400px;
-        }
-
-        .all-bots-grid {
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .bot-name {
-            font-size: 1.3rem;
-        }
-
-        .bot-card-content {
-            padding: 1.5rem 1.25rem 1.25rem;
-        }
-
-        .category-section {
-            margin-bottom: 3rem;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .explore-container {
-            padding: 0 1rem;
-        }
-
-        .hero-title {
-            font-size: 2rem;
-        }
-
-        .hero-subtitle {
-            font-size: 1rem;
+        .category-filters {
+            padding: 0.65rem 0 1.1rem;
+            margin-bottom: 1.25rem;
         }
 
         .category-pill {
-            padding: 0.75rem 1.5rem;
-            font-size: 0.9rem;
+            padding: 0.55rem 1.1rem;
+            font-size: 0.75rem;
+        }
+
+        .category-header {
+            padding: 0.05rem 0.5rem;
+            margin-bottom: 1.1rem;
+        }
+
+        .category-title {
+            font-size: 1.0rem;
+        }
+
+        .category-emoji {
+            font-size: 1.5rem;
+        }
+
+        .bots-scroll-wrapper {
+            margin: 0 -1rem;
+            padding: 0 1rem;
+        }
+
+        .bots-scroll {
+            gap: 1rem;
+            padding-bottom: 1rem;
         }
 
         .bot-card {
@@ -617,10 +675,66 @@
             height: 380px;
         }
 
+        .bot-name {
+            font-size: 1.2rem;
+        }
+
+        .bot-description {
+            font-size: 0.8rem;
+        }
+
+        .bot-card-content {
+            padding: 1.5rem 1.15rem 1.15rem;
+        }
+
+        .all-bots-grid {
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
+        }
+
+        .all-bots-grid .bot-card {
+            min-width: 100%;
+            max-width: 100%;
+        }
+
+        .category-section {
+            margin-bottom: 2.5rem;
+        }
+
         .load-more-btn {
             width: 100%;
             padding: 1rem 2rem;
-            font-size: 1rem;
+            font-size: 0.95rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-title {
+            font-size: 1.6rem;
+        }
+
+        .hero-subtitle {
+            font-size: 0.8rem;
+        }
+
+        .bot-card {
+            min-width: 240px;
+            height: 360px;
+        }
+
+        .bot-card-bg {
+            font-size: 3.5rem;
+        }
+
+        .category-section {
+            margin-bottom: 2rem;
+        }
+    }
+
+    /* Touch improvements */
+    @media (hover: none) {
+        .bot-card:active {
+            transform: scale(0.98);
         }
     }
 </style>
@@ -632,18 +746,27 @@
     <div class="hero-section">
         <h1 class="hero-title">Explore AI Voice Bots</h1>
         <p class="hero-subtitle">
-            Discover AI companions for every need — from career growth to creative adventures
+            Discover AI companions for every need
         </p>
         
-        <!-- Search Bar -->
-        <div class="search-container">
+        <!-- Search Toggle Button -->
+        <button class="search-toggle-btn" onclick="toggleSearch()">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            Search
+        </button>
+        
+        <!-- Collapsible Search Bar -->
+        <div class="search-container" id="searchContainer">
             <form method="get" action="" class="search-form">
                 <input 
                     type="text" 
                     class="search-input" 
-                    placeholder="Search by name, scenario, or use case..."
+                    placeholder="Search bots..."
                     name="search"
                     value="{{ search_query }}"
+                    id="searchInput"
                 >
                 <button type="submit" class="search-btn">Search</button>
             </form>
@@ -653,21 +776,73 @@
     <!-- Category Filter Pills -->
     <div class="category-filters">
         <a href="?category=all" class="category-pill {% if not selected_category or selected_category == 'all' %}active{% endif %}">
-            All Bots
-        </a>
-        <a href="?category=professional" class="category-pill {% if selected_category == 'professional' %}active{% endif %}">
-            💼 Professional
+            All
         </a>
         <a href="?category=entertainment" class="category-pill {% if selected_category == 'entertainment' %}active{% endif %}">
-            🎮 Entertainment & Creative
+            🎮 Fun
+        </a>
+        <a href="?category=professional" class="category-pill {% if selected_category == 'professional' %}active{% endif %}">
+            💼 Career
         </a>
         <a href="?category=learning" class="category-pill {% if selected_category == 'learning' %}active{% endif %}">
-            📚 Learning
+            📚 Learn
         </a>
         <a href="?category=personal" class="category-pill {% if selected_category == 'personal' %}active{% endif %}">
-            🌱 Personal Growth
+            🌱 Growth
         </a>
     </div>
+
+    <!-- Fun & Fantasy Section (FIRST) -->
+    {% if entertainment_bots %}
+    <div class="category-section">
+        <div class="category-header">
+            <h2 class="category-title">
+                <span class="category-emoji">🎮</span>
+                Fun & Fantasy
+            </h2>
+        </div>
+        <div class="bots-scroll-wrapper">
+            <div class="bots-scroll">
+                {% for bot in entertainment_bots %}
+                <div class="bot-card" onclick="handleCardClick(event, '{% url 'start_roleplay' bot.id %}', {{ bot.is_active|yesno:'true,false' }})">
+                    <div class="bot-card-bg">
+                        {% if bot.avatar_url %}
+                            <img src="{{ bot.avatar_url }}" alt="{{ bot.name }}">
+                        {% else %}
+                            <span class="bot-card-bg-emoji">🎮</span>
+                        {% endif %}
+                        <span class="bot-category-badge">{{ bot.get_category_display }}</span>
+                    </div>
+                    <div class="bot-card-content">
+                        <div class="bot-card-header">
+                            <h3 class="bot-name">{{ bot.name }}</h3>
+                            {% if bot.is_active %}
+                                <span class="status-badge status-active">Live</span>
+                            {% else %}
+                                <span class="status-badge status-inactive">Soon</span>
+                            {% endif %}
+                        </div>
+                        <p class="bot-description">{{ bot.description|default:"Immerse yourself in creative adventures" }}</p>
+                        <div class="bot-card-footer">
+                            {% if bot.is_active %}
+                                <a href="{% url 'start_roleplay' bot.id %}" class="btn-start" onclick="event.stopPropagation()">
+                                    Start
+                                </a>
+                                <a href="{% url 'bot-detail' bot.id %}" class="btn-view" onclick="event.stopPropagation()">
+                                    View
+                                </a>
+                            {% else %}
+                                <button class="btn-start" disabled>Soon</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="scroll-hint">→</div>
+        </div>
+    </div>
+    {% endif %}
 
     <!-- Career Boost Section -->
     {% if career_bots %}
@@ -677,46 +852,46 @@
                 <span class="category-emoji">💼</span>
                 Career Boost
             </h2>
-            <a href="?category=professional" class="view-all-link">
-                View All →
-            </a>
         </div>
-        <div class="bots-scroll">
-            {% for bot in career_bots %}
-            <div class="bot-card" onclick="handleCardClick(event, '{% url 'start_roleplay' bot.id %}', {{ bot.is_active|yesno:'true,false' }})">
-                <div class="bot-card-bg">
-                    {% if bot.avatar_url %}
-                        <img src="{{ bot.avatar_url }}" alt="{{ bot.name }}">
-                    {% else %}
-                        <span class="bot-card-bg-emoji">💼</span>
-                    {% endif %}
-                    <span class="bot-category-badge">{{ bot.get_category_display }}</span>
-                </div>
-                <div class="bot-card-content">
-                    <div class="bot-card-header">
-                        <h3 class="bot-name">{{ bot.name }}</h3>
-                        {% if bot.is_active %}
-                            <span class="status-badge status-active">Live</span>
+        <div class="bots-scroll-wrapper">
+            <div class="bots-scroll">
+                {% for bot in career_bots %}
+                <div class="bot-card" onclick="handleCardClick(event, '{% url 'start_roleplay' bot.id %}', {{ bot.is_active|yesno:'true,false' }})">
+                    <div class="bot-card-bg">
+                        {% if bot.avatar_url %}
+                            <img src="{{ bot.avatar_url }}" alt="{{ bot.name }}">
                         {% else %}
-                            <span class="status-badge status-inactive">Soon</span>
+                            <span class="bot-card-bg-emoji">💼</span>
                         {% endif %}
+                        <span class="bot-category-badge">{{ bot.get_category_display }}</span>
                     </div>
-                    <p class="bot-description">{{ bot.description|default:"Practice and improve your professional skills" }}</p>
-                    <div class="bot-card-footer">
-                        {% if bot.is_active %}
-                            <a href="{% url 'start_roleplay' bot.id %}" class="btn-start" onclick="event.stopPropagation()">
-                                Start
-                            </a>
-                            <a href="{% url 'bot-detail' bot.id %}" class="btn-view" onclick="event.stopPropagation()">
-                                View
-                            </a>
-                        {% else %}
-                            <button class="btn-start" disabled>Coming Soon</button>
-                        {% endif %}
+                    <div class="bot-card-content">
+                        <div class="bot-card-header">
+                            <h3 class="bot-name">{{ bot.name }}</h3>
+                            {% if bot.is_active %}
+                                <span class="status-badge status-active">Live</span>
+                            {% else %}
+                                <span class="status-badge status-inactive">Soon</span>
+                            {% endif %}
+                        </div>
+                        <p class="bot-description">{{ bot.description|default:"Practice professional skills" }}</p>
+                        <div class="bot-card-footer">
+                            {% if bot.is_active %}
+                                <a href="{% url 'start_roleplay' bot.id %}" class="btn-start" onclick="event.stopPropagation()">
+                                    Start
+                                </a>
+                                <a href="{% url 'bot-detail' bot.id %}" class="btn-view" onclick="event.stopPropagation()">
+                                    View
+                                </a>
+                            {% else %}
+                                <button class="btn-start" disabled>Soon</button>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+            <div class="scroll-hint">→</div>
         </div>
     </div>
     {% endif %}
@@ -729,103 +904,51 @@
                 <span class="category-emoji">📚</span>
                 Learn & Grow
             </h2>
-            <a href="?category=learning" class="view-all-link">
-                View All →
-            </a>
         </div>
-        <div class="bots-scroll">
-            {% for bot in learning_bots %}
-            <div class="bot-card" onclick="handleCardClick(event, '{% url 'start_roleplay' bot.id %}', {{ bot.is_active|yesno:'true,false' }})">
-                <div class="bot-card-bg">
-                    {% if bot.avatar_url %}
-                        <img src="{{ bot.avatar_url }}" alt="{{ bot.name }}">
-                    {% else %}
-                        <span class="bot-card-bg-emoji">📚</span>
-                    {% endif %}
-                    <span class="bot-category-badge">{{ bot.get_category_display }}</span>
-                </div>
-                <div class="bot-card-content">
-                    <div class="bot-card-header">
-                        <h3 class="bot-name">{{ bot.name }}</h3>
-                        {% if bot.is_active %}
-                            <span class="status-badge status-active">Live</span>
+        <div class="bots-scroll-wrapper">
+            <div class="bots-scroll">
+                {% for bot in learning_bots %}
+                <div class="bot-card" onclick="handleCardClick(event, '{% url 'start_roleplay' bot.id %}', {{ bot.is_active|yesno:'true,false' }})">
+                    <div class="bot-card-bg">
+                        {% if bot.avatar_url %}
+                            <img src="{{ bot.avatar_url }}" alt="{{ bot.name }}">
                         {% else %}
-                            <span class="status-badge status-inactive">Soon</span>
+                            <span class="bot-card-bg-emoji">📚</span>
                         {% endif %}
+                        <span class="bot-category-badge">{{ bot.get_category_display }}</span>
                     </div>
-                    <p class="bot-description">{{ bot.description|default:"Expand your knowledge and skills" }}</p>
-                    <div class="bot-card-footer">
-                        {% if bot.is_active %}
-                            <a href="{% url 'start_roleplay' bot.id %}" class="btn-start" onclick="event.stopPropagation()">
-                                Start
-                            </a>
-                            <a href="{% url 'bot-detail' bot.id %}" class="btn-view" onclick="event.stopPropagation()">
-                                View
-                            </a>
-                        {% else %}
-                            <button class="btn-start" disabled>Coming Soon</button>
-                        {% endif %}
+                    <div class="bot-card-content">
+                        <div class="bot-card-header">
+                            <h3 class="bot-name">{{ bot.name }}</h3>
+                            {% if bot.is_active %}
+                                <span class="status-badge status-active">Live</span>
+                            {% else %}
+                                <span class="status-badge status-inactive">Soon</span>
+                            {% endif %}
+                        </div>
+                        <p class="bot-description">{{ bot.description|default:"Expand your knowledge" }}</p>
+                        <div class="bot-card-footer">
+                            {% if bot.is_active %}
+                                <a href="{% url 'start_roleplay' bot.id %}" class="btn-start" onclick="event.stopPropagation()">
+                                    Start
+                                </a>
+                                <a href="{% url 'bot-detail' bot.id %}" class="btn-view" onclick="event.stopPropagation()">
+                                    View
+                                </a>
+                            {% else %}
+                                <button class="btn-start" disabled>Soon</button>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+            <div class="scroll-hint">→</div>
         </div>
     </div>
     {% endif %}
 
-    <!-- Fun & Fantasy Section -->
-    {% if entertainment_bots %}
-    <div class="category-section">
-        <div class="category-header">
-            <h2 class="category-title">
-                <span class="category-emoji">🎮</span>
-                Fun & Fantasy
-            </h2>
-            <a href="?category=entertainment" class="view-all-link">
-                View All →
-            </a>
-        </div>
-        <div class="bots-scroll">
-            {% for bot in entertainment_bots %}
-            <div class="bot-card" onclick="handleCardClick(event, '{% url 'start_roleplay' bot.id %}', {{ bot.is_active|yesno:'true,false' }})">
-                <div class="bot-card-bg">
-                    {% if bot.avatar_url %}
-                        <img src="{{ bot.avatar_url }}" alt="{{ bot.name }}">
-                    {% else %}
-                        <span class="bot-card-bg-emoji">🎮</span>
-                    {% endif %}
-                    <span class="bot-category-badge">{{ bot.get_category_display }}</span>
-                </div>
-                <div class="bot-card-content">
-                    <div class="bot-card-header">
-                        <h3 class="bot-name">{{ bot.name }}</h3>
-                        {% if bot.is_active %}
-                            <span class="status-badge status-active">Live</span>
-                        {% else %}
-                            <span class="status-badge status-inactive">Soon</span>
-                        {% endif %}
-                    </div>
-                    <p class="bot-description">{{ bot.description|default:"Immerse yourself in creative adventures" }}</p>
-                    <div class="bot-card-footer">
-                        {% if bot.is_active %}
-                            <a href="{% url 'start_roleplay' bot.id %}" class="btn-start" onclick="event.stopPropagation()">
-                                Start
-                            </a>
-                            <a href="{% url 'bot-detail' bot.id %}" class="btn-view" onclick="event.stopPropagation()">
-                                View
-                            </a>
-                        {% else %}
-                            <button class="btn-start" disabled>Coming Soon</button>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- All Bots Section (Full Catalog) -->
+    <!-- All Bots Section -->
     {% if all_bots %}
     <div class="category-section">
         <div class="category-header">
@@ -833,10 +956,8 @@
                 <span class="category-emoji">🌐</span>
                 All Bots
             </h2>
-            <span style="color: white; font-size: 1rem; font-weight: 700;">{{ all_bots|length }} bots available</span>
         </div>
         
-        <!-- Grid Layout for All Bots -->
         <div class="all-bots-grid" id="allBotsGrid">
             {% for bot in all_bots %}
             <div class="bot-card" onclick="handleCardClick(event, '{% url 'start_roleplay' bot.id %}', {{ bot.is_active|yesno:'true,false' }})">
@@ -867,7 +988,7 @@
                                 View
                             </a>
                         {% else %}
-                            <button class="btn-start" disabled>Coming Soon</button>
+                            <button class="btn-start" disabled>Soon</button>
                         {% endif %}
                     </div>
                 </div>
@@ -876,17 +997,17 @@
         </div>
 
         {% if has_more_bots %}
-        <div style="text-align: center; margin-top: 3rem;">
+        <div style="text-align: center; margin-top: 2.5rem;">
             <button id="loadMoreBtn" class="load-more-btn" onclick="loadMoreBots()">
-                <span id="loadMoreText">Load More Bots</span>
+                <span id="loadMoreText">Load More</span>
                 <span id="loadMoreSpinner" style="display: none;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="animation: spin 1s linear infinite;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="animation: spin 1s linear infinite;">
                         <circle cx="12" cy="12" r="10" stroke-width="4" stroke-opacity="0.25"/>
                         <path d="M12 2a10 10 0 0 1 10 10" stroke-width="4" stroke-linecap="round"/>
                     </svg>
                 </span>
             </button>
-            <p style="color: rgba(255, 255, 255, 0.9); font-size: 1rem; margin-top: 1rem; font-weight: 600;">
+            <p style="color: rgba(255, 255, 255, 0.9); font-size: 0.9rem; margin-top: 0.85rem; font-weight: 600;">
                 Showing {{ all_bots|length }} of {{ all_bots_count }} bots
             </p>
         </div>
@@ -899,9 +1020,9 @@
     <div class="empty-state">
         <div class="empty-icon">🤖</div>
         <h3>No Bots Found</h3>
-        <p>Try adjusting your search or explore different categories</p>
-        <a href="{% url 'voice_roleplay' %}" class="btn-start" style="display: inline-flex; padding: 1rem 2.5rem; text-transform: uppercase;">
-            View All Bots
+        <p>Try different search terms or categories</p>
+        <a href="{% url 'voice_roleplay' %}" class="btn-start" style="display: inline-flex; padding: 0.9rem 2rem;">
+            View All
         </a>
     </div>
     {% endif %}
@@ -913,12 +1034,34 @@
 let currentOffset = {{ all_bots|length }};
 const batchSize = 50;
 
+// Toggle search bar
+function toggleSearch() {
+    const searchContainer = document.getElementById('searchContainer');
+    const searchInput = document.getElementById('searchInput');
+    searchContainer.classList.toggle('active');
+    
+    if (searchContainer.classList.contains('active')) {
+        setTimeout(() => searchInput.focus(), 400);
+    }
+}
+
 function handleCardClick(event, url, isActive) {
     if (event.target.closest('.bot-card-footer')) return;
     if (isActive) {
         window.location.href = url;
     }
 }
+
+// Hide scroll hint after user scrolls
+document.querySelectorAll('.bots-scroll').forEach(scroll => {
+    scroll.addEventListener('scroll', function() {
+        const hint = this.parentElement.querySelector('.scroll-hint');
+        if (hint && this.scrollLeft > 50) {
+            hint.style.opacity = '0';
+            setTimeout(() => hint.style.display = 'none', 300);
+        }
+    }, { once: true });
+});
 
 async function loadMoreBots() {
     const btn = document.getElementById('loadMoreBtn');
@@ -974,7 +1117,7 @@ function createBotCard(bot) {
     const buttons = isActive
         ? `<a href="/roleplay/start/${bot.id}/" class="btn-start" onclick="event.stopPropagation()">Start</a>
            <a href="/bots/${bot.id}/" class="btn-view" onclick="event.stopPropagation()">View</a>`
-        : '<button class="btn-start" disabled>Coming Soon</button>';
+        : '<button class="btn-start" disabled>Soon</button>';
     
     const bgContent = bot.avatar_url
         ? `<img src="${bot.avatar_url}" alt="${bot.name}">`
