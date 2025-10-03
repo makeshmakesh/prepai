@@ -341,17 +341,17 @@ class Transaction(models.Model):
 
 class RolePlayBots(models.Model):
     VOICE_CHOICES = [
-        ("alloy", "Alloy (Male, Default)"),
-        ("ash", "Ash (Male)"),
-        ("ballad", "Ballad (Female)"),
-        ("coral", "Coral (Female)"),
-        ("echo", "Echo (Male)"),
-        ("fable", "Fable (Female)"),
-        ("nova", "Nova (Female)"),
-        ("onyx", "Onyx (Male)"),
-        ("sage", "Sage (Male)"),
-        ("shimmer", "Shimmer (Female)"),
-    ]
+    ("alloy", "Alloy (Male)"),
+    ("ash", "Ash (Male)"),
+    ("ballad", "Ballad (Female)"),
+    ("coral", "Coral (Female)"),
+    ("echo", "Echo (Male)"),
+    ("sage", "Sage (Male)"),
+    ("shimmer", "Shimmer (Female)"),
+    ("verse", "Verse (Male)"),
+    ("marin", "Marin (Female)"),
+    ("cedar", "Cedar (Male)"),
+]
     CATEGORY_CHOICES = [
         ("interview_prep", "Interview Preparation"),
         ("language_learning", "Language Learning"),
