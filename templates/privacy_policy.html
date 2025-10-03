@@ -1,0 +1,336 @@
+{% extends 'base.html' %}
+
+{% block title %}Privacy Policy - PrepAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .privacy-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: clamp(1rem, 3vw, 2rem);
+    }
+
+    .privacy-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: clamp(2rem, 5vw, 3rem);
+        border-radius: 16px;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .privacy-header h1 {
+        font-size: clamp(2rem, 5vw, 2.5rem);
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .last-updated {
+        font-size: 0.95rem;
+        opacity: 0.9;
+    }
+
+    .privacy-content {
+        background: white;
+        border-radius: 16px;
+        padding: clamp(1.5rem, 4vw, 2.5rem);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .privacy-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .privacy-section h2 {
+        font-size: clamp(1.3rem, 3vw, 1.6rem);
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .privacy-section h3 {
+        font-size: clamp(1.1rem, 2.5vw, 1.25rem);
+        font-weight: 600;
+        color: #334155;
+        margin: 1.5rem 0 0.75rem;
+    }
+
+    .privacy-section p {
+        color: #475569;
+        line-height: 1.7;
+        margin-bottom: 1rem;
+    }
+
+    .privacy-section ul {
+        margin: 1rem 0;
+        padding-left: 1.5rem;
+    }
+
+    .privacy-section li {
+        color: #475569;
+        line-height: 1.7;
+        margin-bottom: 0.5rem;
+    }
+
+    .highlight-box {
+        background: #f0f9ff;
+        border-left: 4px solid #667eea;
+        padding: 1.25rem;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+    }
+
+    .highlight-box strong {
+        color: #667eea;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .contact-info {
+        background: #f8fafc;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-top: 2rem;
+    }
+
+    .contact-info h3 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.75rem;
+    }
+
+    .contact-info p {
+        margin-bottom: 0.5rem;
+        color: black;
+    }
+
+    .contact-info a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .contact-info a:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+        .privacy-content {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="privacy-container">
+    <div class="privacy-header">
+        <h1>Privacy Policy</h1>
+        <p class="last-updated">Last Updated: January 2025</p>
+    </div>
+
+    <div class="privacy-content">
+        <div class="privacy-section">
+            <h2>1. Introduction</h2>
+            <p>
+                Welcome to PrepAI. We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, store, and protect your data when you use our AI voice roleplay platform.
+            </p>
+            <p>
+                By using PrepAI, you agree to the collection and use of information in accordance with this policy.
+            </p>
+        </div>
+
+        <div class="privacy-section">
+            <h2>2. Information We Collect</h2>
+            
+            <h3>2.1 Account Information</h3>
+            <p>When you create an account, we collect:</p>
+            <ul>
+                <li>Email address</li>
+                <li>Username</li>
+                <li>Password (encrypted)</li>
+                <li>Profile information (optional)</li>
+            </ul>
+
+            <h3>2.2 Voice and Audio Data</h3>
+            <div class="highlight-box">
+                <strong>Microphone Access:</strong>
+                <p>PrepAI requires microphone access to enable voice-based roleplay conversations with AI bots. Your audio is processed in real-time to provide interactive voice responses. We do not store or record your voice conversations unless explicitly stated for specific features.</p>
+            </div>
+            <p>When you use voice roleplay features:</p>
+            <ul>
+                <li>Audio is transmitted securely to our AI processing servers</li>
+                <li>Voice data is processed in real-time and is NOT permanently stored</li>
+                <li>Temporary audio buffers are immediately deleted after processing</li>
+                <li>We do not create permanent recordings of your conversations</li>
+                <li>You can revoke microphone access at any time through your browser settings</li>
+            </ul>
+
+            <h3>2.3 Usage Data</h3>
+            <p>We automatically collect:</p>
+            <ul>
+                <li>Session duration and frequency</li>
+                <li>Bot interactions and preferences</li>
+                <li>Credit usage and transaction history</li>
+                <li>Device information and browser type</li>
+                <li>IP address and general location (city/country level)</li>
+            </ul>
+
+            <h3>2.4 Payment Information</h3>
+            <p>For credit purchases:</p>
+            <ul>
+                <li>Payment processing is handled by secure third-party providers (Razorpay)</li>
+                <li>We do NOT store credit card numbers or banking details</li>
+                <li>We only retain transaction IDs and payment status</li>
+            </ul>
+        </div>
+
+        <div class="privacy-section">
+            <h2>3. How We Use Your Information</h2>
+            <p>We use collected data to:</p>
+            <ul>
+                <li><strong>Provide Services:</strong> Enable AI voice roleplay interactions and process conversations</li>
+                <li><strong>Improve Quality:</strong> Analyze usage patterns to enhance bot performance and user experience</li>
+                <li><strong>Account Management:</strong> Manage your credits, subscriptions, and earnings</li>
+                <li><strong>Communication:</strong> Send important updates, notifications, and support responses</li>
+                <li><strong>Security:</strong> Detect and prevent fraud, abuse, and technical issues</li>
+                <li><strong>Legal Compliance:</strong> Meet legal obligations and enforce our terms of service</li>
+            </ul>
+        </div>
+
+        <div class="privacy-section">
+            <h2>4. Data Security</h2>
+            <div class="highlight-box">
+                <strong>Your Security Matters:</strong>
+                <p>We implement industry-standard security measures to protect your data, including encryption, secure servers, and regular security audits.</p>
+            </div>
+            <p>Our security measures include:</p>
+            <ul>
+                <li><strong>Encryption:</strong> All data transmission uses SSL/TLS encryption</li>
+                <li><strong>Secure Storage:</strong> Passwords are hashed using industry-standard algorithms</li>
+                <li><strong>Access Controls:</strong> Limited employee access to user data</li>
+                <li><strong>Regular Audits:</strong> Ongoing security assessments and updates</li>
+                <li><strong>Real-time Processing:</strong> Voice data is processed in memory and not stored permanently</li>
+            </ul>
+        </div>
+
+        <div class="privacy-section">
+            <h2>5. Microphone Permissions</h2>
+            <h3>Why We Need Microphone Access</h3>
+            <p>
+                PrepAI is a voice-based AI roleplay platform. Microphone access is essential for:
+            </p>
+            <ul>
+                <li>Real-time voice conversation with AI bots</li>
+                <li>Speech recognition and natural language processing</li>
+                <li>Providing interactive voice responses</li>
+            </ul>
+
+            <h3>How Your Voice Data is Handled</h3>
+            <ul>
+                <li><strong>Real-Time Only:</strong> Audio is processed instantly and not recorded</li>
+                <li><strong>No Permanent Storage:</strong> We do not save voice recordings to our servers</li>
+                <li><strong>Secure Transmission:</strong> Voice data is encrypted during transmission</li>
+                <li><strong>Your Control:</strong> You can deny or revoke microphone access anytime</li>
+                <li><strong>Session-Based:</strong> Audio access is only active during roleplay sessions</li>
+            </ul>
+
+            <div class="highlight-box">
+                <strong>Browser Controls:</strong>
+                <p>You maintain full control over microphone permissions through your browser settings. Denying access will prevent voice features from working but will not affect other platform features.<p>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2>6. Data Sharing and Disclosure</h2>
+            <p>We do NOT sell your personal information. We may share data only in these limited circumstances:</p>
+            <ul>
+                <li><strong>Service Providers:</strong> Third-party services that help us operate (hosting, payment processing, AI services)</li>
+                <li><strong>Legal Requirements:</strong> When required by law, court order, or government request</li>
+                <li><strong>Safety and Security:</strong> To protect users' rights, property, or safety</li>
+                <li><strong>Business Transfers:</strong> In case of merger, acquisition, or sale of assets</li>
+            </ul>
+        </div>
+
+        <div class="privacy-section">
+            <h2>7. Cookies and Tracking</h2>
+            <p>We use cookies and similar technologies to:</p>
+            <ul>
+                <li>Remember your login and preferences</li>
+                <li>Analyze site usage and performance</li>
+                <li>Provide personalized content</li>
+            </ul>
+            <p>You can control cookies through your browser settings.</p>
+        </div>
+
+        <div class="privacy-section">
+            <h2>8. Your Rights and Choices</h2>
+            <p>You have the right to:</p>
+            <ul>
+                <li><strong>Access:</strong> Request a copy of your personal data</li>
+                <li><strong>Correction:</strong> Update or correct inaccurate information</li>
+                <li><strong>Deletion:</strong> Request deletion of your account and data</li>
+                <li><strong>Opt-Out:</strong> Unsubscribe from marketing communications</li>
+                <li><strong>Data Portability:</strong> Request your data in a portable format</li>
+                <li><strong>Microphone Control:</strong> Revoke microphone access at any time</li>
+            </ul>
+            <p>To exercise these rights, contact us at <a href="mailto:founder@prepai.online">founder@prepai.online</a></p>
+        </div>
+
+        <div class="privacy-section">
+            <h2>9. Data Retention</h2>
+            <p>We retain your data only as long as necessary:</p>
+            <ul>
+                <li><strong>Account Data:</strong> While your account is active</li>
+                <li><strong>Transaction Records:</strong> As required by law (typically 7 years)</li>
+                <li><strong>Voice Data:</strong> NOT retained—processed in real-time only</li>
+                <li><strong>Usage Analytics:</strong> Aggregated and anonymized for improvement purposes</li>
+            </ul>
+            <p>After account deletion, personal data is removed within 30 days, except where retention is required by law.</p>
+        </div>
+
+        <div class="privacy-section">
+            <h2>10. Children's Privacy</h2>
+            <p>
+                PrepAI is not intended for users under 13 years of age. We do not knowingly collect personal information from children under 13. If we discover such collection, we will delete the information immediately.
+            </p>
+        </div>
+
+        <div class="privacy-section">
+            <h2>11. International Users</h2>
+            <p>
+                PrepAI operates globally. Your data may be transferred to and processed in countries other than your own. We ensure appropriate safeguards are in place to protect your information in accordance with this Privacy Policy.
+            </p>
+        </div>
+
+        <div class="privacy-section">
+            <h2>12. Changes to This Policy</h2>
+            <p>
+                We may update this Privacy Policy periodically. We will notify you of significant changes via email or prominent notice on our platform. Your continued use after changes indicates acceptance of the updated policy.
+            </p>
+        </div>
+
+        <div class="privacy-section">
+            <h2>13. Third-Party Services</h2>
+            <p>PrepAI uses the following third-party services:</p>
+            <ul>
+                <li><strong>OpenAI:</strong> For AI voice processing and language models</li>
+                <li><strong>Razorpay:</strong> For secure payment processing</li>
+                <li><strong>Hosting Providers:</strong> For server infrastructure</li>
+            </ul>
+            <p>These services have their own privacy policies governing their use of your information.</p>
+        </div>
+
+        <div class="contact-info">
+            <h3>Contact Us</h3>
+            <p>If you have questions about this Privacy Policy or our data practices, please contact us:</p>
+            <p><strong>Email:</strong> <a href="mailto:founder@prepai.online">founder@prepai.online</a></p>
+            <p><strong>Website:</strong> <a href="https://prepai.online">https://prepai.online</a></p>
+            <p><strong>Response Time:</strong> We aim to respond within 48 hours</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

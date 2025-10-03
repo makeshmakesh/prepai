@@ -1,0 +1,526 @@
+{% extends 'base.html' %}
+
+{% block title %}Terms of Service - PrepAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .terms-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: clamp(1rem, 3vw, 2rem);
+    }
+
+    .terms-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: clamp(2rem, 5vw, 3rem);
+        border-radius: 16px;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .terms-header h1 {
+        font-size: clamp(2rem, 5vw, 2.5rem);
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .last-updated {
+        font-size: 0.95rem;
+        opacity: 0.9;
+    }
+
+    .terms-content {
+        background: white;
+        border-radius: 16px;
+        padding: clamp(1.5rem, 4vw, 2.5rem);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .terms-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .terms-section h2 {
+        font-size: clamp(1.3rem, 3vw, 1.6rem);
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .terms-section h3 {
+        font-size: clamp(1.1rem, 2.5vw, 1.25rem);
+        font-weight: 600;
+        color: #334155;
+        margin: 1.5rem 0 0.75rem;
+    }
+
+    .terms-section p {
+        color: #475569;
+        line-height: 1.7;
+        margin-bottom: 1rem;
+    }
+
+    .terms-section ul,
+    .terms-section ol {
+        margin: 1rem 0;
+        padding-left: 1.5rem;
+    }
+
+    .terms-section li {
+        color: #475569;
+        line-height: 1.7;
+        margin-bottom: 0.5rem;
+    }
+
+    .warning-box {
+        background: #fef3c7;
+        border-left: 4px solid #f59e0b;
+        padding: 1.25rem;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+    }
+
+    .warning-box strong {
+        color: #92400e;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .info-box {
+        background: #f0f9ff;
+        border-left: 4px solid #667eea;
+        padding: 1.25rem;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+    }
+
+    .info-box strong {
+        color: #667eea;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .contact-info {
+        background: #f8fafc;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-top: 2rem;
+    }
+
+    .contact-info h3 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.75rem;
+    }
+
+    .contact-info p {
+        margin-bottom: 0.5rem;
+        color: black
+    }
+
+    .contact-info a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .contact-info a:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+        .terms-content {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="terms-container">
+    <div class="terms-header">
+        <h1>Terms of Service</h1>
+        <p class="last-updated">Last Updated: January 2025</p>
+    </div>
+
+    <div class="terms-content">
+        <div class="terms-section">
+            <h2>1. Agreement to Terms</h2>
+            <p>
+                By accessing and using PrepAI ("the Service", "Platform", "we", "us", or "our"), you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any part of these terms, you may not use our Service.
+            </p>
+            <div class="warning-box">
+                <strong>Important:</strong>
+                <p>These terms constitute a legally binding agreement between you and PrepAI. Please read them carefully before using our services.</p>
+            </div>
+        </div>
+
+        <div class="terms-section">
+            <h2>2. Service Description</h2>
+            <p>
+                PrepAI is an AI-powered voice roleplay platform that enables users to:
+            </p>
+            <ul>
+                <li>Practice conversations with AI voice bots</li>
+                <li>Create and share custom AI bots</li>
+                <li>Earn revenue from bot usage</li>
+                <li>Purchase credits for platform features</li>
+            </ul>
+            <p>
+                The Service uses artificial intelligence to simulate realistic conversations for practice, training, and entertainment purposes.
+            </p>
+        </div>
+
+        <div class="terms-section">
+            <h2>3. Eligibility and Account Registration</h2>
+            
+            <h3>3.1 Age Requirement</h3>
+            <p>
+                You must be at least 13 years old to use PrepAI. Users under 18 require parental consent. By using our Service, you represent that you meet these age requirements.
+            </p>
+
+            <h3>3.2 Account Creation</h3>
+            <p>To use certain features, you must create an account by providing:</p>
+            <ul>
+                <li>Valid email address</li>
+                <li>Username</li>
+                <li>Secure password</li>
+            </ul>
+            <p>
+                You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.
+            </p>
+
+            <h3>3.3 Account Security</h3>
+            <p>You agree to:</p>
+            <ul>
+                <li>Provide accurate and complete information</li>
+                <li>Keep your password secure</li>
+                <li>Notify us immediately of any unauthorized access</li>
+                <li>Not share your account with others</li>
+            </ul>
+        </div>
+
+        <div class="terms-section">
+            <h2>4. Credits and Payment</h2>
+            
+            <h3>4.1 Credit System</h3>
+            <p>
+                PrepAI operates on a credit-based system. Credits are required to:
+            </p>
+            <ul>
+                <li>Use AI voice roleplay bots (typically 10 credits per session)</li>
+                <li>Create custom bots (10 credits to create)</li>
+                <li>Access premium features</li>
+            </ul>
+
+            <h3>4.2 Pricing</h3>
+            <ul>
+                <li>Credits can be purchased through our platform</li>
+                <li>Prices are displayed in your local currency</li>
+                <li>All sales are final unless otherwise stated</li>
+            </ul>
+
+            <h3>4.3 Refunds</h3>
+            <p>
+                Credits are generally non-refundable. Refunds may be issued at our sole discretion in cases of:
+            </p>
+            <ul>
+                <li>Technical errors preventing service use</li>
+                <li>Duplicate charges</li>
+                <li>Service outages</li>
+            </ul>
+            <p>
+                Refund requests must be submitted within 7 days of purchase to <a href="mailto:founder@prepai.online">founder@prepai.online</a>
+            </p>
+
+            <h3>4.4 Payment Processing</h3>
+            <p>
+                Payments are processed securely through Razorpay. We do not store your credit card information. By making a purchase, you agree to the payment processor's terms of service.
+            </p>
+        </div>
+
+        <div class="terms-section">
+            <h2>5. Creator Monetization Program</h2>
+            
+            <h3>5.1 Earnings Structure</h3>
+            <p>
+                Bot creators can earn from their bots based on usage:
+            </p>
+            <ul>
+                <li><strong>Direct Usage:</strong> 30% of credits spent (3 out of 10 credits)</li>
+                <li><strong>Referred Usage:</strong> 20% of credits spent (2 out of 10 credits)</li>
+            </ul>
+
+            <h3>5.2 Withdrawals</h3>
+            <p>
+                Currently, withdrawals are processed manually. To withdraw earnings:
+            </p>
+            <ul>
+                <li>Contact us at founder@prepai.online from your registered email</li>
+                <li>Complete KYC verification</li>
+                <li>Provide bank account or payment details</li>
+                <li>Minimum withdrawal: as specified in the dashboard</li>
+            </ul>
+
+            <h3>5.3 Creator Responsibilities</h3>
+            <p>As a bot creator, you agree to:</p>
+            <ul>
+                <li>Create original content or have proper rights to use content</li>
+                <li>Not create bots that violate our content policies</li>
+                <li>Ensure bot descriptions are accurate</li>
+                <li>Not manipulate usage statistics</li>
+            </ul>
+        </div>
+
+        <div class="terms-section">
+            <h2>6. Acceptable Use Policy</h2>
+            
+            <div class="warning-box">
+                <strong>Prohibited Activities:</strong>
+                <p>Violation of this policy may result in immediate account termination.</p>
+            </div>
+
+            <h3>6.1 You May NOT:</h3>
+            <ul>
+                <li>Create bots that promote hate speech, violence, or discrimination</li>
+                <li>Impersonate real individuals without clear fictional disclaimer</li>
+                <li>Create sexually explicit or adult content involving minors</li>
+                <li>Use the platform for illegal activities</li>
+                <li>Attempt to hack, reverse engineer, or compromise the platform</li>
+                <li>Use bots or automated tools to manipulate usage or earnings</li>
+                <li>Harass, threaten, or abuse other users</li>
+                <li>Collect or store personal data from other users</li>
+                <li>Resell or redistribute platform access</li>
+                <li>Create bots that provide medical, legal, or financial advice</li>
+            </ul>
+
+            <h3>6.2 Content Guidelines</h3>
+            <p>All bot content must:</p>
+            <ul>
+                <li>Be appropriate for the stated category</li>
+                <li>Include content warnings when necessary</li>
+                <li>Respect intellectual property rights</li>
+                <li>Not contain malicious code or links</li>
+            </ul>
+        </div>
+
+        <div class="terms-section">
+            <h2>7. Intellectual Property</h2>
+            
+            <h3>7.1 Your Content</h3>
+            <p>
+                You retain ownership of bots and content you create. By uploading content to PrepAI, you grant us a worldwide, non-exclusive, royalty-free license to:
+            </p>
+            <ul>
+                <li>Host and display your content</li>
+                <li>Allow users to interact with your bots</li>
+                <li>Promote your content on the platform</li>
+            </ul>
+
+            <h3>7.2 Our Content</h3>
+            <p>
+                The PrepAI platform, including its design, code, features, and branding, is protected by copyright and other intellectual property laws. You may not:
+            </p>
+            <ul>
+                <li>Copy or modify the platform code</li>
+                <li>Use our branding without permission</li>
+                <li>Create derivative works</li>
+            </ul>
+
+            <h3>7.3 AI-Generated Content</h3>
+            <p>
+                Conversations generated by AI bots are considered collaborative works between you and our AI system. We make no claims to copyright over conversation outputs.
+            </p>
+        </div>
+
+        <div class="terms-section">
+            <h2>8. Microphone and Data Usage</h2>
+            
+            <div class="info-box">
+                <strong>Voice Data Handling:</strong>
+                <p>PrepAI requires microphone access for voice-based roleplay. Your voice is processed in real-time and NOT stored permanently.</p>
+            </div>
+
+            <p>By using voice features, you consent to:</p>
+            <ul>
+                <li>Real-time audio processing by our AI system</li>
+                <li>Transmission of voice data to our servers</li>
+                <li>Temporary audio buffering during conversations</li>
+            </ul>
+
+            <p>We do NOT:</p>
+            <ul>
+                <li>Store permanent recordings of your voice</li>
+                <li>Share your voice data with third parties (except AI providers)</li>
+                <li>Use your voice for training without explicit consent</li>
+            </ul>
+
+            <p>For complete details, see our <a href="{% url 'privacy_policy' %}">Privacy Policy</a>.</p>
+        </div>
+
+        <div class="terms-section">
+            <h2>9. Disclaimers and Limitations</h2>
+            
+            <h3>9.1 AI Limitations</h3>
+            <div class="warning-box">
+                <strong>Important Disclaimer:</strong>
+                <p>PrepAI bots are AI simulations. They are NOT real people and should not be treated as licensed professionals.</p>
+            </div>
+            <ul>
+                <li>Bots may provide inaccurate information</li>
+                <li>Bots are for practice and entertainment, not professional advice</li>
+                <li>Do not rely on bots for medical, legal, financial, or therapeutic advice</li>
+                <li>Always consult qualified professionals for serious matters</li>
+            </ul>
+
+            <h3>9.2 Service Availability</h3>
+            <p>
+                PrepAI is provided "as is" without warranties. We do not guarantee:
+            </p>
+            <ul>
+                <li>Uninterrupted service availability</li>
+                <li>Error-free operation</li>
+                <li>Accuracy of AI responses</li>
+                <li>Compatibility with all devices</li>
+            </ul>
+
+            <h3>9.3 Limitation of Liability</h3>
+            <p>
+                To the maximum extent permitted by law, PrepAI shall not be liable for:
+            </p>
+            <ul>
+                <li>Indirect, incidental, or consequential damages</li>
+                <li>Loss of profits or data</li>
+                <li>Service interruptions</li>
+                <li>Third-party actions or content</li>
+            </ul>
+            <p>
+                Our total liability is limited to the amount you paid us in the past 12 months.
+            </p>
+        </div>
+
+        <div class="terms-section">
+            <h2>10. Privacy and Data Protection</h2>
+            <p>
+                Your privacy is important to us. Our collection and use of personal information is governed by our <a href="{% url 'privacy_policy' %}">Privacy Policy</a>, which is incorporated into these Terms by reference.
+            </p>
+            <p>Key points:</p>
+            <ul>
+                <li>We collect minimal personal information</li>
+                <li>Voice data is processed in real-time, not stored</li>
+                <li>You control your data and can request deletion</li>
+                <li>We use encryption and security measures</li>
+            </ul>
+        </div>
+
+        <div class="terms-section">
+            <h2>11. Account Termination</h2>
+            
+            <h3>11.1 Your Right to Terminate</h3>
+            <p>
+                You may close your account at any time by contacting support. Upon termination:
+            </p>
+            <ul>
+                <li>Your account will be deactivated</li>
+                <li>Remaining credits will be forfeited</li>
+                <li>Your bots may be removed from the platform</li>
+                <li>Personal data will be deleted per our Privacy Policy</li>
+            </ul>
+
+            <h3>11.2 Our Right to Terminate</h3>
+            <p>
+                We reserve the right to suspend or terminate accounts that:
+            </p>
+            <ul>
+                <li>Violate these Terms of Service</li>
+                <li>Engage in fraudulent activity</li>
+                <li>Abuse the platform or other users</li>
+                <li>Remain inactive for extended periods</li>
+            </ul>
+            <p>
+                We will provide notice when possible, but may terminate immediately for serious violations.
+            </p>
+        </div>
+
+        <div class="terms-section">
+            <h2>12. Dispute Resolution</h2>
+            
+            <h3>12.1 Informal Resolution</h3>
+            <p>
+                Before taking formal action, please contact us at founder@prepai.online to resolve disputes informally.
+            </p>
+
+            <h3>12.2 Governing Law</h3>
+            <p>
+                These Terms are governed by the laws of India, without regard to conflict of law principles.
+            </p>
+
+            <h3>12.3 Arbitration</h3>
+            <p>
+                Any disputes shall be resolved through binding arbitration rather than court proceedings, except for:
+            </p>
+            <ul>
+                <li>Small claims court matters</li>
+                <li>Intellectual property disputes</li>
+                <li>Injunctive relief requests</li>
+            </ul>
+        </div>
+
+        <div class="terms-section">
+            <h2>13. Changes to Terms</h2>
+            <p>
+                We may modify these Terms at any time. We will notify users of material changes via:
+            </p>
+            <ul>
+                <li>Email notification</li>
+                <li>Platform announcement</li>
+                <li>Updated "Last Modified" date</li>
+            </ul>
+            <p>
+                Continued use of the Service after changes constitutes acceptance of the new terms.
+            </p>
+        </div>
+
+        <div class="terms-section">
+            <h2>14. Miscellaneous</h2>
+            
+            <h3>14.1 Entire Agreement</h3>
+            <p>
+                These Terms, along with our Privacy Policy, constitute the entire agreement between you and PrepAI.
+            </p>
+
+            <h3>14.2 Severability</h3>
+            <p>
+                If any provision is found unenforceable, the remaining provisions remain in effect.
+            </p>
+
+            <h3>14.3 No Waiver</h3>
+            <p>
+                Our failure to enforce any right or provision does not constitute a waiver of that right.
+            </p>
+
+            <h3>14.4 Assignment</h3>
+            <p>
+                You may not transfer your rights under these Terms. We may assign our rights to any successor or affiliate.
+            </p>
+
+            <h3>14.5 Third-Party Services</h3>
+            <p>
+                The Service may contain links to third-party websites or services. We are not responsible for their content or practices.
+            </p>
+        </div>
+
+        <div class="contact-info">
+            <h3>Contact Information</h3>
+            <p>For questions about these Terms of Service, please contact us:</p>
+            <p><strong>Email:</strong> <a href="mailto:founder@prepai.online">founder@prepai.online</a></p>
+            <p><strong>Website:</strong> <a href="https://prepai.online">https://prepai.online</a></p>
+            <p><strong>Response Time:</strong> We aim to respond within 48 hours</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
