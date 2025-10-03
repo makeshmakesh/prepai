@@ -5,6 +5,69 @@
 {% block extra_css %}
 <style>
     /* Override base background for this page */
+    /* File Upload Styling */
+.file-upload-wrapper {
+    position: relative;
+}
+
+.form-control-file {
+    border: 2px dashed #e2e8f0;
+    border-radius: 12px;
+    padding: 2rem;
+    background: #f8fafc;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.form-control-file:hover {
+    border-color: #2563eb;
+    background: #f1f5f9;
+}
+
+.image-preview {
+    position: relative;
+    margin-top: 1rem;
+    border-radius: 12px;
+    overflow: hidden;
+    max-width: 300px;
+}
+
+.image-preview img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+}
+
+.remove-image {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: rgba(220, 38, 38, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.remove-image:hover {
+    background: #dc2626;
+    transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+    .form-control-file {
+        padding: 1.5rem 1rem;
+        font-size: 16px;
+    }
+}
     body {
         background: #f8fafc !important;
     }
@@ -371,7 +434,7 @@ select.form-control:focus {
         <p>Design a custom AI companion with unique personality and conversation style</p>
     </div>
 
-    <form method="post" class="roleplay-bot-form" id="botForm">
+<form method="post" class="roleplay-bot-form" id="botForm" enctype="multipart/form-data">
         {% csrf_token %}
         
         <!-- Basic Information -->
@@ -470,15 +533,21 @@ select.form-control:focus {
             <div class="help-text">Explain your bot's purpose and target audience</div>
         </div>
 
-        <div class="form-group">
-            <label for="avatar_url">Avatar Image URL</label>
-            <input type="url" 
-                   id="avatar_url" 
-                   name="avatar_url" 
-                   class="form-control" 
-                   placeholder="https://example.com/avatar.jpg">
-            <div class="help-text">Optional: Add an avatar image URL</div>
+<div class="form-group">
+    <label for="avatar_image">Avatar Image</label>
+    <div class="file-upload-wrapper">
+        <input type="file" 
+               id="avatar_image" 
+               name="avatar_image" 
+               class="form-control-file" 
+               accept="image/jpeg,image/png,image/jpg,image/webp">
+        <div class="image-preview" id="imagePreview" style="display: none;">
+            <img id="previewImg" src="" alt="Avatar preview">
+            <button type="button" class="remove-image" onclick="removeImage()">×</button>
         </div>
+    </div>
+    <div class="help-text">Upload an avatar image (JPEG, PNG, or WebP, max 5MB)</div>
+</div>
 
         <!-- System Prompt -->
         <div class="section-header">AI Instructions</div>
@@ -537,6 +606,41 @@ select.form-control:focus {
 
 {% block extra_js %}
 <script>
+
+    // Image preview functionality
+$('#avatar_image').on('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        // Validate file size
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Image must be less than 5MB');
+            $(this).val('');
+            return;
+        }
+        
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+            alert('Please upload a JPEG, PNG, or WebP image');
+            $(this).val('');
+            return;
+        }
+        
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            $('#previewImg').attr('src', e.target.result);
+            $('#imagePreview').show();
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+function removeImage() {
+    $('#avatar_image').val('');
+    $('#imagePreview').hide();
+    $('#previewImg').attr('src', '');
+}
 $(document).ready(function() {
     const systemPrompt = $('#system_prompt');
     const charCount = $('#char-count');

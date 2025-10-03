@@ -29,6 +29,7 @@ from decimal import Decimal
 import razorpay
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
+from .utils import upload_to_s3
 class BotDetailView(LoginRequiredMixin, View):
     def get(self, request, bot_id):
         bot = RolePlayBots.objects.get(id=bot_id)
@@ -312,6 +313,28 @@ class EditRolePlayBotView(LoginRequiredMixin, View):
                 is_active = request.POST.get('is_active') == 'on'
                 is_public = request.POST.get('is_public') == 'on'
                 voice = request.POST.get('voice', 'alloy').strip()
+                
+                avatar_file = request.FILES.get('avatar_image')
+        
+                if avatar_file:
+                    # Validate file size (max 5MB)
+                    if avatar_file.size > 5 * 1024 * 1024:
+                        messages.error(request, "Avatar image must be less than 5MB.")
+                        return redirect('edit-roleplay-bot', bot_id=bot_id)
+                    
+                    # Validate file type
+                    allowed_types = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp']
+                    if avatar_file.content_type not in allowed_types:
+                        messages.error(request, "Avatar must be a JPEG, PNG, or WebP image.")
+                        return redirect('edit-roleplay-bot', bot_id=bot_id)
+                    
+                    # Upload to S3
+                    avatar_url = upload_to_s3(avatar_file, folder='bot-avatars')
+                    if not avatar_url:
+                        messages.error(request, "Failed to upload avatar image. Please try again.")
+                        return redirect('edit-roleplay-bot', bot_id=bot_id)
+                    
+                    bot.avatar_url = avatar_url
 
                 # Validation
                 if not name:
@@ -411,6 +434,28 @@ class CreateRolePlayBotView(LoginRequiredMixin, View):
         category= request.POST.get('category')
         is_active = request.POST.get('is_active') == 'on'
         is_public = request.POST.get('is_public') == 'on'
+        
+        avatar_url = None
+        avatar_file = request.FILES.get('avatar_image')
+        
+        if avatar_file:
+            # Validate file size (e.g., max 5MB)
+            if avatar_file.size > 5 * 1024 * 1024:
+                messages.error(request, "Avatar image must be less than 5MB.")
+                return redirect('create_roleplay_bot')
+            
+            # Validate file type
+            allowed_types = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp']
+            if avatar_file.content_type not in allowed_types:
+                messages.error(request, "Avatar must be a JPEG, PNG, or WebP image.")
+                return redirect('create_roleplay_bot')
+            
+            # Upload to S3
+            avatar_url = upload_to_s3(avatar_file, folder='bot-avatars')
+            print("111111111111111", avatar_url)
+            if not avatar_url:
+                messages.error(request, "Failed to upload avatar image. Please try again.")
+                return redirect('create_roleplay_bot')
         # scenario_description = request.POST.get('scenario_description') --- IGNORE ---
         custom_configuration = {
             "temperature": float(request.POST.get('temperature', 0.7)),
