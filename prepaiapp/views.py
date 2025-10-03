@@ -368,7 +368,6 @@ class EditRolePlayBotView(LoginRequiredMixin, View):
                 # Update bot
                 bot.name = name
                 bot.description = description if description else None
-                bot.avatar_url = avatar_url if avatar_url else None
                 bot.system_prompt = system_prompt
                 bot.is_active = is_active
                 bot.is_public = is_public
@@ -1773,7 +1772,7 @@ class BulkCreateBotsAPIView(APIView):
             for idx, bot_data in enumerate(bots_data):
                 try:
                     # Validate required fields
-                    if not bot_data.get('name') or not bot_data.get('system_prompt'):
+                    if not bot_data.get('name') or not bot_data.get('system_prompt', "N/A"):
                         errors.append({
                             'index': idx,
                             'error': 'Missing required fields: name and system_prompt'
@@ -1788,7 +1787,7 @@ class BulkCreateBotsAPIView(APIView):
                         name=bot_data['name'],
                         description=bot_data.get('description', ''),
                         avatar_url=bot_data.get('avatar_url', ''),
-                        system_prompt=bot_data['system_prompt'],
+                        system_prompt=bot_data.get("system_prompt", "N/A"),
                         feedback_prompt=bot_data.get('feedback_prompt', ''),
                         custom_configuration=custom_config,
                         voice=bot_data.get('voice', 'alloy'),
