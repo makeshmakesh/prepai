@@ -482,17 +482,16 @@
             <div class="form-group">
                 <label for="voice">Voice Selection</label>
                 <select id="voice" name="voice" class="form-control">
-                   <option value="alloy" {% if bot.voice == "alloy" %}selected{% endif %}>Alloy (Female)</option>
+<option value="alloy" {% if bot.voice == "alloy" %}selected{% endif %}>Alloy (Male)</option>
 <option value="ash" {% if bot.voice == "ash" %}selected{% endif %}>Ash (Male)</option>
-<option value="ballad" {% if bot.voice == "ballad" %}selected{% endif %}>Ballad (Male)</option>
+<option value="ballad" {% if bot.voice == "ballad" %}selected{% endif %}>Ballad (Female)</option>
 <option value="coral" {% if bot.voice == "coral" %}selected{% endif %}>Coral (Female)</option>
 <option value="echo" {% if bot.voice == "echo" %}selected{% endif %}>Echo (Male)</option>
-<option value="fable" {% if bot.voice == "fable" %}selected{% endif %}>Fable (Female)</option>
-<option value="nova" {% if bot.voice == "nova" %}selected{% endif %}>Nova (Female)</option>
-<option value="onyx" {% if bot.voice == "onyx" %}selected{% endif %}>Onyx (Male)</option>
-<option value="sage" {% if bot.voice == "sage" %}selected{% endif %}>Sage (Female)</option>
+<option value="sage" {% if bot.voice == "sage" %}selected{% endif %}>Sage (Male)</option>
 <option value="shimmer" {% if bot.voice == "shimmer" %}selected{% endif %}>Shimmer (Female)</option>
 <option value="verse" {% if bot.voice == "verse" %}selected{% endif %}>Verse (Male)</option>
+<option value="marin" {% if bot.voice == "marin" %}selected{% endif %}>Marin (Female)</option>
+<option value="cedar" {% if bot.voice == "cedar" %}selected{% endif %}>Cedar (Male)</option>
 
                 </select>
                 <div class="help-text">Voice used during roleplay sessions</div>
