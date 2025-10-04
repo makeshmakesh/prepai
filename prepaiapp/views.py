@@ -30,7 +30,7 @@ import razorpay
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from .utils import upload_to_s3
-class BotDetailView(LoginRequiredMixin, View):
+class BotDetailView(View):
     def get(self, request, bot_id):
         bot = RolePlayBots.objects.get(id=bot_id)
         context = {
@@ -451,7 +451,6 @@ class CreateRolePlayBotView(LoginRequiredMixin, View):
             
             # Upload to S3
             avatar_url = upload_to_s3(avatar_file, folder='bot-avatars')
-            print("111111111111111", avatar_url)
             if not avatar_url:
                 messages.error(request, "Failed to upload avatar image. Please try again.")
                 return redirect('create_roleplay_bot')
@@ -492,7 +491,7 @@ class CreateRolePlayBotView(LoginRequiredMixin, View):
             return redirect('create_roleplay_bot')
     def get(self, request):
         return render(request, 'create_roleplay_bot.html')
-class MarketplaceView(LoginRequiredMixin, View):
+class MarketplaceView(View):
     """
     View to display the marketplace of interview templates
     """
@@ -580,7 +579,7 @@ class RolePlayStartView(LoginRequiredMixin, View):
 
 from django.http import JsonResponse
 
-class VoiceRolePlayView(LoginRequiredMixin, View):
+class VoiceRolePlayView(View):
     """
     Category-based explore view for voice roleplay bots
     """
@@ -731,7 +730,7 @@ class ProfileView(LoginRequiredMixin, View):
             logger.error(f"Error updating profile: {e}")
             messages.error(request, "An error occurred while updating your profile. Please try again.")
             return redirect('profile')
-class PurchaseCredits(LoginRequiredMixin, View):
+class PurchaseCredits(View):
     """
     View to handle purchasing credits (minutes)
     """
@@ -744,26 +743,6 @@ class PurchaseCredits(LoginRequiredMixin, View):
         }
         return render(request, 'purchase_credits.html', context)
     
-    def post(self, request):
-        try:
-            amount = int(request.POST.get('amount', 0))
-            if amount <= 0:
-                messages.error(request, "Invalid amount. Please enter a positive number.")
-                return redirect('purchase_credits')
-            
-            profile = Profile.objects.get(user=request.user)
-            profile.credits += amount
-            profile.save()
-            
-            messages.success(request, f"Successfully purchased {amount} minutes!")
-            return redirect('dashboard')
-        except ValueError:
-            messages.error(request, "Invalid input. Please enter a valid number.")
-            return redirect('purchase_credits')
-        except Exception as e:
-            logger.error(f"Error purchasing credits: {e}")
-            messages.error(request, "An error occurred while processing your purchase. Please try again.")
-            return redirect('purchase_credits')
 
 class InterviewHistoryView(LoginRequiredMixin, View):
     """
