@@ -806,10 +806,10 @@
         <nav class="container">
             <a href="#" class="logo">PrepAI</a>
             <ul class="nav-links">
-                <li><a href="#features">Marketplace</a></li>
+                <li><a href="{% url 'marketplace' %}">Marketplace</a></li>
                 <li><a href="#how-it-works">How it Works</a></li>
-                <li><a href="#bot-categories">Bot Categories</a></li>
-                <li><a href="#early-access">Join Now</a></li>
+                <li><a href="{% url 'voice_roleplay' %}">Bot Categories</a></li>
+                <li><a href="{% url 'signup' %}">Join Now</a></li>
             </ul>
         </nav>
     </header>
@@ -822,8 +822,8 @@
                 <p class="subtitle">Create, Share, Play & Earn with AI Roleplay Bots</p>
                 <p>The ultimate platform where creators build unique AI roleplay characters and players discover endless conversational experiences. From interview practice to fantasy adventures - create any bot, monetize your creativity, and explore infinite possibilities.</p>
                 <div class="cta-buttons">
-                    <a href="#early-access" class="cta-button primary">Explore Bots</a>
-                    <a href="#early-access" class="cta-button secondary">Start Creating</a>
+                    <a href="{% url 'voice_roleplay' %}" class="cta-button primary">Explore Bots</a>
+                    <a href="{% url 'marketplace' %}" class="cta-button secondary">Start Creating</a>
                     <a href="{% url 'creator-program' %}" class="cta-button primary">Know more about Creator Program</a>
                 </div>
             </div>
@@ -1037,35 +1037,6 @@
         </div>
     </section>
 
-    <section class="early-access" id="early-access">
-        <div class="container">
-            <div class="early-access-content">
-                <h2 class="section-title fade-in-on-scroll">Join the AI Roleplay Revolution</h2>
-                <p class="section-subtitle fade-in-on-scroll">Be among the first creators and players in the ultimate AI conversation marketplace</p>
-                
-                <div class="signup-form fade-in-on-scroll">
-                    <form id="earlyAccessForm" class="form-container">
-                        <div class="form-group">
-                            <input type="email" id="email" placeholder="Enter your email address" required>
-                            <button type="submit" class="signup-btn">
-                                <span class="btn-text">Join Marketplace</span>
-                                <span class="btn-loading" style="display: none;">Joining...</span>
-                            </button>
-                        </div>
-                        <p class="form-note">Join 1,200+ creators and players building the future of AI roleplay</p>
-                    </form>
-                </div>
-
-                <div class="success-message" id="successMessage" style="display: none;">
-                    <div class="success-content">
-                        <div class="success-icon">🎉</div>
-                        <h3>Welcome to PrepAI!</h3>
-                        <p>You're in! We'll notify you when the marketplace launches with exclusive early access benefits.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <footer id="contact">
         <div class="container">
