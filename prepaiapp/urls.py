@@ -73,7 +73,8 @@ urlpatterns = [
     path("withdraw-info/", TemplateView.as_view(template_name="withdrawl_info.html"), name="withdraw-info"),
     path("creator-program/", TemplateView.as_view(template_name="creator_program.html"), name="creator-program"),
     path("terms_of_service/", TemplateView.as_view(template_name="terms_of_use.html"), name="terms_of_service"),
-    path("privacy_policy/", TemplateView.as_view(template_name="privacy_policy.html"), name="privacy_policy")
+    path("privacy_policy/", TemplateView.as_view(template_name="privacy_policy.html"), name="privacy_policy"),
+    path("pricing-guide/", TemplateView.as_view(template_name="pricing_guide.html"), name="pricing-guide")
 ]
 # # Wire up our API using automatic URL routing.
 # urlpatterns = [
