@@ -483,6 +483,7 @@
 {% endblock %}
 
 {% block content %}
+{% if user.is_authenticated %}
 <div class="purchase-container fade-in-on-scroll">
     <!-- Purchase Header -->
     <div class="purchase-header">
@@ -492,7 +493,7 @@
             💳 Current Balance: {{ user.profile.credits|default:0 }} credits
         </div>
     </div>
-
+{% endif %}
     <!-- Free Trial Section -->
 {% if not user.is_authenticated %}
 <div class="free-trial-section">

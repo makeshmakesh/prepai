@@ -737,10 +737,14 @@ class PurchaseCredits(View):
     login_url = "/login/"
     
     def get(self, request):
-        profile = Profile.objects.get(user=request.user)
-        context = {
-            'current_credits': profile.credits,
-        }
+        if request.user.is_authenticated:
+
+            profile = Profile.objects.get(user=request.user)
+            context = {
+                'current_credits': profile.credits,
+            }
+        else:
+            context = {}
         return render(request, 'purchase_credits.html', context)
     
 
@@ -1418,53 +1422,14 @@ class InterviewView(LoginRequiredMixin, View):
 
 
 
-class DashboardView(LoginRequiredMixin, View):
+class DashboardView(View):
     """
     Class-based version of course subtopics view
     """
     login_url = "/login/"
     
-    def get_overall_score(self, sessions):
-        if not sessions:
-            return 0
-        total_score = 0
-        count = 0
-        for session in sessions:
-            if session.feedback:
-                try:
-                    feedback_data = json.loads(session.feedback)
-                    score = feedback_data.get('scores', {}).get('overall_score', 0)
-                    total_score += score
-                    count += 1
-                except json.JSONDecodeError:
-                    continue
-        return int(total_score / count) if count > 0 else 0
-    
-    def recent_interviews(self, sessions, limit=5):
-        res = []
-        for session in sessions[:limit]:
-            feedback = {}
-            if session.feedback:
-                try:
-                    feedback = json.loads(session.feedback)
-                except json.JSONDecodeError:
-                    feedback = {}
-            res.append({
-                'session': session,
-                'template': session.template,
-                'overall_score': feedback.get('scores', {}).get('overall_score', None),
-                'created_at': session.completed_at
-            })
-        return res
-    
     def get(self, request):
-        sessions = InterviewSession.objects.filter(user=request.user).order_by('-started_at')
-        session_count = sessions.count()
-        overall_score = self.get_overall_score(sessions)
         context = {
-            "interview_count" : session_count,
-            "avg_score" : overall_score,
-            "recent_interviews" : self.recent_interviews(sessions),
         }
         return render(request, 'dashboard.html', context)
 class CourseSubtopicsView(LoginRequiredMixin, View):
