@@ -10,6 +10,7 @@
         <form method="POST" action="{% url 'login' %}">
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ next }}">
+            <input type="hidden" name="share_id" id="share_id_input">
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" name="username" id="username" class="form-control" placeholder="Enter username" required>
@@ -36,4 +37,12 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const shareId = sessionStorage.getItem('roleplay_share_id');
+    if (shareId) {
+        document.getElementById('share_id_input').value = shareId;
+    }
+});
+</script>
 {% endblock %}

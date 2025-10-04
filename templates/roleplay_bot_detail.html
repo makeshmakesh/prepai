@@ -591,6 +591,13 @@
                             </svg>
                             Start Roleplay Session
                         </a>
+                        <a href="{% url 'share-roleplay-bot' bot.id %}" class="btn-primary-large">
+                            <svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M6.5 5.5L10.5 8L6.5 10.5V5.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Share Roleplay
+                        </a>
                     {% else %}
                         <a href="{% url 'login' %}" class="btn-primary-large">
                             <svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -703,6 +710,18 @@
 <script>
 // Add any interactive features here
 document.addEventListener('DOMContentLoaded', function() {
+        {% if share_id %}
+    sessionStorage.setItem('roleplay_share_id', '{{ share_id }}');
+    sessionStorage.setItem('roleplay_bot_id', '{{ bot.id }}');
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        // Clear after a short delay to ensure it's stored in DB
+        setTimeout(function() {
+            sessionStorage.removeItem('roleplay_share_id');
+            sessionStorage.removeItem('roleplay_bot_id');
+        }, 1000);
+    {% endif %}
     // Smooth scroll for any internal links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {

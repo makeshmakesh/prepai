@@ -258,24 +258,26 @@ class MyEarningsView(LoginRequiredMixin, View):
         }
         
         return render(request, 'my_earnings.html', context)
-class ShareRolePlayStartView(LoginRequiredMixin, View):
+class ShareRolePlayStartView(View):
     login_url = "/login/"
     def get(self, request, share_id):
         share = get_object_or_404(RolePlayShare, id=share_id)
         bot = share.bot
-        if not bot.is_active or not bot.is_public:
+        if not bot.is_active:
             messages.error(request, "This Roleplay bot is not available.")
             return redirect('voice_roleplay')
         context = {
             'bot': bot,
             "bot_creator": bot.created_by,
             "bot_shared_by": share.shared_by,
+            "share_id" : share_id
         }
-        MyInvitedRolePlayShare.objects.get_or_create(
-            share=share,
-            bot=bot,
-            invited_to=request.user
-        )
+        if self.request.user.is_authenticated:
+            MyInvitedRolePlayShare.objects.get_or_create(
+                share=share,
+                bot=bot,
+                invited_to=request.user
+            )
         return render(request, 'roleplay_bot_detail.html', context)
 class ShareRolePlayBotView(LoginRequiredMixin, View):
     login_url = "/login/"
@@ -1559,6 +1561,23 @@ class SignupView(View):
         )
         Profile.objects.get_or_create(user=user, credits=50)
         login(request, user)  # Auto login after signup
+        share_id = self.request.POST.get('share_id')
+        bot_id = None
+        if share_id:
+            try:
+                share = RolePlayShare.objects.get(id=share_id)
+                bot_id = share.bot.id
+                # Prevent self-referral
+                if share.shared_by != self.request.user:
+                    MyInvitedRolePlayShare.objects.get_or_create(
+                        share=share,
+                        bot=share.bot,
+                        invited_to=self.request.user
+                    )
+                if bot_id:
+                        return redirect('bot-detail', bot_id=bot_id)
+            except RolePlayShare.DoesNotExist:
+                pass
         messages.success(request, "Signup successful!")
         if next_url and next_url != '/login/':
                 return redirect(next_url)
@@ -1594,6 +1613,23 @@ class LoginView(View):
         if user is not None:
             login(request, user)
             messages.success(request, "Login successful!")
+            share_id = self.request.POST.get('share_id')
+            bot_id = None
+            if share_id:
+                try:
+                    share = RolePlayShare.objects.get(id=share_id)
+                    bot_id = share.bot.id
+                    # Prevent self-referral
+                    if share.shared_by != self.request.user:
+                        MyInvitedRolePlayShare.objects.get_or_create(
+                            share=share,
+                            bot=share.bot,
+                            invited_to=self.request.user
+                        )
+                    if bot_id:
+                        return redirect('bot-detail', bot_id=bot_id)
+                except RolePlayShare.DoesNotExist:
+                    pass
             if next_url and next_url != '/login/':  # Avoid redirect loops
                 return redirect(next_url)
             return redirect("dashboard")  # Redirect to dashboard

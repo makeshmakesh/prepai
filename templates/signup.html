@@ -10,6 +10,7 @@
         <form method="POST" action="{% url 'signup' %}">
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ next }}">
+            <input type="hidden" name="share_id" id="share_id_input">
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" name="email" id="email" class="form-control" placeholder="Enter email" required>
@@ -49,5 +50,11 @@
     document.getElementById("email").addEventListener("input", function() {
         this.value = this.value.toLowerCase().trim();
     });
+    document.addEventListener('DOMContentLoaded', function() {
+    const shareId = sessionStorage.getItem('roleplay_share_id');
+    if (shareId) {
+        document.getElementById('share_id_input').value = shareId;
+    }
+});
 </script>
 {% endblock %}
