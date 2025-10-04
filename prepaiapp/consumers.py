@@ -293,33 +293,19 @@ class VoiceAgentConsumer(AsyncWebsocketConsumer):
             elif event.type == "audio":
                 # Send audio data back to client
                 np_audio = np.frombuffer(event.audio.data, dtype=np.int16)
-                    
-                # Ensure minimum chunk size to prevent tiny fragments
-                if len(np_audio) < 480:  # ~20ms at 24kHz
-                    # Buffer small chunks
-                    if not hasattr(self, '_audio_buffer'):
-                        self._audio_buffer = np_audio
-                    else:
-                        self._audio_buffer = np.concatenate([self._audio_buffer, np_audio])
-                    
-                    # Only send when buffer is large enough
-                    if len(self._audio_buffer) < 480:
-                        return
-                    
-                    np_audio = self._audio_buffer
-                    self._audio_buffer = np.array([], dtype=np.int16)
-                
                 audio_b64 = base64.b64encode(np_audio.tobytes()).decode("utf-8")
-                
+
                 await self.send(
-                    text_data=json.dumps({
-                        "type": "audio",
-                        "audio": audio_b64,
-                        "item_id": event.item_id,
-                        "content_index": event.content_index,
-                        "sample_rate": SAMPLE_RATE,
-                        "channels": CHANNELS,
-                    })
+                    text_data=json.dumps(
+                        {
+                            "type": "audio",
+                            "audio": audio_b64,
+                            "item_id": event.item_id,
+                            "content_index": event.content_index,
+                            "sample_rate": SAMPLE_RATE,
+                            "channels": CHANNELS,
+                        }
+                    )
                 )
 
                 # Update playback tracker

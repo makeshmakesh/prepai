@@ -794,7 +794,6 @@ class RoleplaySession {
         this.audioQueue = [];
         this.isPlaying = false;
         this.isBotSpeaking = false;
-        this.MIN_BUFFER_SIZE = 3;
 
         this.initializeElements();
         this.connect();
@@ -1072,26 +1071,15 @@ class RoleplaySession {
         }
     }
 
-interrupt() {
-    if (this.isConnected) {
-        this.socket.send(JSON.stringify({ type: 'interrupt' }));
-        
-        // Stop current playback
-        this.isPlaying = false;
-        this.audioQueue = [];
-        
-        // Close and recreate audio context to clear any pending audio
-        if (this.playbackContext && this.playbackContext.state !== 'closed') {
-            this.playbackContext.close();
-            this.playbackContext = null;
+    interrupt() {
+        if (this.isConnected) {
+            this.socket.send(JSON.stringify({ type: 'interrupt' }));
+            this.audioQueue = [];
+            this.isBotSpeaking = false;
+            this.updateCharacterStatus('Interrupted');
+            this.addMessage('system', 'Interrupted {{ bot.name }}');
         }
-        
-        this.isBotSpeaking = false;
-        this.updateCharacterStatus('Interrupted');
-        this.addMessage('system', 'Interrupted {{ bot.name }}');
     }
-}
-
 
     showEndModal() {
         $('#endSessionModal').modal('show');
@@ -1182,98 +1170,47 @@ interrupt() {
         checkVolume();
     }
 
-async enqueueAudio(base64Audio) {
-    try {
+    async enqueueAudio(base64Audio) {
         const pcm16 = new Int16Array(this.base64ToArrayBuffer(base64Audio));
         const float32 = new Float32Array(pcm16.length);
         
-        // Convert with proper normalization
         for (let i = 0; i < pcm16.length; i++) {
-            float32[i] = Math.max(-1, Math.min(1, pcm16[i] / 32768.0));
+            float32[i] = pcm16[i] / 32768.0;
         }
         
         this.audioQueue.push(float32);
         
-    if (!this.isPlaying && this.audioQueue.length >= this.MIN_BUFFER_SIZE) {
-        await this.playNextChunk();
-    }
-    } catch (error) {
-        console.error('Error enqueueing audio:', error);
-    }
-}
-
-async playNextChunk() {
-    if (this.audioQueue.length === 0) {
-        this.isPlaying = false;
-        return;
+        if (!this.isPlaying) {
+            this.playNextChunk();
+        }
     }
 
-    this.isPlaying = true;
+    async playNextChunk() {
+        if (this.audioQueue.length === 0) {
+            this.isPlaying = false;
+            return;
+        }
 
-    try {
-        // Initialize or resume audio context
+        this.isPlaying = true;
+        const chunk = this.audioQueue.shift();
+
         if (!this.playbackContext || this.playbackContext.state === 'closed') {
-            this.playbackContext = new AudioContext({ 
-                sampleRate: this.SAMPLE_RATE,
-                latencyHint: 'interactive' // Important for real-time audio
-            });
+            this.playbackContext = new AudioContext({ sampleRate: this.SAMPLE_RATE });
         }
 
         if (this.playbackContext.state === 'suspended') {
             await this.playbackContext.resume();
         }
 
-        // Get chunk
-        const chunk = this.audioQueue.shift();
-
-        // Create buffer with exact sample rate
-        const buffer = this.playbackContext.createBuffer(
-            1, 
-            chunk.length, 
-            this.SAMPLE_RATE // Ensure exact sample rate
-        );
-        
+        const buffer = this.playbackContext.createBuffer(1, chunk.length, this.playbackContext.sampleRate);
         buffer.copyToChannel(chunk, 0, 0);
         
-        // Create source with gain node for smoother playback
         const source = this.playbackContext.createBufferSource();
-        const gainNode = this.playbackContext.createGain();
-        
         source.buffer = buffer;
-        source.connect(gainNode);
-        gainNode.connect(this.playbackContext.destination);
-        
-        // Optional: Add slight fade to prevent clicks (very short)
-        const now = this.playbackContext.currentTime;
-        gainNode.gain.setValueAtTime(0.95, now);
-        gainNode.gain.linearRampToValueAtTime(1, now + 0.005);
-        
-        // Schedule next chunk before this one ends for gapless playback
-        const duration = buffer.duration;
-        source.onended = null; // Remove onended
-        
-        source.start(0);
-        
-        // Schedule next chunk with slight overlap to prevent gaps
-        if (this.audioQueue.length > 0) {
-            setTimeout(() => {
-                this.playNextChunk();
-            }, (duration * 1000) - 50); // Start next chunk 50ms before current ends
-        } else {
-            setTimeout(() => {
-                this.isPlaying = false;
-            }, duration * 1000);
-        }
-        
-    } catch (error) {
-        console.error('Error playing audio chunk:', error);
-        this.isPlaying = false;
-        // Try to continue with next chunk
-        if (this.audioQueue.length > 0) {
-            setTimeout(() => this.playNextChunk(), 100);
-        }
+        source.connect(this.playbackContext.destination);
+        source.onended = () => this.playNextChunk();
+        source.start();
     }
-}
 
     startSessionTimer() {
         setInterval(() => {
