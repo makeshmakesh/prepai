@@ -781,15 +781,16 @@
         <a href="?category=entertainment" class="category-pill {% if selected_category == 'entertainment' %}active{% endif %}">
             🎮 Fun
         </a>
+        <a href="?category=personal" class="category-pill {% if selected_category == 'personal' %}active{% endif %}">
+            ❤️ Personal
+        </a>
         <a href="?category=professional" class="category-pill {% if selected_category == 'professional' %}active{% endif %}">
             💼 Career
         </a>
         <a href="?category=learning" class="category-pill {% if selected_category == 'learning' %}active{% endif %}">
             📚 Learn
         </a>
-        <a href="?category=personal" class="category-pill {% if selected_category == 'personal' %}active{% endif %}">
-            🌱 Growth
-        </a>
+
     </div>
 
     <!-- Fun & Fantasy Section (FIRST) -->
@@ -804,6 +805,57 @@
         <div class="bots-scroll-wrapper">
             <div class="bots-scroll">
                 {% for bot in entertainment_bots %}
+                <div class="bot-card" onclick="handleCardClick(event, '{% url 'start_roleplay' bot.id %}', {{ bot.is_active|yesno:'true,false' }})">
+                    <div class="bot-card-bg">
+                        {% if bot.avatar_url %}
+                            <img src="{{ bot.avatar_url }}" alt="{{ bot.name }}">
+                        {% else %}
+                            <span class="bot-card-bg-emoji">🎮</span>
+                        {% endif %}
+                        <span class="bot-category-badge">{{ bot.get_category_display }}</span>
+                    </div>
+                    <div class="bot-card-content">
+                        <div class="bot-card-header">
+                            <h3 class="bot-name">{{ bot.name }}</h3>
+                            {% if bot.is_active %}
+                                <span class="status-badge status-active">Live</span>
+                            {% else %}
+                                <span class="status-badge status-inactive">Soon</span>
+                            {% endif %}
+                        </div>
+                        <p class="bot-description">{{ bot.description|default:"Immerse yourself in creative adventures" }}</p>
+                        <div class="bot-card-footer">
+                            {% if bot.is_active %}
+                                <a href="{% url 'start_roleplay' bot.id %}" class="btn-start" onclick="event.stopPropagation()">
+                                    Start
+                                </a>
+                                <a href="{% url 'bot-detail' bot.id %}" class="btn-view" onclick="event.stopPropagation()">
+                                    View
+                                </a>
+                            {% else %}
+                                <button class="btn-start" disabled>Soon</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="scroll-hint">→</div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if personal_bots %}
+    <div class="category-section">
+        <div class="category-header">
+            <h2 class="category-title">
+                <span class="category-emoji">🎮</span>
+                Personal
+            </h2>
+        </div>
+        <div class="bots-scroll-wrapper">
+            <div class="bots-scroll">
+                {% for bot in personal_bots %}
                 <div class="bot-card" onclick="handleCardClick(event, '{% url 'start_roleplay' bot.id %}', {{ bot.is_active|yesno:'true,false' }})">
                     <div class="bot-card-bg">
                         {% if bot.avatar_url %}
