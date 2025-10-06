@@ -9,6 +9,9 @@
 .file-upload-wrapper {
     position: relative;
 }
+    .form-group p{
+        color : blue;
+    }
 
 .form-control-file {
     border: 2px dashed #e2e8f0;
@@ -525,12 +528,18 @@ select.form-control:focus {
 
         <div class="form-group">
             <label for="description">Description</label>
+                <a href="{% url 'bot-template' %}" target="_blank" class="template-link">
+        Need inspiration? View Public Speaking Coach Template →
+    </a>
             <textarea id="description" 
                       name="description" 
                       class="form-control" 
                       placeholder="Describe what your bot does and who it helps..."
                       rows="4"></textarea>
             <div class="help-text">Explain your bot's purpose and target audience</div>
+            <div class="templates-section" style="margin-bottom: 2rem;">
+
+</div>
         </div>
 
 <div class="form-group">
@@ -554,6 +563,9 @@ select.form-control:focus {
         
         <div class="form-group">
             <label for="system_prompt">System Prompt *</label>
+                            <a href="{% url 'bot-template' %}" target="_blank" class="template-link">
+        Need inspiration? View Public Speaking Coach Template →
+    </a>
             <textarea id="system_prompt" 
                       name="system_prompt" 
                       class="form-control system-prompt-textarea" 

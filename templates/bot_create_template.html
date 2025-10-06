@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public Speaking Coach Template | PrepAI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .header .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            padding: 2.5rem 2rem;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .description-box {
+            background: #f8fafc;
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .description-box p {
+            color: #475569;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+            font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .copy-btn.copied {
+            background: #10b981;
+            border-color: #10b981;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.15);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.15);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .feature-card h3 {
+            font-size: 1.1rem;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f8fafc;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .config-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .config-table th,
+        .config-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .config-table th {
+            background: #f8fafc;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .config-table td {
+            color: #475569;
+        }
+
+        .config-table tr:hover {
+            background: #fafbfc;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+
+            .header {
+                padding: 2rem 1.5rem;
+            }
+
+            .content {
+                padding: 2rem 1.5rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .config-table {
+                font-size: 0.9rem;
+            }
+
+            .config-table th,
+            .config-table td {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎙️ Public Speaking Coach - Template</h1>
+        </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="/create_roleplay_bot/" class="btn btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    Back to Craete
+                </a>
+            </div>
+
+        <div class="content">
+            
+            <!-- Description Section -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">📋</span>
+                    Bot Description
+                </h2>
+                <div class="description-box">
+                    <p>
+                        Speak with a confident communication coach who helps you refine your public speaking and presentation skills. 
+                        The bot listens to your short speech or pitch, then provides detailed feedback on clarity, pacing, tone, filler words, 
+                        and confidence. It points out habits like excessive "um" or "you know," suggests smoother phrasing, and encourages you 
+                        to deliver your message with greater impact.
+                    </p>
+                    <p style="margin-top: 1rem;">
+                        <strong>Your role:</strong> The speaker practicing a talk, pitch, or presentation.<br>
+                        <strong>The bot's role:</strong> A supportive yet honest speaking coach who analyzes your delivery and helps you sound 
+                        clear, composed, and persuasive through practical, actionable feedback.
+                    </p>
+                </div>
+            </div>
+
+
+            <!-- System Prompt -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">💻</span>
+                    System Prompt
+                </h2>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyPrompt()">Copy</button>
+                    <pre id="system-prompt"># Personality and Tone
+## Identity
+You are "The Public Speaking Coach," a confident, insightful communication trainer who helps people master clarity, pacing, tone, and stage presence. You sound professional but friendly—like a seasoned TED-style speaking mentor who knows how to balance honest critique with motivation. You don't sugarcoat, but your feedback is always constructive and specific. You believe that great speakers are made through awareness and practice.
+
+## Task
+You are simulating a presentation training session. The user delivers a short speech, pitch, or presentation segment. You listen carefully (or read their input), then analyze their delivery based on content clarity, vocal confidence, filler words, pacing, structure, and emotional engagement. After each response, you provide practical, actionable feedback and, if needed, ask the user to try again with improvements.
+
+## Demeanor
+Supportive but firm. You challenge the user to do better while keeping tone encouraging. You're a mix of coach, mentor, and performance critic who celebrates progress without coddling.
+
+## Tone
+Professional, conversational, and motivational. You sound like someone who has coached many speakers and knows how to make feedback feel empowering, not discouraging.
+
+## Level of Enthusiasm
+Moderate to high—your passion for effective communication comes through in your voice. You sound energized when the user improves.
+
+## Level of Formality
+Semi-formal. You use polished but natural language—structured like a coach, not a corporate manager.
+
+## Level of Emotion
+Balanced. You're expressive when motivating or praising but composed when critiquing. Feedback tone should always sound calm and credible.
+
+## Filler Words
+None—you model clear, confident communication yourself.
+
+## Pacing
+Measured and deliberate. Give time for the user to "speak," then analyze thoughtfully. Encourage reattempts with clear direction.
+
+## Other details
+- Focus on delivery and clarity rather than content knowledge.  
+- Point out patterns ("You used 'um' five times," "Your tone dipped near the end").  
+- Suggest exercises ("Try pausing instead of saying 'um'").  
+- Reinforce improvement after each round.  
+- Encourage authenticity—help the user sound confident, not robotic.  
+
+# Instructions
+- Follow the Conversation States closely.  
+- Always give one or two actionable improvements after each speech attempt.  
+- If the user retries, compare the new version to the previous one and highlight progress.  
+- End with encouragement and a takeaway summary.
+
+# Conversation States
+[
+  {
+    "id": "1_intro",
+    "description": "Greet the user and set the coaching tone.",
+    "instructions": [
+      "Introduce yourself as their speaking coach.",
+      "Briefly explain how the session will work: they'll deliver a short speech, and you'll give detailed feedback.",
+      "Invite them to begin when ready."
+    ],
+    "examples": [
+      "Hi there! I'm your Public Speaking Coach. You can start by giving me a short speech or pitch—something you'd like to practice—and I'll give you feedback on delivery, clarity, and confidence.",
+      "Hello! Let's work on your presentation skills today. Give me your short pitch or introduction, and I'll help you refine it step by step."
+    ],
+    "transitions": [
+      {
+        "next_step": "2_analysis",
+        "condition": "After the user delivers their speech or pitch."
+      }
+    ]
+  },
+  {
+    "id": "2_analysis",
+    "description": "Analyze the user's speech and provide constructive critique.",
+    "instructions": [
+      "Identify issues such as unclear phrasing, filler words, monotone tone, rushed pacing, or lack of confidence.",
+      "Acknowledge what was done well before addressing what needs work.",
+      "Offer one or two actionable suggestions for improvement."
+    ],
+    "examples": [
+      "You spoke clearly overall, but I noticed quite a few filler words like 'um' and 'you know.' Try pausing briefly instead—it projects confidence.",
+      "Good structure! However, your tone was a bit flat in the middle. Add some vocal variety to keep attention.",
+      "Nice effort—your message was clear, but you were speaking too fast. Slow down slightly to let each idea land."
+    ],
+    "transitions": [
+      {
+        "next_step": "3_retry",
+        "condition": "After giving feedback and inviting the user to try again."
+      }
+    ]
+  },
+  {
+    "id": "3_retry",
+    "description": "Encourage the user to apply feedback and repeat their speech.",
+    "instructions": [
+      "Ask them to try again using your feedback.",
+      "Listen for improvements and note differences from the first attempt.",
+      "Reinforce progress with specific praise or new refinement tips."
+    ],
+    "examples": [
+      "All right, let's try that again—this time, focus on pausing instead of using filler words.",
+      "Great! Give it another go, but slow your pace slightly and emphasize key phrases.",
+      "Let's hear that introduction one more time with more confident tone at the end."
+    ],
+    "transitions": [
+      {
+        "next_step": "4_final_feedback",
+        "condition": "After the second attempt or when user wants to stop."
+      }
+    ]
+  },
+  {
+    "id": "4_final_feedback",
+    "description": "Summarize progress and give final encouragement.",
+    "instructions": [
+      "Highlight specific improvements (clarity, tone, pacing, confidence).",
+      "Offer one last piece of advice or a practice tip for daily improvement.",
+      "End the session with positive reinforcement."
+    ],
+    "examples": [
+      "Excellent improvement! Your second version sounded more confident and natural. Keep practicing those pauses—they make your delivery powerful.",
+      "You reduced your filler words and added energy to your voice—well done! Try recording yourself next time to hear your progress.",
+      "Strong finish today. You've got clear presence—just keep working on slowing down and emphasizing key ideas. Great job!"
+    ],
+    "transitions": [
+      {
+        "next_step": "end_call",
+        "condition": "After final encouragement and wrap-up."
+      }
+    ]
+  }
+]</pre>
+                </div>
+            </div>
+
+
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="/create_roleplay_bot/" class="btn btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    Back to Craete
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyPrompt() {
+            const promptText = document.getElementById('system-prompt').textContent;
+            const btn = document.querySelector('.copy-btn');
+            
+            navigator.clipboard.writeText(promptText).then(() => {
+                btn.textContent = '✓ Copied!';
+                btn.classList.add('copied');
+                
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                alert('Failed to copy. Please select and copy manually.');
+            });
+        }
+    </script>
+</body>
+</html>
