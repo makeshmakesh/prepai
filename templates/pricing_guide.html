@@ -1,369 +1,649 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-EMFD0GPFNQ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+{% extends 'base.html' %}
+{% load static %}
 
-  gtag('config', 'G-EMFD0GPFNQ');
-</script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete Pricing Guide - PrepAI</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+{% block title %}Neural Pricing Intelligence - PrepAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Override base content layout */
+    .content {
+        flex: 0 0 auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+    }
+
+    /* Futuristic Pricing Guide Page */
+    .pricing-guide-page {
+        min-height: 100vh;
+        position: relative;
+        padding: 0;
+    }
+
+    .pricing-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 3vw, 2rem);
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+        backdrop-filter: blur(20px);
+        color: white;
+        padding: clamp(3rem, 6vw, 5rem) clamp(2rem, 4vw, 3rem);
+        border-radius: 25px;
+        text-align: center;
+        margin-bottom: clamp(3rem, 6vw, 5rem);
+        position: relative;
+        overflow: hidden;
+        border: 2px solid var(--border-color);
+        box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+        animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+        animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
         }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: #1e293b;
-            background: #f8fafc;
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
+    }
 
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
-        }
+    .hero-section h1 {
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        font-weight: 900;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 1;
+        background: linear-gradient(135deg, #fff 0%, #e2e8f0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.02em;
+    }
 
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 3rem 2rem;
-            border-radius: 20px;
-            text-align: center;
-            margin-bottom: 3rem;
-        }
+    .hero-section p {
+        font-size: clamp(1.1rem, 3vw, 1.4rem);
+        opacity: 0.95;
+        position: relative;
+        z-index: 1;
+        color: var(--text-secondary);
+    }
 
-        .hero h1 {
-            font-size: clamp(2rem, 5vw, 2.5rem);
-            font-weight: 800;
-            margin-bottom: 0.75rem;
-        }
+    /* Currency note */
+    .currency-note {
+        text-align: center;
+        background: rgba(102, 126, 234, 0.1);
+        padding: 1rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        color: var(--text-secondary);
+        font-size: clamp(0.9rem, 2vw, 1rem);
+        border: 1px solid var(--border-color);
+    }
 
-        .hero p {
-            font-size: 1.125rem;
-            opacity: 0.95;
-        }
+    /* Section Styles */
+    .section {
+        background: rgba(30, 27, 75, 0.3);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: clamp(2rem, 4vw, 3rem);
+        margin-bottom: clamp(2rem, 5vw, 3rem);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        border: 2px solid var(--border-color);
+        animation: fadeInUp 0.8s ease both;
+    }
 
-        /* Section Styles */
-        .section {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-        }
+    .section:nth-child(2) { animation-delay: 0.3s; }
+    .section:nth-child(3) { animation-delay: 0.4s; }
+    .section:nth-child(4) { animation-delay: 0.5s; }
+    .section:nth-child(5) { animation-delay: 0.6s; }
+    .section:nth-child(6) { animation-delay: 0.7s; }
+    .section:nth-child(7) { animation-delay: 0.8s; }
+    .section:nth-child(8) { animation-delay: 0.9s; }
 
-        .section-title {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 3px solid #667eea;
-        }
+    .section-title {
+        font-size: clamp(1.5rem, 4vw, 2.2rem);
+        font-weight: 900;
+        color: #fff;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 3px solid #667eea;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
 
-        .section-subtitle {
-            font-size: 1.125rem;
-            color: #64748b;
-            margin-bottom: 1.5rem;
-        }
+    .section-subtitle {
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
 
-        /* Pricing Cards */
+    /* Pricing Cards */
+    .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: clamp(1.5rem, 3vw, 2rem);
+        margin-bottom: 2rem;
+    }
+
+    .pricing-card {
+        background: rgba(30, 27, 75, 0.5);
+        backdrop-filter: blur(10px);
+        border: 2px solid var(--border-color);
+        border-radius: 16px;
+        padding: clamp(1.5rem, 3vw, 2rem);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .pricing-card::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: var(--primary-gradient);
+        border-radius: 16px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: -1;
+    }
+
+    .pricing-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+    }
+
+    .pricing-card:hover::before {
+        opacity: 1;
+    }
+
+    .pricing-card h3 {
+        font-size: clamp(1.2rem, 3vw, 1.5rem);
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .price-tag {
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 900;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+    .price-usd {
+        font-size: clamp(1.2rem, 3vw, 1.8rem);
+        opacity: 0.7;
+    }
+
+    .price-details {
+        color: var(--text-secondary);
+        font-size: clamp(0.9rem, 2vw, 1rem);
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    /* Breakdown Table */
+    .breakdown-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 2rem 0;
+        background: rgba(30, 27, 75, 0.5);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .breakdown-table th {
+        background: rgba(102, 126, 234, 0.2);
+        padding: 1rem;
+        text-align: left;
+        font-weight: 700;
+        color: #fff;
+        border-bottom: 2px solid var(--border-color);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+    }
+
+    .breakdown-table td {
+        padding: 1rem;
+        border-bottom: 1px solid rgba(88, 80, 236, 0.2);
+        color: var(--text-secondary);
+        font-size: clamp(0.9rem, 2vw, 1rem);
+    }
+
+    .breakdown-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .breakdown-table .highlight {
+        background: rgba(102, 126, 234, 0.1);
+        font-weight: 700;
+    }
+
+    .breakdown-table .positive {
+        color: #22c55e;
+        font-weight: 700;
+    }
+
+    .breakdown-table .negative {
+        color: #ef4444;
+        font-weight: 600;
+    }
+
+    /* Flow Diagram */
+    .flow-diagram {
+        background: rgba(30, 27, 75, 0.5);
+        backdrop-filter: blur(10px);
+        border: 2px dashed var(--border-color);
+        border-radius: 16px;
+        padding: clamp(1.5rem, 3vw, 2rem);
+        margin: 2rem 0;
+    }
+
+    .flow-step {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        gap: 1rem;
+    }
+
+    .flow-step:last-child {
+        margin-bottom: 0;
+    }
+
+    .flow-icon {
+        background: var(--primary-gradient);
+        color: white;
+        width: clamp(45px, 10vw, 55px);
+        height: clamp(45px, 10vw, 55px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        flex-shrink: 0;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        font-size: clamp(1.2rem, 3vw, 1.5rem);
+    }
+
+    .flow-content {
+        flex: 1;
+    }
+
+    .flow-content strong {
+        display: block;
+        color: #fff;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+        font-size: clamp(1rem, 2vw, 1.1rem);
+    }
+
+    .flow-content span {
+        color: var(--text-secondary);
+        font-size: clamp(0.9rem, 2vw, 0.95rem);
+    }
+
+    /* Info Boxes */
+    .info-box {
+        background: rgba(102, 126, 234, 0.1);
+        border-left: 4px solid #667eea;
+        padding: clamp(1.25rem, 3vw, 1.5rem);
+        border-radius: 12px;
+        margin: 2rem 0;
+        backdrop-filter: blur(10px);
+        border: 2px solid var(--border-color);
+        border-left-width: 4px;
+    }
+
+    .info-box.warning {
+        background: rgba(245, 158, 11, 0.1);
+        border-left-color: #f59e0b;
+    }
+
+    .info-box.success {
+        background: rgba(34, 197, 94, 0.1);
+        border-left-color: #22c55e;
+    }
+
+    .info-box strong {
+        display: block;
+        margin-bottom: 0.75rem;
+        color: #fff;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: clamp(1rem, 2vw, 1.1rem);
+    }
+
+    .info-box p {
+        color: var(--text-secondary);
+        margin: 0;
+        line-height: 1.7;
+        font-size: clamp(0.9rem, 2vw, 1rem);
+    }
+
+    /* Example Scenarios */
+    .scenario {
+        background: rgba(30, 27, 75, 0.5);
+        backdrop-filter: blur(10px);
+        border: 2px solid var(--border-color);
+        border-radius: 16px;
+        padding: clamp(1.5rem, 3vw, 2rem);
+        margin-bottom: 1.5rem;
+    }
+
+    .scenario h4 {
+        font-size: clamp(1.1rem, 3vw, 1.3rem);
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .scenario > p {
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+        line-height: 1.6;
+    }
+
+    .scenario-calc {
+        background: rgba(102, 126, 234, 0.1);
+        padding: 1.25rem;
+        border-radius: 12px;
+        font-family: 'Courier New', monospace;
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        border: 1px solid var(--border-color);
+    }
+
+    .scenario-calc div {
+        padding: 0.5rem 0;
+        color: var(--text-secondary);
+    }
+
+    .scenario-result {
+        margin-top: 1rem;
+        padding: 1.25rem;
+        background: rgba(34, 197, 94, 0.1);
+        border: 2px solid rgba(34, 197, 94, 0.3);
+        border-radius: 12px;
+        font-weight: 700;
+        color: #22c55e;
+        line-height: 1.7;
+        font-size: clamp(0.95rem, 2vw, 1.05rem);
+    }
+
+    /* Quick Reference */
+    .quick-ref {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: clamp(1rem, 3vw, 1.5rem);
+        margin: 2rem 0;
+    }
+
+    .quick-ref-item {
+        background: rgba(30, 27, 75, 0.5);
+        backdrop-filter: blur(10px);
+        padding: clamp(1.25rem, 3vw, 1.5rem);
+        border-radius: 16px;
+        text-align: center;
+        border: 2px solid var(--border-color);
+        transition: all 0.3s ease;
+    }
+
+    .quick-ref-item:hover {
+        transform: translateY(-5px);
+        border-color: #667eea;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    .quick-ref-value {
+        font-size: clamp(1.5rem, 4vw, 2.2rem);
+        font-weight: 900;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+
+    .quick-ref-label {
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        color: var(--text-secondary);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Withdrawal Display */
+    .withdrawal-display {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%);
+        backdrop-filter: blur(20px);
+        border: 2px solid rgba(34, 197, 94, 0.3);
+        color: white;
+        padding: clamp(2rem, 4vw, 3rem);
+        border-radius: 20px;
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .withdrawal-display::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(34, 197, 94, 0.1) 0%, transparent 70%);
+        animation: rotate 15s linear infinite;
+    }
+
+    .withdrawal-display > div:first-child {
+        font-size: clamp(2.5rem, 8vw, 4rem);
+        font-weight: 900;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+        text-shadow: 0 0 30px rgba(34, 197, 94, 0.5);
+    }
+
+    .withdrawal-display > div:nth-child(2) {
+        font-size: clamp(1.3rem, 4vw, 2rem);
+        opacity: 0.9;
+        position: relative;
+        z-index: 1;
+        margin-bottom: 0.5rem;
+    }
+
+    .withdrawal-display > div:last-child {
+        font-size: clamp(1rem, 3vw, 1.3rem);
+        opacity: 0.95;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Summary Boxes */
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: clamp(1.5rem, 3vw, 2rem);
+    }
+
+    .summary-box {
+        background: rgba(30, 27, 75, 0.5);
+        backdrop-filter: blur(10px);
+        padding: clamp(1.5rem, 3vw, 2rem);
+        border-radius: 16px;
+        border: 2px solid var(--border-color);
+    }
+
+    .summary-box h3 {
+        color: #fff;
+        margin-bottom: 1rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: clamp(1.1rem, 3vw, 1.3rem);
+    }
+
+    .summary-box ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .summary-box li {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(88, 80, 236, 0.2);
+        color: var(--text-secondary);
+        font-size: clamp(0.9rem, 2vw, 1rem);
+    }
+
+    .summary-box li:last-child {
+        border-bottom: none;
+    }
+
+    /* Links */
+    a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    a:hover {
+        color: #764ba2;
+        text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
         .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .pricing-card {
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 1.5rem;
-        }
-
-        .pricing-card h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 0.5rem;
+            grid-template-columns: 1fr;
         }
 
         .price-tag {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #667eea;
-            margin-bottom: 0.5rem;
+            flex-direction: column;
+            gap: 0.25rem;
         }
 
-        .price-details {
-            color: #64748b;
-            font-size: 0.95rem;
-            margin-bottom: 1rem;
-        }
-
-        /* Breakdown Table */
         .breakdown-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1.5rem 0;
+            font-size: 0.85rem;
         }
 
-        .breakdown-table th {
-            background: #f1f5f9;
-            padding: 0.75rem;
-            text-align: left;
-            font-weight: 600;
-            color: #334155;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
+        .breakdown-table th,
         .breakdown-table td {
-            padding: 0.75rem;
-            border-bottom: 1px solid #e2e8f0;
+            padding: 0.75rem 0.5rem;
         }
+    }
 
-        .breakdown-table tr:last-child td {
-            border-bottom: none;
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
         }
+    }
+</style>
+{% endblock %}
 
-        .breakdown-table .highlight {
-            background: #f0f9ff;
-            font-weight: 600;
-        }
-
-        .breakdown-table .positive {
-            color: #10b981;
-            font-weight: 600;
-        }
-
-        .breakdown-table .negative {
-            color: #ef4444;
-        }
-
-        /* Flow Diagram */
-        .flow-diagram {
-            background: #f8fafc;
-            border: 2px dashed #cbd5e1;
-            border-radius: 12px;
-            padding: 2rem;
-            margin: 2rem 0;
-        }
-
-        .flow-step {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            gap: 1rem;
-        }
-
-        .flow-step:last-child {
-            margin-bottom: 0;
-        }
-
-        .flow-icon {
-            background: #667eea;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        .flow-content {
-            flex: 1;
-        }
-
-        .flow-content strong {
-            display: block;
-            color: #1e293b;
-            margin-bottom: 0.25rem;
-        }
-
-        .flow-content span {
-            color: #64748b;
-            font-size: 0.925rem;
-        }
-
-        /* Info Boxes */
-        .info-box {
-            background: #f0f9ff;
-            border-left: 4px solid #667eea;
-            padding: 1.25rem;
-            border-radius: 8px;
-            margin: 1.5rem 0;
-        }
-
-        .info-box.warning {
-            background: #fef3c7;
-            border-left-color: #f59e0b;
-        }
-
-        .info-box.success {
-            background: #d1fae5;
-            border-left-color: #10b981;
-        }
-
-        .info-box strong {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #1e293b;
-        }
-
-        .info-box p {
-            color: #475569;
-            margin: 0;
-        }
-
-        /* Example Scenarios */
-        .scenario {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .scenario h4 {
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 1rem;
-        }
-
-        .scenario-calc {
-            background: #f8fafc;
-            padding: 1rem;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-        }
-
-        .scenario-calc div {
-            padding: 0.25rem 0;
-        }
-
-        .scenario-result {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: #f0f9ff;
-            border-radius: 8px;
-            font-weight: 600;
-            color: #667eea;
-        }
-
-        /* Quick Reference */
-        .quick-ref {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-
-        .quick-ref-item {
-            background: #f8fafc;
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .quick-ref-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #667eea;
-            margin-bottom: 0.25rem;
-        }
-
-        .quick-ref-label {
-            font-size: 0.875rem;
-            color: #64748b;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem 0.5rem;
-            }
-
-            .section {
-                padding: 1.5rem;
-            }
-
-            .pricing-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .breakdown-table {
-                font-size: 0.875rem;
-            }
-
-            .breakdown-table th,
-            .breakdown-table td {
-                padding: 0.5rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
+{% block content %}
+<div class="pricing-guide-page">
+    <div class="pricing-container">
         <!-- Hero -->
-        <div class="hero">
-            <h1>Complete Pricing Guide</h1>
-            <p>Transparent pricing for Users, Creators, and Referrers</p>
+        <div class="hero-section">
+            <h1>📊 Neural Pricing Intelligence</h1>
+            <p>Complete transparency across User, Creator, and Referrer revenue streams</p>
         </div>
 
         <!-- User Pricing Section -->
         <div class="section">
-            <h2 class="section-title">💳 For Users: Credit Packages</h2>
-            <p class="section-subtitle">Purchase credits to use AI voice bots. 10 credits per minute of conversation.</p>
+            <h2 class="section-title">💳 User Credit Acquisition</h2>
+            <p class="section-subtitle">Purchase neural credits for AI voice system engagement. 10 credits per minute of conversation.</p>
 
             <div class="pricing-grid">
                 <div class="pricing-card">
-                    <h3>Mini</h3>
-                    <div class="price-tag">₹49</div>
+                    <h3>Mini Protocol</h3>
+                    <div class="price-tag">
+                        <span>₹49</span>
+                        <span class="price-usd">$0.55</span>
+                    </div>
                     <div class="price-details">40 credits (~4 minutes)</div>
-                    <div style="color: #64748b;">
-                        <strong style="color: #1e293b;">Best for:</strong> Trying out the platform
+                    <div style="color: var(--text-secondary);">
+                        <strong style="color: #fff;">Optimal for:</strong> Platform exploration
                     </div>
                 </div>
 
                 <div class="pricing-card">
-                    <h3>Growth</h3>
-                    <div class="price-tag">₹249</div>
+                    <h3>Growth Matrix</h3>
+                    <div class="price-tag">
+                        <span>₹249</span>
+                        <span class="price-usd">$2.80</span>
+                    </div>
                     <div class="price-details">300 credits (~30 minutes)</div>
-                    <div style="color: #64748b;">
-                        <strong style="color: #1e293b;">Best for:</strong> Regular practice sessions
+                    <div style="color: var(--text-secondary);">
+                        <strong style="color: #fff;">Optimal for:</strong> Regular engagement sessions
                     </div>
                 </div>
 
                 <div class="pricing-card">
-                    <h3>Professional</h3>
-                    <div class="price-tag">₹999</div>
+                    <h3>Professional Nexus</h3>
+                    <div class="price-tag">
+                        <span>₹999</span>
+                        <span class="price-usd">$11.22</span>
+                    </div>
                     <div class="price-details">1,500 credits (~150 minutes)</div>
-                    <div style="color: #64748b;">
-                        <strong style="color: #1e293b;">Best for:</strong> Intensive training
+                    <div style="color: var(--text-secondary);">
+                        <strong style="color: #fff;">Optimal for:</strong> Intensive training protocols
                     </div>
                 </div>
             </div>
 
             <div class="info-box success">
-                <strong>New User Bonus</strong>
-                <p>Sign up and get 50 free credits instantly — no payment required. That's 5 minutes of free usage to explore the platform!</p>
+                <strong>🎁 New User Protocol</strong>
+                <p>Initialize account and receive 50 complimentary credits — zero payment verification required. Deploy 5 neural systems or engage for 5 minutes to evaluate platform capabilities!</p>
             </div>
 
             <div class="quick-ref">
@@ -373,217 +653,217 @@
                 </div>
                 <div class="quick-ref-item">
                     <div class="quick-ref-value">10</div>
-                    <div class="quick-ref-label">Credits to start</div>
+                    <div class="quick-ref-label">Initialization cost</div>
                 </div>
                 <div class="quick-ref-item">
-                    <div class="quick-ref-value">₹6.6</div>
-                    <div class="quick-ref-label">Best rate/minute</div>
+                    <div class="quick-ref-value">₹6.66 / $0.07</div>
+                    <div class="quick-ref-label">Optimal rate/min</div>
                 </div>
             </div>
         </div>
 
         <!-- Revenue Distribution Section -->
         <div class="section">
-            <h2 class="section-title">💰 Revenue Distribution: Where Your 10 Credits Go</h2>
+            <h2 class="section-title">💰 Revenue Distribution Protocol</h2>
             
-            <p class="section-subtitle">When you spend 10 credits on a conversation, here's exactly how it's distributed:</p>
+            <p class="section-subtitle">10 credit transaction allocation breakdown:</p>
 
             <table class="breakdown-table">
                 <thead>
                     <tr>
                         <th>Component</th>
-                        <th>Direct Usage</th>
-                        <th>Referred Usage</th>
+                        <th>Direct Access</th>
+                        <th>Affiliate Channel</th>
                         <th>Description</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>User Pays</strong></td>
+                        <td><strong>User Payment</strong></td>
                         <td>10 credits</td>
                         <td>10 credits</td>
-                        <td>Total cost per minute</td>
+                        <td>Total per minute cost</td>
                     </tr>
                     <tr class="negative">
-                        <td><strong>Infrastructure Cost</strong></td>
+                        <td><strong>Infrastructure</strong></td>
                         <td>-5 credits</td>
                         <td>-5 credits</td>
                         <td>AI API, hosting, servers</td>
                     </tr>
                     <tr class="highlight positive">
-                        <td><strong>Creator Earns</strong></td>
+                        <td><strong>Creator Revenue</strong></td>
                         <td>3 credits (30%)</td>
                         <td>2 credits (20%)</td>
-                        <td>Bot owner's revenue</td>
+                        <td>System owner allocation</td>
                     </tr>
                     <tr class="highlight positive">
-                        <td><strong>Referrer Earns</strong></td>
+                        <td><strong>Affiliate Revenue</strong></td>
                         <td>—</td>
                         <td>1 credit (10%)</td>
-                        <td>Affiliate commission</td>
+                        <td>Distribution commission</td>
                     </tr>
                     <tr>
                         <td><strong>Platform Fee</strong></td>
                         <td>2 credits</td>
                         <td>2 credits</td>
-                        <td>Platform operations</td>
+                        <td>Operations overhead</td>
                     </tr>
                 </tbody>
             </table>
 
             <div class="info-box">
-                <strong>Key Insight</strong>
-                <p>Creators earn MORE (30% vs 20%) when users discover their bots organically, incentivizing quality content creation and organic growth.</p>
+                <strong>💡 Key Intelligence</strong>
+                <p>Creators receive higher allocation (30% vs 20%) through organic discovery channels, incentivizing quality system development and natural growth strategies.</p>
             </div>
         </div>
 
         <!-- Creator Earnings Section -->
         <div class="section">
-            <h2 class="section-title">🎨 For Creators: Monetization Model</h2>
+            <h2 class="section-title">🎨 Creator Monetization Architecture</h2>
             
-            <p class="section-subtitle">Create AI voice bots and earn passive income from every conversation.</p>
+            <p class="section-subtitle">Engineer AI voice systems and generate autonomous revenue from all engagements.</p>
 
             <div class="flow-diagram">
                 <div class="flow-step">
                     <div class="flow-icon">1</div>
                     <div class="flow-content">
-                        <strong>Create Your Bot</strong>
-                        <span>One-time cost: 10 credits to publish a bot</span>
+                        <strong>Engineer Neural System</strong>
+                        <span>Deployment cost: 10 credits per bot publication</span>
                     </div>
                 </div>
                 <div class="flow-step">
                     <div class="flow-icon">2</div>
                     <div class="flow-content">
-                        <strong>Users Discover & Use</strong>
-                        <span>Your bot appears in marketplace or via affiliate links</span>
+                        <strong>User Discovery & Engagement</strong>
+                        <span>System appears in marketplace or via affiliate distribution</span>
                     </div>
                 </div>
                 <div class="flow-step">
                     <div class="flow-icon">3</div>
                     <div class="flow-content">
-                        <strong>Earn Automatically</strong>
-                        <span>Receive 2-3 credits per minute of usage (20-30% revenue share)</span>
+                        <strong>Automated Revenue Generation</strong>
+                        <span>Receive 2-3 credits per minute (20-30% allocation)</span>
                     </div>
                 </div>
                 <div class="flow-step">
                     <div class="flow-icon">4</div>
                     <div class="flow-content">
-                        <strong>Withdraw Anytime</strong>
-                        <span>Convert credits to cash at ₹0.60 per credit and withdraw to your bank account</span>
+                        <strong>Extraction Protocol</strong>
+                        <span>Convert credits to fiat at ₹0.60 ($0.0067) per credit with on-demand withdrawal</span>
                     </div>
                 </div>
             </div>
 
-            <h3 style="margin-top: 2rem; margin-bottom: 1rem; color: #1e293b;">Example Scenarios</h3>
+            <h3 style="margin-top: 2rem; margin-bottom: 1.5rem; color: #fff; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Revenue Scenarios</h3>
 
             <div class="scenario">
-                <h4>Scenario 1: Direct Discovery</h4>
-                <p style="color: #64748b; margin-bottom: 1rem;">User finds your bot in the marketplace and has a 10-minute conversation.</p>
+                <h4>Scenario 1: Organic Discovery</h4>
+                <p>User discovers your system in marketplace and engages for 10 minutes.</p>
                 <div class="scenario-calc">
-                    <div>User spends: 10 minutes × 10 credits = 100 credits</div>
-                    <div>Your earnings: 100 credits × 30% = <strong style="color: #10b981;">30 credits</strong></div>
+                    <div>User expenditure: 10 minutes × 10 credits = 100 credits</div>
+                    <div>Your allocation: 100 credits × 30% = <strong style="color: #22c55e;">30 credits</strong></div>
                     <div>Infrastructure: 100 × 50% = 50 credits</div>
                     <div>Platform: 100 × 20% = 20 credits</div>
                 </div>
                 <div class="scenario-result">
-                    You earn 30 credits = ₹18 (at ₹0.60/credit withdrawal rate)
+                    Creator receives 30 credits = ₹18 ($0.20) at ₹0.60 ($0.0067) per credit extraction rate
                 </div>
             </div>
 
             <div class="scenario">
-                <h4>Scenario 2: Through Referral</h4>
-                <p style="color: #64748b; margin-bottom: 1rem;">User arrives via affiliate link and has a 10-minute conversation.</p>
+                <h4>Scenario 2: Affiliate Distribution</h4>
+                <p>User arrives through affiliate distribution network and engages for 10 minutes.</p>
                 <div class="scenario-calc">
-                    <div>User spends: 10 minutes × 10 credits = 100 credits</div>
-                    <div>Your earnings: 100 credits × 20% = <strong style="color: #10b981;">20 credits</strong></div>
-                    <div>Referrer earnings: 100 × 10% = <strong style="color: #667eea;">10 credits</strong></div>
+                    <div>User expenditure: 10 minutes × 10 credits = 100 credits</div>
+                    <div>Your allocation: 100 credits × 20% = <strong style="color: #22c55e;">20 credits</strong></div>
+                    <div>Affiliate allocation: 100 × 10% = <strong style="color: #667eea;">10 credits</strong></div>
                     <div>Infrastructure: 100 × 50% = 50 credits</div>
                     <div>Platform: 100 × 20% = 20 credits</div>
                 </div>
                 <div class="scenario-result">
-                    You earn 20 credits + Referrer earns 10 credits<br>
-                    Creator withdrawal: 20 × ₹0.60 = ₹12<br>
-                    Referrer withdrawal: 10 × ₹0.60 = ₹6
+                    Creator receives 20 credits + Affiliate receives 10 credits<br>
+                    Creator extraction: 20 × ₹0.60 = ₹12 ($0.13)<br>
+                    Affiliate extraction: 10 × ₹0.60 = ₹6 ($0.07)
                 </div>
             </div>
 
             <div class="info-box warning">
-                <strong>Creation Cost</strong>
-                <p>Creating a bot costs 10 credits (one-time). This ensures quality submissions and prevents spam. After your first user spends just 34 credits (~3.4 minutes), you've broken even!</p>
+                <strong>⚙ Deployment Cost</strong>
+                <p>System deployment requires 10 credits (one-time). This prevents spam submissions and ensures quality standards. Break-even after 34 credits user expenditure (~3.4 minutes)!</p>
             </div>
 
             <div class="quick-ref">
                 <div class="quick-ref-item">
                     <div class="quick-ref-value">30%</div>
-                    <div class="quick-ref-label">Direct earnings</div>
+                    <div class="quick-ref-label">Direct allocation</div>
                 </div>
                 <div class="quick-ref-item">
                     <div class="quick-ref-value">20%</div>
-                    <div class="quick-ref-label">Referred earnings</div>
+                    <div class="quick-ref-label">Affiliate allocation</div>
                 </div>
                 <div class="quick-ref-item">
                     <div class="quick-ref-value">Unlimited</div>
-                    <div class="quick-ref-label">Earning potential</div>
+                    <div class="quick-ref-label">Revenue ceiling</div>
                 </div>
             </div>
         </div>
 
         <!-- Referrer Program Section -->
         <div class="section">
-            <h2 class="section-title">🔗 For Referrers: Affiliate Program</h2>
+            <h2 class="section-title">🔗 Affiliate Distribution Network</h2>
             
-            <p class="section-subtitle">Promote bots and earn commission on every conversation.</p>
+            <p class="section-subtitle">Promote neural systems and generate commission from all engagements.</p>
 
             <div class="flow-diagram">
                 <div class="flow-step">
                     <div class="flow-icon">1</div>
                     <div class="flow-content">
-                        <strong>Get Your Affiliate Link</strong>
-                        <span>Generate unique tracking link for any bot</span>
+                        <strong>Generate Distribution Link</strong>
+                        <span>Create unique tracking URL for any neural system</span>
                     </div>
                 </div>
                 <div class="flow-step">
                     <div class="flow-icon">2</div>
                     <div class="flow-content">
-                        <strong>Share & Promote</strong>
-                        <span>Post on social media, blogs, YouTube, or anywhere</span>
+                        <strong>Deploy & Promote</strong>
+                        <span>Distribute across social networks, content platforms, communities</span>
                     </div>
                 </div>
                 <div class="flow-step">
                     <div class="flow-icon">3</div>
                     <div class="flow-content">
-                        <strong>Users Click & Use</strong>
-                        <span>When they interact with the bot, you earn 10% commission</span>
+                        <strong>User Engagement</strong>
+                        <span>When users interact via your link, earn 10% commission</span>
                     </div>
                 </div>
                 <div class="flow-step">
                     <div class="flow-icon">4</div>
                     <div class="flow-content">
-                        <strong>Passive Income</strong>
-                        <span>Earn 1 credit per minute for every referred user</span>
+                        <strong>Autonomous Income</strong>
+                        <span>Accumulate 1 credit per minute for all referred engagements</span>
                     </div>
                 </div>
             </div>
 
-            <h3 style="margin-top: 2rem; margin-bottom: 1rem; color: #1e293b;">Referrer Example</h3>
+            <h3 style="margin-top: 2rem; margin-bottom: 1.5rem; color: #fff; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Affiliate Example</h3>
 
             <div class="scenario">
-                <h4>Example: Successful Promotion</h4>
-                <p style="color: #64748b; margin-bottom: 1rem;">You share an interview prep bot on LinkedIn. 20 people use it for 15 minutes each.</p>
+                <h4>Example: Successful Distribution Campaign</h4>
+                <p>You distribute interview preparation system on LinkedIn. 20 users engage for 15 minutes each.</p>
                 <div class="scenario-calc">
-                    <div>Total usage: 20 users × 15 minutes = 300 minutes</div>
-                    <div>Credits spent by users: 300 × 10 = 3,000 credits</div>
-                    <div>Your commission: 3,000 × 10% = <strong style="color: #10b981;">300 credits</strong></div>
-                    <div>Creator earns: 3,000 × 20% = 600 credits</div>
+                    <div>Total engagement: 20 users × 15 minutes = 300 minutes</div>
+                    <div>User expenditure: 300 × 10 = 3,000 credits</div>
+                    <div>Your commission: 3,000 × 10% = <strong style="color: #22c55e;">300 credits</strong></div>
+                    <div>Creator allocation: 3,000 × 20% = 600 credits</div>
                 </div>
                 <div class="scenario-result">
-                    You earn 300 credits = ₹180 (at ₹0.60/credit withdrawal rate)
+                    Affiliate receives 300 credits = ₹180 ($2.02) at ₹0.60 ($0.0067) per credit extraction rate
                 </div>
             </div>
 
             <div class="info-box success">
-                <strong>Win-Win Model</strong>
-                <p>Referrers help creators reach wider audiences while earning commission. Creators accept slightly lower margins in exchange for marketing reach. Everyone wins!</p>
+                <strong>🤝 Mutual Benefit Architecture</strong>
+                <p>Affiliates enable creators to access broader audiences while generating commission. Creators accept reduced margins for distribution reach. Optimized value creation for all participants!</p>
             </div>
 
             <div class="quick-ref">
@@ -597,32 +877,34 @@
                 </div>
                 <div class="quick-ref-item">
                     <div class="quick-ref-value">∞</div>
-                    <div class="quick-ref-label">Bots to promote</div>
+                    <div class="quick-ref-label">Systems to promote</div>
                 </div>
             </div>
         </div>
 
         <!-- Withdrawal Rate Section -->
         <div class="section">
-            <h2 class="section-title">💸 Credit Withdrawal Rate</h2>
+            <h2 class="section-title">💸 Credit Extraction Protocol</h2>
             
-            <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 2rem; border-radius: 16px; text-align: center; margin-bottom: 2rem;">
-                <div style="font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem;">₹0.60</div>
-                <div style="font-size: 1.25rem; opacity: 0.95;">per credit when you withdraw earnings</div>
+            <div class="withdrawal-display">
+                <div>₹0.60</div>
+                <div>$0.0067 USD</div>
+                <div>per credit at extraction point</div>
             </div>
 
             <div class="info-box">
-                <strong>For Creators & Referrers</strong>
-                <p>When you're ready to cash out your earned credits, we convert them at a fixed rate of ₹0.60 per credit. This rate is consistent regardless of how many credits you withdraw.</p>
+                <strong>For Creators & Affiliates</strong>
+                <p>When executing credit extraction, conversion occurs at fixed ₹0.60 ($0.0067) per credit rate. This rate remains constant regardless of extraction volume.</p>
             </div>
 
-            <h3 style="margin-top: 2rem; margin-bottom: 1rem; color: #1e293b;">Withdrawal Examples</h3>
+            <h3 style="margin-top: 2rem; margin-bottom: 1.5rem; color: #fff; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Extraction Examples</h3>
 
             <table class="breakdown-table">
                 <thead>
                     <tr>
-                        <th>Credits Earned</th>
-                        <th>Withdrawal Amount</th>
+                        <th>Credits Accumulated</th>
+                        <th>Extraction (INR)</th>
+                        <th>Extraction (USD)</th>
                         <th>Example Source</th>
                     </tr>
                 </thead>
@@ -630,120 +912,124 @@
                     <tr>
                         <td>100 credits</td>
                         <td>₹60</td>
-                        <td>~10 minutes of bot usage (direct)</td>
+                        <td>$0.67</td>
+                        <td>~10 minutes system usage (direct)</td>
                     </tr>
                     <tr>
                         <td>300 credits</td>
                         <td>₹180</td>
-                        <td>~30 minutes of referral traffic</td>
+                        <td>$2.02</td>
+                        <td>~30 minutes affiliate traffic</td>
                     </tr>
                     <tr>
                         <td>1,000 credits</td>
                         <td>₹600</td>
-                        <td>~100 minutes of bot conversations</td>
+                        <td>$6.74</td>
+                        <td>~100 minutes engagement volume</td>
                     </tr>
                     <tr class="highlight">
                         <td>5,000 credits</td>
                         <td>₹3,000</td>
-                        <td>Popular bot with regular users</td>
+                        <td>$33.71</td>
+                        <td>High-performing system with regular users</td>
                     </tr>
                 </tbody>
             </table>
 
             <div class="info-box warning">
-                <strong>Purchase vs. Withdrawal Rate</strong>
-                <p><strong>Buying credits:</strong> Users pay ₹0.666 to ₹1.225 per credit (depending on package)<br>
-                <strong>Withdrawing earnings:</strong> Creators/Referrers receive ₹0.60 per credit<br><br>
-                This small difference helps cover payment processing fees, transaction costs, and platform operations while keeping the model sustainable for everyone.</p>
+                <strong>⚖ Acquisition vs. Extraction Differential</strong>
+                <p><strong>Credit acquisition:</strong> Users pay ₹1.225 ($0.014) to ₹0.666 ($0.0075) per credit (package dependent)<br>
+                <strong>Credit extraction:</strong> Creators/Affiliates receive ₹0.60 ($0.0067) per credit<br><br>
+                This differential covers payment processing infrastructure, transaction overhead, and platform sustainability while maintaining optimal value distribution for all participants.</p>
             </div>
 
-            <h3 style="margin-top: 2rem; margin-bottom: 1rem; color: #1e293b;">Minimum Withdrawal</h3>
-            <p style="color: #64748b; margin-bottom: 1rem;">Contact <a href="mailto:founder@prepai.online" style="color: #667eea; text-decoration: none; font-weight: 600;">founder@prepai.online</a> from your registered email to initiate a withdrawal. Current minimum and KYC requirements will be provided during the withdrawal process.<a href="/withdraw-info">Click here for withdrawal process</a> </p>
+            <h3 style="margin-top: 2rem; margin-bottom: 1.5rem; color: #fff; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Extraction Initiation</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.7;">Contact <a href="mailto:founder@prepai.online">founder@prepai.online</a> from registered email to initiate extraction protocol. Minimum threshold and verification requirements provided during extraction process. <a href="/withdraw-info">View complete extraction protocol</a></p>
         </div>
 
         <!-- Cost Transparency Section -->
         <div class="section">
-            <h2 class="section-title">🔍 Cost Transparency: Why 50% Goes to Infrastructure</h2>
+            <h2 class="section-title">🔍 Infrastructure Cost Analysis</h2>
             
-            <p style="margin-bottom: 1.5rem; color: #64748b;">We believe in transparent pricing. Here's why infrastructure costs 5 credits (50%) per minute:</p>
+            <p style="margin-bottom: 2rem; color: var(--text-secondary); line-height: 1.7;">Complete transparency on 50% infrastructure allocation (5 credits per minute):</p>
 
             <table class="breakdown-table">
                 <thead>
                     <tr>
                         <th>Infrastructure Component</th>
-                        <th>What It Covers</th>
+                        <th>Coverage Scope</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td><strong>OpenAI Realtime API</strong></td>
-                        <td>Advanced voice AI processing, natural conversation flow</td>
+                        <td>Advanced voice AI processing, natural conversation synthesis</td>
                     </tr>
                     <tr>
-                        <td><strong>Server Hosting</strong></td>
-                        <td>High-performance servers for real-time voice streaming</td>
+                        <td><strong>Server Infrastructure</strong></td>
+                        <td>High-performance servers for real-time voice streaming protocols</td>
                     </tr>
                     <tr>
-                        <td><strong>WebSocket Infrastructure</strong></td>
-                        <td>Low-latency bidirectional communication</td>
+                        <td><strong>WebSocket Architecture</strong></td>
+                        <td>Low-latency bidirectional communication channels</td>
                     </tr>
                     <tr>
                         <td><strong>Database & Storage</strong></td>
-                        <td>Secure data storage, user accounts, bot configurations</td>
+                        <td>Secure data persistence, user accounts, system configurations</td>
                     </tr>
                     <tr>
-                        <td><strong>Bandwidth</strong></td>
-                        <td>High-quality audio streaming in real-time</td>
+                        <td><strong>Bandwidth Allocation</strong></td>
+                        <td>High-fidelity audio streaming in real-time</td>
                     </tr>
                     <tr>
-                        <td><strong>Security & Compliance</strong></td>
-                        <td>SSL, encryption, data protection, privacy compliance</td>
+                        <td><strong>Security Protocols</strong></td>
+                        <td>SSL, encryption, data protection, compliance frameworks</td>
                     </tr>
                 </tbody>
             </table>
 
             <div class="info-box">
-                <strong>Bottom Line</strong>
-                <p>AI voice technology is expensive to operate. We keep infrastructure costs at 50% to ensure high-quality, reliable service while maximizing creator earnings.</p>
+                <strong>💎 Bottom Line</strong>
+                <p>AI voice technology infrastructure demands significant operational investment. 50% infrastructure allocation ensures premium service quality while maximizing creator revenue potential.</p>
             </div>
         </div>
 
         <!-- Quick Reference Summary -->
         <div class="section">
-            <h2 class="section-title">📊 Quick Reference Summary</h2>
+            <h2 class="section-title">📊 Intelligence Summary Matrix</h2>
             
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
-                <div style="background: #f0f9ff; padding: 1.5rem; border-radius: 12px;">
-                    <h3 style="color: #1e293b; margin-bottom: 1rem;">Users</h3>
-                    <ul style="list-style: none; padding: 0;">
-                        <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">10 credits = 1 minute</li>
-                        <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">Starting cost: 10 credits</li>
-                        <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">Best rate: ₹6.6/minute</li>
-                        <li style="padding: 0.5rem 0;">Free trial: 50 credits</li>
+            <div class="summary-grid">
+                <div class="summary-box" style="background: rgba(102, 126, 234, 0.1);">
+                    <h3>👥 Users</h3>
+                    <ul>
+                        <li>10 credits = 1 minute</li>
+                        <li>Initialization: 10 credits</li>
+                        <li>Optimal rate: ₹6.66 ($0.07)/min</li>
+                        <li>Free trial: 50 credits</li>
                     </ul>
                 </div>
 
-                <div style="background: #f0fdf4; padding: 1.5rem; border-radius: 12px;">
-                    <h3 style="color: #1e293b; margin-bottom: 1rem;">Creators</h3>
-                    <ul style="list-style: none; padding: 0;">
-                        <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">Direct: 3 credits/min (30%)</li>
-                        <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">Referred: 2 credits/min (20%)</li>
-                        <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">Withdrawal: ₹0.60 per credit</li>
-                        <li style="padding: 0.5rem 0;">Creation cost: 10 credits</li>
+                <div class="summary-box" style="background: rgba(34, 197, 94, 0.1);">
+                    <h3>🎨 Creators</h3>
+                    <ul>
+                        <li>Direct: 3 credits/min (30%)</li>
+                        <li>Affiliate: 2 credits/min (20%)</li>
+                        <li>Extraction: ₹0.60 ($0.0067)/credit</li>
+                        <li>Deployment: 10 credits</li>
                     </ul>
                 </div>
 
-                <div style="background: #fef3c7; padding: 1.5rem; border-radius: 12px;">
-                    <h3 style="color: #1e293b; margin-bottom: 1rem;">Referrers</h3>
-                    <ul style="list-style: none; padding: 0;">
-                        <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">Commission: 1 credit/min (10%)</li>
-                        <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">Withdrawal: ₹0.60 per credit</li>
-                        <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">No upfront cost</li>
-                        <li style="padding: 0.5rem 0;">Unlimited bots to promote</li>
+                <div class="summary-box" style="background: rgba(245, 158, 11, 0.1);">
+                    <h3>🔗 Affiliates</h3>
+                    <ul>
+                        <li>Commission: 1 credit/min (10%)</li>
+                        <li>Extraction: ₹0.60 ($0.0067)/credit</li>
+                        <li>Zero deployment cost</li>
+                        <li>Unlimited promotion scope</li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

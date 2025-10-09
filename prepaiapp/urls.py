@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 
-urlpatterns = [
+urlpatterns = [ 
     path('api/bots/bulk-create/', views.BulkCreateBotsAPIView.as_view(), name='bulk_create_bots'),
     path("", views.HomePage.as_view(), name="entry"),
     path("early-access/", views.EarlyAccessSignupView.as_view(), name="early_access"),
@@ -31,7 +31,7 @@ urlpatterns = [
     path("my-roleplay-bots/", views.MyRolePlayBotView.as_view(), name="my-roleplay-bots"),
     path("edit-roleplay-bot/<uuid:bot_id>/", views.EditRolePlayBotView.as_view(), name="edit-roleplay-bot"),
     path("share-roleplay-bot/<uuid:bot_id>/", views.ShareRolePlayBotView.as_view(), name="share-roleplay-bot"),
-    path("roleplay/share/<uuid:share_id>/", views.ShareRolePlayStartView.as_view(), name="share-roleplay-bot-public"),
+    path("share/<uuid:share_id>/", views.ShareRolePlayStartView.as_view(), name="share-roleplay-bot-public"),
     path("delete-roleplay-bot/<uuid:bot_id>/", views.DeleteRolePlayBotView.as_view(), name="delete-roleplay-bot"),
     path("my-earnings/", views.MyEarningsView.as_view(), name="my-earnings"),
     
@@ -61,12 +61,12 @@ urlpatterns = [
         name="interview_results",
     ),
     path(
-        "roleplay/start/<uuid:bot_id>/",
+        "start/<uuid:bot_id>/",
         views.RolePlayStartView.as_view(),
         name="start_roleplay",
     ),
     path(
-        "roleplay/session/<uuid:session_id>/",
+        "session/<uuid:session_id>/",
         views.RolePlaySessionView.as_view(),
         name="roleplay_session",
     ),

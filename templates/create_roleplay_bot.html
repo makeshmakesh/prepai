@@ -1,89 +1,99 @@
 {% extends 'base.html' %}
 
-{% block title %}Create AI Roleplay Bot | PrepAI{% endblock %}
+{% block title %}Create Neural Bot | PrepAI RolePlay{% endblock %}
 
 {% block extra_css %}
 <style>
     /* Override base background for this page */
-    /* File Upload Styling */
-.file-upload-wrapper {
-    position: relative;
-}
-    .form-group p{
-        color : blue;
-    }
-
-.form-control-file {
-    border: 2px dashed #e2e8f0;
-    border-radius: 12px;
-    padding: 2rem;
-    background: #f8fafc;
-    cursor: pointer;
-    transition: all 0.2s;
-    width: 100%;
-    font-size: 1rem;
-}
-
-.form-control-file:hover {
-    border-color: #2563eb;
-    background: #f1f5f9;
-}
-
-.image-preview {
-    position: relative;
-    margin-top: 1rem;
-    border-radius: 12px;
-    overflow: hidden;
-    max-width: 300px;
-}
-
-.image-preview img {
-    width: 100%;
-    height: auto;
-    display: block;
-    border-radius: 12px;
-}
-
-.remove-image {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    background: rgba(220, 38, 38, 0.9);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    font-size: 24px;
-    line-height: 1;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.remove-image:hover {
-    background: #dc2626;
-    transform: scale(1.1);
-}
-
-@media (max-width: 768px) {
-    .form-control-file {
-        padding: 1.5rem 1rem;
-        font-size: 16px;
-    }
-}
     body {
-        background: #f8fafc !important;
+        background: var(--bg-dark) !important;
+    }
+
+    /* File Upload Styling */
+    .file-upload-wrapper {
+        position: relative;
+    }
+
+    .form-group p {
+        color: var(--text-secondary);
+    }
+
+    .form-control-file {
+        border: 2px dashed var(--border-color);
+        border-radius: 12px;
+        padding: 2rem;
+        background: rgba(30, 27, 75, 0.3);
+        cursor: pointer;
+        transition: all 0.3s;
+        width: 100%;
+        font-size: 1rem;
+        color: var(--text-primary);
+    }
+
+    .form-control-file:hover {
+        border-color: #667eea;
+        background: rgba(102, 126, 234, 0.1);
+    }
+
+    .image-preview {
+        position: relative;
+        margin-top: 1rem;
+        border-radius: 12px;
+        overflow: hidden;
+        max-width: 300px;
+        border: 1px solid var(--border-color);
+    }
+
+    .image-preview img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 12px;
+    }
+
+    .remove-image {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: rgba(239, 68, 68, 0.9);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        font-size: 24px;
+        line-height: 1;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .remove-image:hover {
+        background: #dc2626;
+        transform: scale(1.1);
     }
 
     /* Clean, mobile-friendly form */
     .form-container {
         max-width: 800px;
         margin: 2rem auto;
-        background: white;
+        background: rgba(30, 27, 75, 0.5);
+        backdrop-filter: blur(20px);
         border-radius: 16px;
         padding: 2rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        border-top: 4px solid #2563eb;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        border: 1px solid var(--border-color);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .form-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--primary-gradient);
     }
 
     .form-header {
@@ -93,15 +103,35 @@
 
     .form-header h1 {
         font-size: clamp(1.75rem, 4vw, 2.5rem);
-        font-weight: 700;
-        color: #1e293b;
+        font-weight: 900;
+        background: linear-gradient(135deg, #fff 0%, #667eea 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
     }
 
     .form-header p {
-        color: #64748b;
+        color: var(--text-secondary);
         font-size: 1rem;
         line-height: 1.5;
+    }
+
+    /* Template Link */
+    .template-link {
+        display: inline-block;
+        color: #667eea;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .template-link:hover {
+        color: #764ba2;
+        text-decoration: none;
     }
 
     /* Form Groups */
@@ -111,7 +141,7 @@
 
     .form-group label {
         font-weight: 600;
-        color: #1e293b;
+        color: var(--text-primary);
         margin-bottom: 0.5rem;
         font-size: 1rem;
         display: block;
@@ -120,54 +150,71 @@
     /* Form Controls - Mobile Optimized */
     .form-control {
         border-radius: 15px;
-        border: 2px solid #e2e8f0;
-        padding: 1 rem 1.5rem;
-        font-size: 1rem; /* Prevents iOS zoom */
+        border: 2px solid var(--border-color);
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
         transition: all 0.2s ease;
-        background: white;
+        background: rgba(30, 27, 75, 0.5);
         width: 100%;
-
+        color: var(--text-primary);
     }
 
     .form-control:focus {
-        border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        background: white;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        background: rgba(30, 27, 75, 0.7);
         outline: none;
+        color: var(--text-primary);
     }
 
     .form-control::placeholder {
-        color: #94a3b8;
+        color: var(--text-muted);
     }
 
-select.form-control {
-    background-color: white;
-    background-image: url(...);
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 16px;
-    padding-right: 3rem;
-    padding-left: 1rem;
-    padding-bottom: 0.1rem;
-    cursor: pointer;
-    height: 18px;
-    line-height: 1.5;
-    color: #1e293b;
-    font-weight: 500;
-}
+    select.form-control {
+        background-color: rgba(30, 27, 75, 0.5);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23667eea' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 16px;
+        padding-right: 3rem;
+        cursor: pointer;
+        height: auto;
+        color: #e2e8f0 !important;
+        font-weight: 500;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+    
+    select.form-control:invalid,
+    select.form-control option[value=""][disabled] {
+        color: #64748b !important;
+    }
 
     select.form-control option {
-        color: #1e293b;
-        background: white;
+        color: #1e293b !important;
+        background: white !important;
         padding: 0.5rem;
     }
+    
+    select.form-control option:checked {
+        background: #667eea !important;
+        color: white !important;
+    }
 
-select.form-control:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    outline: none;
-    color: #111827; /* slightly darker for focus clarity */
-}
+    select.form-control optgroup {
+        color: #1e293b !important;
+        background: #f8fafc !important;
+        font-weight: 700;
+    }
+
+    select.form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        outline: none;
+        color: #e2e8f0 !important;
+    }
 
     /* Textarea */
     textarea.form-control {
@@ -187,7 +234,7 @@ select.form-control:focus {
     /* Help Text */
     .help-text {
         font-size: 0.875rem;
-        color: #475569;
+        color: var(--text-muted);
         margin-top: 0.5rem;
         line-height: 1.4;
     }
@@ -197,23 +244,23 @@ select.form-control:focus {
         display: flex;
         align-items: center;
         gap: 0.75rem;
-        background: #f8fafc;
+        background: rgba(30, 27, 75, 0.5);
         padding: 1rem;
         border-radius: 12px;
-        border: 2px solid #e2e8f0;
+        border: 2px solid var(--border-color);
         cursor: pointer;
         transition: all 0.2s;
     }
 
     .checkbox-group:hover {
-        background: #f1f5f9;
-        border-color: #cbd5e1;
+        background: rgba(102, 126, 234, 0.2);
+        border-color: #667eea;
     }
 
     .checkbox-group input[type="checkbox"] {
         width: 20px;
         height: 20px;
-        accent-color: #2563eb;
+        accent-color: #667eea;
         cursor: pointer;
         flex-shrink: 0;
     }
@@ -224,13 +271,13 @@ select.form-control:focus {
         cursor: pointer;
         flex: 1;
         font-size: 0.95rem;
-        color: #1e293b;
+        color: var(--text-primary);
     }
 
     /* Character Counter */
     .character-count {
         font-size: 0.875rem;
-        color: #475569;
+        color: var(--text-muted);
         text-align: right;
         margin-top: 0.5rem;
         font-weight: 500;
@@ -245,7 +292,7 @@ select.form-control:focus {
 
     .btn-create {
         flex: 1;
-        background: #2563eb;
+        background: var(--primary-gradient);
         color: white;
         padding: 1rem 2rem;
         font-size: 1rem;
@@ -253,32 +300,50 @@ select.form-control:focus {
         border-radius: 12px;
         border: none;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-create::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .btn-create:hover::before {
+        left: 100%;
     }
 
     .btn-create:hover {
-        background: #1d4ed8;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
     }
 
     .btn-create:disabled {
-        background: #cbd5e1;
+        background: rgba(100, 116, 139, 0.5);
         cursor: not-allowed;
         transform: none;
+        box-shadow: none;
     }
 
     .btn-cancel {
-        background: white;
-        color: #64748b;
+        background: rgba(30, 27, 75, 0.5);
+        color: var(--text-secondary);
         padding: 1rem 2rem;
         font-size: 1rem;
         font-weight: 600;
-        border: 2px solid #e2e8f0;
+        border: 2px solid var(--border-color);
         border-radius: 12px;
         cursor: pointer;
         transition: all 0.2s ease;
@@ -290,9 +355,9 @@ select.form-control:focus {
     }
 
     .btn-cancel:hover {
-        background: #f8fafc;
-        border-color: #cbd5e1;
-        color: #475569;
+        background: rgba(102, 126, 234, 0.2);
+        border-color: #667eea;
+        color: var(--text-primary);
         text-decoration: none;
     }
 
@@ -300,10 +365,10 @@ select.form-control:focus {
     .section-header {
         font-size: 1.125rem;
         font-weight: 700;
-        color: #1e293b;
+        color: var(--text-primary);
         margin: 2rem 0 1rem 0;
         padding-bottom: 0.5rem;
-        border-bottom: 2px solid #f1f5f9;
+        border-bottom: 2px solid var(--border-color);
     }
 
     /* Mobile Responsive */
@@ -336,10 +401,9 @@ select.form-control:focus {
         }
 
         select.form-control {
-            height: 52px;
-            font-size: 16px;
+            height: auto;
             padding: 1rem;
-            padding-bottom: 0.1rem;
+            font-size: 16px;
             background-position: right 0.75rem center;
         }
 
@@ -366,6 +430,11 @@ select.form-control:focus {
         .checkbox-group {
             padding: 0.875rem;
         }
+
+        .form-control-file {
+            padding: 1.5rem 1rem;
+            font-size: 16px;
+        }
     }
 
     @media (max-width: 480px) {
@@ -384,9 +453,7 @@ select.form-control:focus {
         }
 
         select.form-control {
-            height: 50px;
             padding: 0.875rem;
-            padding-bottom: 0.1rem;
             background-size: 14px;
         }
 
@@ -430,196 +497,195 @@ select.form-control:focus {
 {% endblock %}
 
 {% block content %}
-<div style="background: #f8fafc; min-height: 100vh; padding: 2rem 0;">
+<div style="background: var(--bg-dark); min-height: 100vh; padding: 2rem 0;">
     <div class="form-container">
-    <div class="form-header">
-        <h1>Create AI Roleplay Bot</h1>
-        <p>Design a custom AI companion with unique personality and conversation style</p>
-    </div>
-
-<form method="post" class="roleplay-bot-form" id="botForm" enctype="multipart/form-data">
-        {% csrf_token %}
-        
-        <!-- Basic Information -->
-        <div class="form-group">
-    <label for="category">Category</label>
-    <select id="category" name="category" class="form-control">
-        <option value="" disabled selected>Select a category...</option>
-        
-        <optgroup label="Professional & Career">
-            <option value="interview_prep">Interview Preparation</option>
-            <option value="professional_training">Professional Training</option>
-            <option value="customer_service">Customer Service & Sales</option>
-            <option value="business">Business & Entrepreneurship</option>
-            <option value="negotiation">Negotiation & Conflict Resolution</option>
-            <option value="mentorship">Mentorship & Career Coaching</option>
-        </optgroup>
-        
-        <optgroup label="Education & Learning">
-            <option value="language_learning">Language Learning</option>
-            <option value="education">Education & Tutoring</option>
-            <option value="exam_prep">Exam Preparation</option>
-            <option value="technical_skills">Technical Skills & Coding</option>
-        </optgroup>
-        
-        <optgroup label="Personal Development">
-            <option value="personal_development">Personal Development</option>
-            <option value="public_speaking">Public Speaking & Communication</option>
-            <option value="dating_social">Dating & Social Skills</option>
-            <option value="fitness_wellness">Fitness & Wellness</option>
-        </optgroup>
-        
-        <optgroup label="Healthcare & Professional Services">
-            <option value="healthcare">Healthcare & Medical</option>
-            <option value="therapy_counseling">Therapy & Counseling Practice</option>
-            <option value="legal">Legal & Compliance</option>
-        </optgroup>
-        
-        <optgroup label="Entertainment & Fantasy">
-            <option value="fantasy">Fantasy & Adventure</option>
-            <option value="sci_fi">Science Fiction</option>
-            <option value="anime_manga">Anime & Manga Characters</option>
-            <option value="dnd_rpg">D&D & Tabletop RPG</option>
-            <option value="gaming">Gaming & Esports</option>
-            <option value="movie_tv">Movies & TV Shows</option>
-            <option value="celebrity">Celebrity & Famous Personalities</option>
-        </optgroup>
-        
-        <optgroup label="Creative & Storytelling">
-            <option value="historical">Historical Figures & Periods</option>
-            <option value="mythology">Mythology & Folklore</option>
-            <option value="storytelling">Interactive Storytelling</option>
-            <option value="creative_writing">Creative Writing & Brainstorming</option>
-        </optgroup>
-        
-        <option value="other">Other</option>
-    </select>
-    <div class="help-text">Choose the category that best fits your bot's purpose</div>
-</div>
-        <div class="form-group">
-            <label for="name">Bot Name *</label>
-            <input type="text" 
-                   id="name" 
-                   name="name" 
-                   class="form-control" 
-                   placeholder="e.g., Interview Coach Sarah"
-                   required
-                   maxlength="200">
-            <div class="help-text">Choose a memorable name for your bot</div>
+        <div class="form-header">
+            <h1>Create Neural Bot</h1>
+            <p>Engineer a custom AI system with advanced personality and conversation intelligence</p>
         </div>
 
-        <div class="form-group">
-            <label for="voice">Voice Selection</label>
-            <select id="voice" name="voice" class="form-control">
-                <option value="" disabled selected>Select a voice...</option>
-        <option value="alloy">Alloy (Male)</option>
-        <option value="ash">Ash (Male)</option>
-        <option value="ballad">Ballad (Female)</option>
-        <option value="coral">Coral (Female)</option>
-        <option value="echo">Echo (Male)</option>
-        <option value="sage">Sage (Male)</option>
-        <option value="shimmer">Shimmer (Female)</option>
-        <option value="verse">Verse (Male)</option>
-        <option value="marin">Marin (Female)</option>
-        <option value="cedar">Cedar (Male)</option>
-            </select>
-            <div class="help-text">Voice used during roleplay sessions</div>
-        </div>
-
-        <div class="form-group">
-            <label for="description">Description</label>
-                <a href="{% url 'bot-template' %}" target="_blank" class="template-link">
-        Need inspiration? View Public Speaking Coach Template →
-    </a>
-            <textarea id="description" 
-                      name="description" 
-                      class="form-control" 
-                      placeholder="Describe what your bot does and who it helps..."
-                      rows="4"></textarea>
-            <div class="help-text">Explain your bot's purpose and target audience</div>
-            <div class="templates-section" style="margin-bottom: 2rem;">
-
-</div>
-        </div>
-
-<div class="form-group">
-    <label for="avatar_image">Avatar Image</label>
-    <div class="file-upload-wrapper">
-        <input type="file" 
-               id="avatar_image" 
-               name="avatar_image" 
-               class="form-control-file" 
-               accept="image/jpeg,image/png,image/jpg,image/webp">
-        <div class="image-preview" id="imagePreview" style="display: none;">
-            <img id="previewImg" src="" alt="Avatar preview">
-            <button type="button" class="remove-image" onclick="removeImage()">×</button>
-        </div>
-    </div>
-    <div class="help-text">Upload an avatar image (JPEG, PNG, or WebP, max 5MB)</div>
-</div>
-
-        <!-- System Prompt -->
-        <div class="section-header">AI Instructions</div>
-        
-        <div class="form-group">
-            <label for="system_prompt">System Prompt *</label>
-                            <a href="{% url 'bot-template' %}" target="_blank" class="template-link">
-        Need inspiration? View Public Speaking Coach Template →
-    </a>
-            <textarea id="system_prompt" 
-                      name="system_prompt" 
-                      class="form-control system-prompt-textarea" 
-                      placeholder="You are a professional interview coach. Your role is to help users practice job interviews..."
-                      required></textarea>
-            <div class="character-count" id="char-count">0 / 15,000 characters</div>
-            <div class="help-text">Define your bot's personality, expertise, and behavior</div>
-        </div>
-
-        <!-- Settings -->
-        <div class="section-header">Settings</div>
-
-        <div class="form-group">
-            <div class="checkbox-group" onclick="toggleCheckbox('is_active')">
-                <input type="checkbox" 
-                       id="is_active" 
-                       name="is_active" 
-                       checked>
-                <label for="is_active">
-                    Make bot active and available for use
-                </label>
+        <form method="post" class="roleplay-bot-form" id="botForm" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Basic Information -->
+            <div class="form-group">
+                <label for="category">Neural Category</label>
+                <select id="category" name="category" class="form-control">
+                    <option value="" disabled selected>Select a category...</option>
+                    
+                    <optgroup label="Professional & Career">
+                        <option value="interview_prep">Interview Preparation</option>
+                        <option value="professional_training">Professional Training</option>
+                        <option value="customer_service">Customer Service & Sales</option>
+                        <option value="business">Business & Entrepreneurship</option>
+                        <option value="negotiation">Negotiation & Conflict Resolution</option>
+                        <option value="mentorship">Mentorship & Career Coaching</option>
+                    </optgroup>
+                    
+                    <optgroup label="Education & Learning">
+                        <option value="language_learning">Language Learning</option>
+                        <option value="education">Education & Tutoring</option>
+                        <option value="exam_prep">Exam Preparation</option>
+                        <option value="technical_skills">Technical Skills & Coding</option>
+                    </optgroup>
+                    
+                    <optgroup label="Personal Development">
+                        <option value="personal_development">Personal Development</option>
+                        <option value="public_speaking">Public Speaking & Communication</option>
+                        <option value="dating_social">Dating & Social Skills</option>
+                        <option value="fitness_wellness">Fitness & Wellness</option>
+                    </optgroup>
+                    
+                    <optgroup label="Healthcare & Professional Services">
+                        <option value="healthcare">Healthcare & Medical</option>
+                        <option value="therapy_counseling">Therapy & Counseling Practice</option>
+                        <option value="legal">Legal & Compliance</option>
+                    </optgroup>
+                    
+                    <optgroup label="Entertainment & Fantasy">
+                        <option value="fantasy">Fantasy & Adventure</option>
+                        <option value="sci_fi">Science Fiction</option>
+                        <option value="anime_manga">Anime & Manga Characters</option>
+                        <option value="dnd_rpg">D&D & Tabletop RPG</option>
+                        <option value="gaming">Gaming & Esports</option>
+                        <option value="movie_tv">Movies & TV Shows</option>
+                        <option value="celebrity">Celebrity & Famous Personalities</option>
+                    </optgroup>
+                    
+                    <optgroup label="Creative & Storytelling">
+                        <option value="historical">Historical Figures & Periods</option>
+                        <option value="mythology">Mythology & Folklore</option>
+                        <option value="storytelling">Interactive Storytelling</option>
+                        <option value="creative_writing">Creative Writing & Brainstorming</option>
+                    </optgroup>
+                    
+                    <option value="other">Other</option>
+                </select>
+                <div class="help-text">Select the neural category that defines your bot's purpose</div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <div class="checkbox-group" onclick="toggleCheckbox('is_public')">
-                <input type="checkbox" 
-                       id="is_public" 
-                       name="is_public" 
-                       checked>
-                <label for="is_public">
-                    Make bot publicly visible in marketplace
-                </label>
+            <div class="form-group">
+                <label for="name">Bot Designation *</label>
+                <input type="text" 
+                       id="name" 
+                       name="name" 
+                       class="form-control" 
+                       placeholder="e.g., Interview Coach Neural System"
+                       required
+                       maxlength="200">
+                <div class="help-text">Define a unique identifier for your neural bot</div>
             </div>
-        </div>
 
-        <!-- Form Actions -->
-        <div class="form-actions">
-            <button type="submit" class="btn-create" id="submitBtn">
-                Create Bot
-            </button>
-            <a href="{% url 'marketplace' %}" class="btn-cancel">
-                Cancel
-            </a>
-        </div>
-    </form>
-</div>
+            <div class="form-group">
+                <label for="voice">Voice Synthesis Module</label>
+                <select id="voice" name="voice" class="form-control">
+                    <option value="" disabled selected>Select voice module...</option>
+                    <option value="alloy">Alloy (Male)</option>
+                    <option value="ash">Ash (Male)</option>
+                    <option value="ballad">Ballad (Female)</option>
+                    <option value="coral">Coral (Female)</option>
+                    <option value="echo">Echo (Male)</option>
+                    <option value="sage">Sage (Male)</option>
+                    <option value="shimmer">Shimmer (Female)</option>
+                    <option value="verse">Verse (Male)</option>
+                    <option value="marin">Marin (Female)</option>
+                    <option value="cedar">Cedar (Male)</option>
+                </select>
+                <div class="help-text">Voice synthesis engine for neural interactions</div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">System Description
+                    <a href="{% url 'bot-template' %}" target="_blank" class="template-link">
+                        View Neural Template →
+                    </a>
+                </label>
+                <textarea id="description" 
+                          name="description" 
+                          class="form-control" 
+                          placeholder="Describe your bot's capabilities and target use cases..."
+                          rows="4"></textarea>
+                <div class="help-text">Define system purpose and operational parameters</div>
+            </div>
+
+            <div class="form-group">
+                <label for="avatar_image">Avatar Interface</label>
+                <div class="file-upload-wrapper">
+                    <input type="file" 
+                           id="avatar_image" 
+                           name="avatar_image" 
+                           class="form-control-file" 
+                           accept="image/jpeg,image/png,image/jpg,image/webp">
+                    <div class="image-preview" id="imagePreview" style="display: none;">
+                        <img id="previewImg" src="" alt="Avatar preview">
+                        <button type="button" class="remove-image" onclick="removeImage()">×</button>
+                    </div>
+                </div>
+                <div class="help-text">Upload visual representation (JPEG, PNG, WebP, max 5MB)</div>
+            </div>
+
+            <!-- System Prompt -->
+            <div class="section-header">Neural Instructions</div>
+            
+            <div class="form-group">
+                <label for="system_prompt">System Prompt *
+                    <a href="{% url 'bot-template' %}" target="_blank" class="template-link">
+                        View Neural Template →
+                    </a>
+                </label>
+                <textarea id="system_prompt" 
+                          name="system_prompt" 
+                          class="form-control system-prompt-textarea" 
+                          placeholder="You are an advanced AI system designed to..."
+                          required></textarea>
+                <div class="character-count" id="char-count">0 / 15,000 characters</div>
+                <div class="help-text">Define neural architecture, behavioral patterns, and operational protocols</div>
+            </div>
+
+            <!-- Settings -->
+            <div class="section-header">Deployment Configuration</div>
+
+            <div class="form-group">
+                <div class="checkbox-group" onclick="toggleCheckbox('is_active')">
+                    <input type="checkbox" 
+                           id="is_active" 
+                           name="is_active" 
+                           checked>
+                    <label for="is_active">
+                        Activate neural system for immediate deployment
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-group" onclick="toggleCheckbox('is_public')">
+                    <input type="checkbox" 
+                           id="is_public" 
+                           name="is_public" 
+                           checked>
+                    <label for="is_public">
+                        Publish to public marketplace network
+                    </label>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="submit" class="btn-create" id="submitBtn">
+                    Initialize Neural Bot
+                </button>
+                <a href="{% url 'marketplace' %}" class="btn-cancel">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-
-    // Image preview functionality
+// Image preview functionality
 $('#avatar_image').on('change', function(e) {
     const file = e.target.files[0];
     if (file) {
@@ -653,6 +719,7 @@ function removeImage() {
     $('#imagePreview').hide();
     $('#previewImg').attr('src', '');
 }
+
 $(document).ready(function() {
     const systemPrompt = $('#system_prompt');
     const charCount = $('#char-count');
@@ -685,28 +752,28 @@ $(document).ready(function() {
 
         if (!name) {
             e.preventDefault();
-            alert('Bot name is required.');
+            alert('Bot designation is required.');
             $('#name').focus();
             return false;
         }
 
         if (!prompt) {
             e.preventDefault();
-            alert('System prompt is required.');
+            alert('Neural instructions are required.');
             systemPrompt.focus();
             return false;
         }
 
         if (prompt.length < 50) {
             e.preventDefault();
-            alert('System prompt should be at least 50 characters for an effective bot.');
+            alert('Neural instructions should be at least 50 characters for effective deployment.');
             systemPrompt.focus();
             return false;
         }
 
         if (prompt.length > 15000) {
             e.preventDefault();
-            alert('System prompt is too long. Please keep it under 15,000 characters.');
+            alert('Neural instructions exceed maximum length. Please keep under 15,000 characters.');
             systemPrompt.focus();
             return false;
         }

@@ -1581,7 +1581,7 @@ class SignupView(View):
         messages.success(request, "Signup successful!")
         if next_url and next_url != '/login/':
                 return redirect(next_url)
-        return redirect("dashboard")  # Redirect to dashboard
+        return redirect("voice_roleplay")  # Redirect to dashboard
 
 
 class LoginView(View):
@@ -1632,7 +1632,7 @@ class LoginView(View):
                     pass
             if next_url and next_url != '/login/':  # Avoid redirect loops
                 return redirect(next_url)
-            return redirect("dashboard")  # Redirect to dashboard
+            return redirect("voice_roleplay")  # Redirect to dashboard
         else:
             messages.error(request, "Invalid username or password.")
             return render(request, "login.html")

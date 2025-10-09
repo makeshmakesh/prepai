@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'prepaiapp',
-    'channels'
+    'channels',
+    'main'
 ]
 
 CSRF_TRUSTED_ORIGINS = [

@@ -1,79 +1,107 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Purchase Credits - PrepAI{% endblock %}
+{% block title %}Credit Acquisition - PrepAI{% endblock %}
 
 {% block extra_css %}
 <style>
-    /* Professional Purchase Credits Styles */
+    /* Override base content layout */
+    .content {
+        flex: 0 0 auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+    }
+
+    /* Purchase Credits Styles */
     .purchase-page {
-        --primary-color: #2563eb;
-        --secondary-color: #f8fafc;
-        --accent-color: #0ea5e9;
-        --success-color: #10b981;
-        --warning-color: #f59e0b;
-        --text-primary: #1e293b;
-        --text-secondary: #64748b;
-        --border-color: #e2e8f0;
-        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-        --radius-lg: 16px;
-        --radius-xl: 20px;
+        min-height: 100vh;
+        position: relative;
+        padding: 0;
     }
 
     .purchase-container {
-        max-width: 1200px;
+        max-width: 1400px;
         margin: 0 auto;
-        padding: 2rem 1rem;
+        padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 3vw, 2rem);
+        position: relative;
+        z-index: 2;
     }
 
     .purchase-header {
         text-align: center;
-        margin-bottom: 4rem;
+        margin-bottom: clamp(3rem, 6vw, 5rem);
+        animation: fadeInUp 0.8s ease 0.2s both;
     }
 
     .purchase-title {
-        font-size: clamp(2rem, 4vw, 3.5rem);
-        font-weight: 700;
-        color: var(--text-primary);
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        font-weight: 900;
         margin-bottom: 1rem;
-        letter-spacing: -0.025em;
+        background: linear-gradient(135deg, #fff 0%, #667eea 50%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
     }
 
     .purchase-subtitle {
-        font-size: 1.25rem;
+        font-size: clamp(1.1rem, 3vw, 1.4rem);
         color: var(--text-secondary);
         margin-bottom: 2rem;
-        max-width: 600px;
+        line-height: 1.6;
+        max-width: 700px;
         margin-left: auto;
         margin-right: auto;
-        line-height: 1.6;
     }
 
     .current-balance {
-        background: white;
-        border: 2px solid #e2e8f0;
+        background: rgba(30, 27, 75, 0.5);
+        backdrop-filter: blur(20px);
+        border: 2px solid var(--border-color);
         padding: 1rem 2rem;
         border-radius: 25px;
         display: inline-flex;
         align-items: center;
         gap: 0.75rem;
         font-weight: 600;
-        color: #1e293b;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        color: var(--text-primary);
+        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        font-size: clamp(1rem, 2vw, 1.2rem);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .current-balance::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+        animation: rotate 10s linear infinite;
+    }
+
+    @keyframes rotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
 
     /* Free Trial Section */
     .free-trial-section {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        border-radius: var(--radius-xl);
-        padding: 2rem;
-        margin-bottom: 3rem;
-        color: white;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 20px;
+        padding: clamp(2rem, 4vw, 3rem);
+        margin-bottom: clamp(3rem, 6vw, 5rem);
         text-align: center;
         position: relative;
         overflow: hidden;
+        animation: fadeInUp 0.8s ease 0.4s both;
+        box-shadow: 0 20px 60px rgba(16, 185, 129, 0.2);
     }
 
     .free-trial-section::before {
@@ -83,8 +111,8 @@
         right: -50%;
         width: 100%;
         height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-        transform: rotate(45deg);
+        background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+        animation: float 15s infinite ease-in-out;
     }
 
     .free-trial-content {
@@ -93,382 +121,351 @@
     }
 
     .free-trial-title {
-        font-size: 1.75rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
+        font-size: clamp(1.5rem, 4vw, 2.2rem);
+        font-weight: 800;
+        margin-bottom: 1rem;
+        color: #fff;
+        text-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
     }
 
     .free-trial-description {
-        font-size: 1.125rem;
-        opacity: 0.9;
-        margin-bottom: 1.5rem;
+        font-size: clamp(1rem, 2vw, 1.2rem);
+        color: var(--text-primary);
+        margin-bottom: 2rem;
+        line-height: 1.7;
     }
 
     .free-trial-benefits {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .free-trial-benefit {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.95rem;
-    }
-
-    .btn-start-trial {
-        background: white;
-        color: black;
-        padding: 0.875rem 2rem;
-        border-radius: var(--radius-lg);
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: all 0.2s ease;
-        border: none;
-        cursor: pointer;
-        font-size: 1rem;
-    }
-
-    .btn-start-trial:hover {
-        background: #f9fafb;
-        transform: translateY(-1px);
-        box-shadow: var(--shadow-md);
-        color: var(--success-color);
-        text-decoration: none;
-    }
-
-    /* Credit Plans */
-    .plans-section {
-        margin-bottom: 3rem;
-    }
-
-    .section-title {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #1e293b;
-        text-align: center;
-        margin-bottom: 0.5rem;
-    }
-
-    .section-subtitle {
-        color: #64748b;
-        text-align: center;
-        margin-bottom: 3rem;
-        font-size: 1.125rem;
-    }
-
-    .credit-plans {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 2rem;
-    }
-
-    .plan-card {
-        background: white;
-        border: 2px solid #e2e8f0;
-        border-radius: 20px;
-        padding: 2rem;
-        position: relative;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
-
-    .plan-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-        border-color: #2563eb;
-    }
-
-    .plan-card.popular {
-        border-color: #2563eb;
-        position: relative;
-    }
-
-    .plan-card.popular::before {
-        content: 'Most Popular';
-        position: absolute;
-        top: -1px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #2563eb;
-        color: white;
-        padding: 0.5rem 1.5rem;
-        border-radius: 0 0 16px 16px;
-        font-size: 0.875rem;
-        font-weight: 600;
-    }
-
-    .plan-card.best-value {
-        border-color: #f59e0b;
-        position: relative;
-    }
-
-    .plan-card.best-value::before {
-        content: 'Best Value';
-        position: absolute;
-        top: -1px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #f59e0b;
-        color: white;
-        padding: 0.5rem 1.5rem;
-        border-radius: 0 0 16px 16px;
-        font-size: 0.875rem;
-        font-weight: 600;
-    }
-
-    .plan-header {
-        text-align: center;
-        margin-bottom: 1.5rem;
-    }
-
-    .plan-name {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #1e293b;
-        margin-bottom: 0.5rem;
-    }
-
-    .plan-price {
-        font-size: 3rem;
-        font-weight: 800;
-        color: #1e293b;
-        margin-bottom: 0.25rem;
-    }
-
-    .plan-price-currency {
-        font-size: 1.5rem;
-        font-weight: 600;
-        vertical-align: top;
-    }
-
-    .plan-billing {
-        color: #64748b;
-        font-size: 0.875rem;
-        margin-bottom: 1rem;
-    }
-
-    .plan-credits {
-        background: var(--secondary-color);
-        border-radius: var(--radius-lg);
-        padding: 1rem;
-        margin-bottom: 1.5rem;
-        text-align: center;
-    }
-
-    .plan-credits-amount {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: #1e293b;
-        margin-bottom: 0.25rem;
-    }
-
-    .plan-credits-time {
-        color: #64748b;
-        font-size: 0.875rem;
-    }
-
-    .plan-rate {
-        text-align: center;
-        margin-bottom: 1.5rem;
-    }
-
-    .plan-rate-value {
-        font-size: 1.125rem;
-        font-weight: 600;
-        color: #2563eb;
-    }
-
-    .plan-rate-label {
-        color: #64748b;
-        font-size: 0.875rem;
-    }
-
-    .plan-features {
-        list-style: none;
-        padding: 0;
-        margin: 0 0 2rem 0;
-    }
-
-    .plan-features li {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.5rem 0;
-        color: #64748b;
-        font-size: 0.925rem;
-    }
-
-    .plan-features li::before {
-        content: '✓';
-        color: #10b981;
-        font-weight: 600;
-        font-size: 1rem;
-    }
-
-    .btn-select-plan {
-        width: 100%;
-        background: black;
-        color: white;
-        padding: 0.875rem 1.5rem;
-        border-radius: var(--radius-lg);
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        transition: all 0.2s ease;
-        border: none;
-        cursor: pointer;
-        font-size: 1rem;
-    }
-
-    .btn-select-plan:hover {
-        background: #1d4ed8;
-        transform: translateY(-1px);
-        box-shadow: var(--shadow-md);
-        color: white;
-        text-decoration: none;
-    }
-
-    /* Enterprise Section */
-    .enterprise-section {
-        background: white;
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-xl);
-        padding: 3rem 2rem;
-        text-align: center;
-        box-shadow: var(--shadow-sm);
-    }
-
-    .enterprise-title {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #1e293b;
-        margin-bottom: 1rem;
-    }
-
-    .enterprise-description {
-        color: #64748b;
-        font-size: 1.125rem;
-        margin-bottom: 2rem;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .enterprise-features {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 1.5rem;
         margin-bottom: 2rem;
     }
 
-    .enterprise-feature {
+    .free-trial-benefit {
         display: flex;
         align-items: center;
         gap: 0.75rem;
-        color: #64748b;
+        font-size: clamp(0.95rem, 2vw, 1.05rem);
+        color: var(--text-primary);
+        justify-content: center;
     }
 
-    .enterprise-feature::before {
-        content: '★';
-        color: #f59e0b;
-        font-size: 1.25rem;
-    }
-
-    .btn-contact-sales {
-        background: linear-gradient(135deg, var(--text-primary) 0%, #475569 100%);
+    .btn-start-trial {
+        background: var(--primary-gradient);
         color: white;
-        padding: 1rem 2rem;
-        border-radius: var(--radius-lg);
-        font-weight: 600;
+        padding: 1rem 2.5rem;
+        border-radius: 25px;
+        font-weight: 700;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        transition: all 0.2s ease;
+        gap: 0.75rem;
+        transition: all 0.3s ease;
         border: none;
         cursor: pointer;
-        font-size: 1rem;
+        font-size: clamp(1rem, 2vw, 1.1rem);
+        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.5);
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
-    .btn-contact-sales:hover {
-        transform: translateY(-1px);
-        box-shadow: var(--shadow-md);
+    .btn-start-trial::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .btn-start-trial:hover::before {
+        left: 100%;
+    }
+
+    .btn-start-trial:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 50px rgba(102, 126, 234, 0.7);
         color: white;
         text-decoration: none;
     }
 
-    /* Mobile Responsive */
-    @media (max-width: 768px) {
-        .purchase-container {
-            padding: 1rem 0.5rem;
-        }
-
-        .purchase-header {
-            margin-bottom: 2rem;
-        }
-
-        .free-trial-section {
-            padding: 1.5rem;
-        }
-
-        .free-trial-benefits {
-            grid-template-columns: 1fr;
-            text-align: left;
-        }
-
-        .credit-plans {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-
-        .plan-card {
-            padding: 1.5rem;
-        }
-
-        .enterprise-section {
-            padding: 2rem 1rem;
-        }
-
-        .enterprise-features {
-            grid-template-columns: 1fr;
-            text-align: left;
-        }
-
-        .current-balance {
-            padding: 0.75rem 1.5rem;
-            font-size: 0.925rem;
-        }
+    /* Credit Plans */
+    .plans-section {
+        margin-bottom: clamp(4rem, 8vw, 6rem);
     }
 
-    @media (max-width: 480px) {
-        .plan-price {
-            font-size: 2.5rem;
-        }
-
-        .plan-price-currency {
-            font-size: 1.25rem;
-        }
-
-        .free-trial-section {
-            padding: 1rem;
-        }
+    .section-title {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 900;
+        text-align: center;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #fff 0%, #667eea 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.02em;
+        animation: fadeInUp 0.8s ease 0.6s both;
     }
 
-    /* Animation */
+    .section-subtitle {
+        color: var(--text-secondary);
+        text-align: center;
+        margin-bottom: clamp(3rem, 6vw, 5rem);
+        font-size: clamp(1rem, 2vw, 1.2rem);
+        animation: fadeInUp 0.8s ease 0.7s both;
+    }
+
+    .credit-plans {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: clamp(2rem, 4vw, 3rem);
+    }
+
+    .plan-card {
+        background: rgba(30, 27, 75, 0.3);
+        backdrop-filter: blur(20px);
+        border: 2px solid var(--border-color);
+        border-radius: 20px;
+        padding: clamp(2rem, 4vw, 3rem);
+        position: relative;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        animation: fadeInUp 0.8s ease both;
+    }
+
+    .plan-card:nth-child(1) { animation-delay: 0.8s; }
+    .plan-card:nth-child(2) { animation-delay: 0.9s; }
+    .plan-card:nth-child(3) { animation-delay: 1s; }
+
+    .plan-card::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: var(--primary-gradient);
+        border-radius: 20px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: -1;
+    }
+
+    .plan-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 60px rgba(102, 126, 234, 0.4);
+    }
+
+    .plan-card:hover::before {
+        opacity: 1;
+    }
+
+    .plan-card.popular {
+        border-color: #667eea;
+        transform: scale(1.05);
+    }
+
+    .plan-card.popular::after {
+        content: 'Most Popular';
+        position: absolute;
+        top: 20px;
+        right: -35px;
+        background: var(--secondary-gradient);
+        color: white;
+        padding: 0.4rem 3rem;
+        font-size: 0.85rem;
+        font-weight: 700;
+        transform: rotate(45deg);
+        box-shadow: 0 5px 20px rgba(240, 147, 251, 0.5);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .plan-card.best-value {
+        border-color: #f59e0b;
+    }
+
+    .plan-card.best-value::after {
+        content: 'Best Value';
+        position: absolute;
+        top: 20px;
+        right: -35px;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        padding: 0.4rem 3rem;
+        font-size: 0.85rem;
+        font-weight: 700;
+        transform: rotate(45deg);
+        box-shadow: 0 5px 20px rgba(245, 158, 11, 0.5);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .plan-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .plan-name {
+        font-size: clamp(1.4rem, 3vw, 1.8rem);
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .plan-price {
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        font-weight: 900;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+        line-height: 1;
+    }
+
+    .plan-price-currency {
+        font-size: clamp(1.2rem, 3vw, 1.8rem);
+        font-weight: 700;
+        vertical-align: top;
+    }
+
+    .plan-alt-price {
+        font-size: clamp(0.9rem, 2vw, 1.1rem);
+        color: var(--text-muted);
+        font-weight: 400;
+    }
+
+    .plan-billing {
+        color: var(--text-secondary);
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        margin-bottom: 1.5rem;
+    }
+
+    .plan-credits {
+        background: rgba(102, 126, 234, 0.1);
+        border: 1px solid var(--border-color);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .plan-credits::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+        animation: rotate 15s linear infinite;
+    }
+
+    .plan-credits-amount {
+        font-size: clamp(1.2rem, 3vw, 1.5rem);
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .plan-credits-time {
+        color: var(--text-secondary);
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        position: relative;
+        z-index: 1;
+    }
+
+    .plan-rate {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background: rgba(30, 27, 75, 0.3);
+        border-radius: 12px;
+        border: 1px solid rgba(88, 80, 236, 0.2);
+    }
+
+    .plan-rate-value {
+        font-size: clamp(1rem, 2vw, 1.2rem);
+        font-weight: 700;
+        background: var(--accent-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    .plan-rate-label {
+        color: var(--text-muted);
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-select-plan {
+        width: 100%;
+        background: var(--primary-gradient);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 15px;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-size: clamp(0.95rem, 2vw, 1.1rem);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-select-plan::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .btn-select-plan:hover::before {
+        left: 100%;
+    }
+
+    .btn-select-plan:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Animations */
     @keyframes fadeInUp {
         from {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px);
         }
         to {
             opacity: 1;
@@ -476,154 +473,197 @@
         }
     }
 
-    .fade-in-on-scroll {
-        animation: fadeInUp 0.6s ease-out;
+    @keyframes float {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.1); }
+        66% { transform: translate(-20px, 30px) scale(0.9); }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .purchase-container {
+            padding: clamp(1.5rem, 4vw, 2rem) 1rem;
+        }
+
+        .free-trial-benefits {
+            grid-template-columns: 1fr;
+            text-align: left;
+        }
+
+        .free-trial-benefit {
+            justify-content: flex-start;
+        }
+
+        .credit-plans {
+            grid-template-columns: 1fr;
+        }
+
+        .plan-card.popular {
+            transform: scale(1);
+        }
+
+        .plan-card.popular::after,
+        .plan-card.best-value::after {
+            right: -40px;
+            padding: 0.3rem 2.5rem;
+            font-size: 0.75rem;
+        }
+
+        .current-balance {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.95rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .free-trial-section {
+            padding: 1.5rem 1rem;
+        }
+
+        .btn-start-trial {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-{% if user.is_authenticated %}
-<div class="purchase-container fade-in-on-scroll">
-    <!-- Purchase Header -->
-    <div class="purchase-header">
-        <h1 class="purchase-title">Choose Your Plan</h1>
-        <p class="purchase-subtitle">Scale your AI voice training with flexible credit packages</p>
-        <div class="current-balance">
-            💳 Current Balance: {{ user.profile.credits|default:0 }} credits
-        </div>
-    </div>
-{% endif %}
-    <!-- Free Trial Section -->
-{% if not user.is_authenticated %}
-<div class="free-trial-section">
-    <div class="free-trial-content">
-        <h2 class="free-trial-title">🎯 Start Your Free Trial</h2>
-        <p class="free-trial-description">
-            Sign up today and <strong>instantly receive 50 free credits</strong> — no card required.
-        </p>
-        
-        <div class="free-trial-benefits">
-            <div class="free-trial-benefit">
-                <span>✨</span> 50 credits auto-credited (~5 minutes of usage)
-            </div>
-            <div class="free-trial-benefit">
-                <span>🚀</span> Use credits on any AI bot
+<div class="purchase-page">
+    <div class="purchase-container">
+        {% if user.is_authenticated %}
+        <!-- Purchase Header -->
+        <div class="purchase-header">
+            <h1 class="purchase-title">Neural Credit Acquisition</h1>
+            <p class="purchase-subtitle">Power your AI interactions with intelligent credit packages</p>
+            <div class="current-balance">
+                <span>⚡</span> Current Balance: {{ user.profile.credits|default:0 }} credits
             </div>
         </div>
+        {% endif %}
 
-        <a href="{% url 'signup' %}" class="btn-start-trial">
-            <span>🎁</span> Start Free Trial
-        </a>
-    </div>
-</div>
-{% endif %}
+        <!-- Free Trial Section -->
+        {% if not user.is_authenticated %}
+        <div class="free-trial-section">
+            <div class="free-trial-content">
+                <h2 class="free-trial-title">🎯 Initialize Free Trial</h2>
+                <p class="free-trial-description">
+                    Activate your account and <strong>receive 50 free credits instantly</strong> — neural access requires no payment verification.
+                </p>
+                
+                <div class="free-trial-benefits">
+                    <div class="free-trial-benefit">
+                        <span>✨</span> 50 credits auto-deployed (~5 min runtime)
+                    </div>
+                    <div class="free-trial-benefit">
+                        <span>🚀</span> Full bot ecosystem access
+                    </div>
+                </div>
 
-    <!-- Credit Plans Section -->
-    <div class="plans-section">
-        <h2 class="section-title">Credit Packages</h2>
-        <p class="section-subtitle">Choose the perfect package for your needs</p>
-        
-
-        <div class="credit-plans">
-    <!-- Mini Plan -->
-    <div class="plan-card mini" onclick="selectPlan('mini', 40, 49)">
-        <div class="plan-header">
-            <h3 class="plan-name">Mini</h3>
-            <div class="plan-price">
-                <span class="plan-price-currency">₹</span>49
+                <a href="{% url 'signup' %}" class="btn-start-trial">
+                    <span>🎁</span> Initialize Trial Protocol
+                </a>
             </div>
-            <div class="plan-billing">One-time purchase</div>
         </div>
+        {% endif %}
 
-        <div class="plan-credits">
-            <div class="plan-credits-amount">40 Credits</div>
-            <div class="plan-credits-time">~4 minutes</div>
-        </div>
+        <!-- Credit Plans Section -->
+        <div class="plans-section">
+            <h2 class="section-title">Credit Distribution Modules</h2>
+            <p class="section-subtitle">Select optimal resource allocation for neural network engagement</p>
+            
+            <div class="credit-plans">
+                <!-- Mini Plan -->
+                <div class="plan-card mini" onclick="selectPlan('mini', 40, 49)">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Mini Protocol</h3>
+                        <div class="plan-price">
+                            <span class="plan-price-currency">₹</span>49 
+                            <span class="plan-alt-price"> / $0.59</span>
+                        </div>
+                        <div class="plan-billing">Single acquisition deployment</div>
+                    </div>
 
-        <div class="plan-rate">
-            <div class="plan-rate-value">₹12.25 per minute</div>
-            <div class="plan-rate-label">Effective rate</div>
-        </div>
+                    <div class="plan-credits">
+                        <div class="plan-credits-amount">40 Credits</div>
+                        <div class="plan-credits-time">~4 minutes neural runtime</div>
+                    </div>
 
-        <button class="btn-select-plan">Select Mini</button>
-    </div>
+                    <div class="plan-rate">
+                        <div class="plan-rate-value">₹12.25 / $0.15 per minute</div>
+                        <div class="plan-rate-label">Efficiency Coefficient</div>
+                    </div>
 
-    <!-- Growth Plan -->
-    <div class="plan-card popular" onclick="selectPlan('growth', 300, 249)">
-        <div class="plan-header">
-            <h3 class="plan-name">Growth</h3>
-            <div class="plan-price">
-                <span class="plan-price-currency">₹</span>249
+                    <button class="btn-select-plan">Deploy Mini</button>
+                </div>
+
+                <!-- Growth Plan -->
+                <div class="plan-card popular" onclick="selectPlan('growth', 300, 249)">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Growth Matrix</h3>
+                        <div class="plan-price">
+                            <span class="plan-price-currency">₹</span>249 
+                            <span class="plan-alt-price"> / $3.00</span>
+                        </div>
+                        <div class="plan-billing">Single acquisition deployment</div>
+                    </div>
+
+                    <div class="plan-credits">
+                        <div class="plan-credits-amount">300 Credits</div>
+                        <div class="plan-credits-time">~30 minutes neural runtime</div>
+                    </div>
+
+                    <div class="plan-rate">
+                        <div class="plan-rate-value">₹8.3 / $0.10 per minute</div>
+                        <div class="plan-rate-label">Efficiency Coefficient</div>
+                    </div>
+
+                    <button class="btn-select-plan">Deploy Growth</button>
+                </div>
+
+                <!-- Pro Plan -->
+                <div class="plan-card best-value" onclick="selectPlan('pro', 1500, 999)">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Professional Nexus</h3>
+                        <div class="plan-price">
+                            <span class="plan-price-currency">₹</span>999 
+                            <span class="plan-alt-price"> / $12.00</span>
+                        </div>
+                        <div class="plan-billing">Single acquisition deployment</div>
+                    </div>
+
+                    <div class="plan-credits">
+                        <div class="plan-credits-amount">1,500 Credits</div>
+                        <div class="plan-credits-time">~150 minutes neural runtime</div>
+                    </div>
+
+                    <div class="plan-rate">
+                        <div class="plan-rate-value">₹6.6 / $0.08 per minute</div>
+                        <div class="plan-rate-label">Efficiency Coefficient</div>
+                    </div>
+
+                    <button class="btn-select-plan">Deploy Professional</button>
+                </div>
             </div>
-            <div class="plan-billing">One-time purchase</div>
         </div>
-
-        <div class="plan-credits">
-            <div class="plan-credits-amount">300 Credits</div>
-            <div class="plan-credits-time">~30 minutes</div>
-        </div>
-
-        <div class="plan-rate">
-            <div class="plan-rate-value">₹8.3 per minute</div>
-            <div class="plan-rate-label">Effective rate</div>
-        </div>
-
-        <button class="btn-select-plan">Select Growth</button>
     </div>
-
-    <!-- Pro Plan -->
-    <div class="plan-card best-value" onclick="selectPlan('pro', 1500, 999)">
-        <div class="plan-header">
-            <h3 class="plan-name">Professional</h3>
-            <div class="plan-price">
-                <span class="plan-price-currency">₹</span>999
-            </div>
-            <div class="plan-billing">One-time purchase</div>
-        </div>
-
-        <div class="plan-credits">
-            <div class="plan-credits-amount">1,500 Credits</div>
-            <div class="plan-credits-time">~150 minutes</div>
-        </div>
-
-        <div class="plan-rate">
-            <div class="plan-rate-value">₹6.6 per minute</div>
-            <div class="plan-rate-label">Effective rate</div>
-        </div>
-
-        <button class="btn-select-plan">Select Professional</button>
-    </div>
-</div>
-
-
-    <!-- Enterprise Section -->
-    {% comment %} <div class="enterprise-section">
-        <h2 class="enterprise-title">Enterprise</h2>
-        <p class="enterprise-description">
-            Need more than 7,000 credits? Get custom pricing and enterprise-grade features for your organization.
-        </p>
-
-        <div class="enterprise-features">
-            <div class="enterprise-feature">Volume discounts available</div>
-            <div class="enterprise-feature">Dedicated account manager</div>
-            <div class="enterprise-feature">Custom integrations</div>
-            <div class="enterprise-feature">Advanced reporting</div>
-            <div class="enterprise-feature">SLA guarantees</div>
-            <div class="enterprise-feature">White-label options</div>
-        </div>
-
-        <a href="mailto:sales@prepai.com" class="btn-contact-sales">
-            <span>📞</span> Contact Sales
-        </a>
-    </div> {% endcomment %}
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
 function selectPlan(planType, credits, price) {
-    // Prepare the plan data
     const planData = {
         plan_type: planType,
         credits: credits,
@@ -631,12 +671,10 @@ function selectPlan(planType, credits, price) {
         csrfmiddlewaretoken: '{{ csrf_token }}'
     };
     
-    // Create a form and submit it to the order confirmation page
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = '{% url "order_confirmation" %}';
     
-    // Add plan data as hidden inputs
     Object.keys(planData).forEach(key => {
         const input = document.createElement('input');
         input.type = 'hidden';
@@ -645,37 +683,24 @@ function selectPlan(planType, credits, price) {
         form.appendChild(input);
     });
     
-    // Add form to page and submit
     document.body.appendChild(form);
     form.submit();
 }
 
-// Add some visual feedback when hovering over plans
+// Enhanced hover effects
 document.addEventListener('DOMContentLoaded', function() {
     const planCards = document.querySelectorAll('.plan-card');
     
     planCards.forEach(card => {
         card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-8px)';
+            this.style.transform = this.classList.contains('popular') ? 
+                'scale(1.08) translateY(-10px)' : 'translateY(-10px)';
         });
         
         card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
+            this.style.transform = this.classList.contains('popular') ? 
+                'scale(1.05)' : 'translateY(0)';
         });
-    });
-});
-
-// Smooth scroll animation for any internal links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
     });
 });
 </script>

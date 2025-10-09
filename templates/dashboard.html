@@ -4,19 +4,152 @@
 
 {% block extra_css %}
 <style>
-    /* Dashboard Specific Styles */
-    .dashboard-hero {
+    /* Dashboard Layout */
+    .dashboard-container {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 2rem;
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    /* Sidebar Navigation */
+    .dashboard-sidebar {
+        background: var(--bg-card);
+        backdrop-filter: blur(10px);
+        border-radius: 25px;
+        padding: 2rem;
+        box-shadow: var(--shadow-glow);
+        height: fit-content;
+        position: sticky;
+        top: 2rem;
+        border: 1px solid var(--border-color);
+    }
+
+    .sidebar-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    .user-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: var(--primary-gradient);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin: 0 auto 1rem;
+        color: white;
+        font-weight: bold;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    .user-name {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+    }
+
+    .user-email {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+
+    .nav-section {
+        margin-bottom: 2rem;
+    }
+
+    .nav-section-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+        letter-spacing: 0.5px;
+    }
+
+    .nav-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .nav-item {
+        margin-bottom: 0.5rem;
+    }
+
+    .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 0.875rem 1rem;
+        color: var(--text-secondary);
+        text-decoration: none;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        position: relative;
+    }
+
+    .nav-link:hover {
+        background: rgba(102, 126, 234, 0.2);
+        color: #fff;
+        transform: translateX(5px);
+    }
+
+    .nav-link.active {
         background: var(--primary-gradient);
         color: white;
-        padding: 4rem 0;
-        border-radius: 30px;
-        margin-bottom: 4rem;
-        position: relative;
-        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .nav-link.active:hover {
+        transform: translateX(0);
+    }
+
+    .nav-icon {
+        font-size: 1.25rem;
+        margin-right: 0.75rem;
+        width: 24px;
         text-align: center;
     }
 
-    .dashboard-hero::before {
+    .nav-badge {
+        margin-left: auto;
+        background: #667eea;
+        color: white;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    .nav-link.active .nav-badge {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Main Content Area */
+    .dashboard-main {
+        min-height: 100vh;
+    }
+
+    /* Welcome Hero */
+    .welcome-hero {
+        background: var(--primary-gradient);
+        color: white;
+        padding: 3rem 2.5rem;
+        border-radius: 25px;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .welcome-hero::before {
         content: '';
         position: absolute;
         top: 0;
@@ -24,229 +157,193 @@
         right: 0;
         bottom: 0;
         background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        opacity: 0.5;
     }
 
-    .dashboard-hero-content {
+    .welcome-content {
         position: relative;
         z-index: 2;
     }
 
-    .welcome-text {
-        font-size:  1.5rem;
+    .welcome-title {
+        font-size: 2.5rem;
         font-weight: 800;
-        margin-bottom: 1rem;
-        background: linear-gradient(135deg, #da1e1eff, #f0f8ff);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        margin-bottom: 0.5rem;
     }
 
     .welcome-subtitle {
-        font-size: 1.3rem;
+        font-size: 1.1rem;
         opacity: 0.9;
-        margin-bottom: 2rem;
-        font-weight: 500;
     }
 
-    .main-options {
+    /* Quick Stats Grid */
+    .stats-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-        gap: 3rem;
-        margin-bottom: 4rem;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
     }
 
-    .option-card {
-        background: white;
-        border-radius: 25px;
-        padding: 3rem 2.5rem;
-        box-shadow: var(--shadow-light);
+    .stat-card {
+        background: var(--bg-card);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2rem 1.5rem;
+        box-shadow: var(--shadow-glow);
         text-align: center;
-        transition: all 0.4s ease;
         position: relative;
         overflow: hidden;
-        border: 2px solid transparent;
+        transition: transform 0.3s ease;
+        border: 1px solid var(--border-color);
     }
 
-    .option-card.available {
-        cursor: pointer;
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
     }
 
-    .option-card.available:hover {
-        transform: translateY(-15px);
-        box-shadow: var(--shadow-heavy);
-        border-color: rgba(240, 147, 251, 0.3);
-    }
-
-    .option-card.available::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(240, 147, 251, 0.1), transparent);
-        transition: left 0.6s ease;
-    }
-
-    .option-card.available:hover::before {
-        left: 100%;
-    }
-
-    .option-card.disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        background: #f8f9fa;
-        position: relative;
-    }
-    .option-card.available .option-title {
-    color: #2d3748 !important;
-}
-
-.option-card.disabled .option-title {
-    color: #4a5568 !important; /* Slightly lighter for disabled state */
-}
-
-
-    .option-card.disabled::after {
+    .stat-card::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        bottom: 0;
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(2px);
+        height: 4px;
+        background: var(--primary-gradient);
     }
 
-    .option-icon {
-        width: 120px;
-        height: 120px;
-        margin: 0 auto 2rem;
-        background: var(--secondary-gradient);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 3rem;
-        box-shadow: 0 15px 30px rgba(240, 147, 251, 0.3);
-        position: relative;
-        z-index: 2;
-    }
-
-    .option-card.disabled .option-icon {
-        background: #6c757d;
-        box-shadow: 0 15px 30px rgba(108, 117, 125, 0.2);
-    }
-
-.option-title {
-    font-size: 2rem;
-    font-weight: 800;
-    margin-bottom: 1rem;
-    color: #2d3748 !important; /* Dark gray for better contrast */
-    position: relative;
-    z-index: 2;
-}
-
-    .option-description {
-        font-size: 1.1rem;
-        color: var(--text-secondary);
-        line-height: 1.7;
-        margin-bottom: 2rem;
-        position: relative;
-        z-index: 2;
-    }
-
-    .option-features {
-        list-style: none;
-        padding: 0;
-        margin-bottom: 2rem;
-        position: relative;
-        z-index: 2;
-    }
-
-    .option-features li {
-        padding: 0.5rem 0;
-        color: var(--text-secondary);
-        position: relative;
-        padding-left: 2rem;
-    }
-
-    .option-features li::before {
-        content: '✓';
-        position: absolute;
-        left: 0;
-        color: #22c55e;
-        font-weight: bold;
-    }
-
-    .option-card.disabled .option-features li::before {
-        color: #6c757d;
-    }
-
-    .coming-soon {
-        display: inline-block;
-        background: var(--secondary-gradient);
-        color: white;
-        padding: 0.8rem 2rem;
-        border-radius: 25px;
-        font-weight: 600;
-        font-size: 1rem;
-        position: relative;
-        z-index: 2;
-        margin-top: 1rem;
-    }
-
-    .option-card.disabled .coming-soon {
-        background: #6c757d;
-    }
-
-    .stats-section {
-        background: white;
-        border-radius: 25px;
-        padding: 3rem 2.5rem;
-        box-shadow: var(--shadow-light);
-        margin-bottom: 4rem;
-    }
-
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 2rem;
-    }
-
-    .stat-item {
-        text-align: center;
-        padding: 1.5rem;
-        background: rgba(102, 126, 234, 0.05);
-        border-radius: 15px;
-        border: 1px solid rgba(102, 126, 234, 0.1);
-    }
-
-    .stat-number {
+    .stat-icon {
         font-size: 2.5rem;
+        margin-bottom: 1rem;
+        filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.4));
+    }
+
+    .stat-value {
+        font-size: 2rem;
         font-weight: 800;
-        color: #667eea;
+        color: var(--text-primary);
         margin-bottom: 0.5rem;
     }
 
     .stat-label {
         color: var(--text-secondary);
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         font-weight: 500;
     }
 
-    .recent-activity {
-        background: white;
+    /* Quick Actions */
+    .quick-actions {
+        background: var(--bg-card);
+        backdrop-filter: blur(10px);
         border-radius: 25px;
-        padding: 3rem 2.5rem;
-        box-shadow: var(--shadow-light);
+        padding: 2.5rem;
+        box-shadow: var(--shadow-glow);
+        margin-bottom: 2rem;
+        border: 1px solid var(--border-color);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--text-primary);
+    }
+
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .action-card {
+        background: rgba(102, 126, 234, 0.05);
+        border: 2px solid var(--border-color);
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+        display: block;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .action-card::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: var(--primary-gradient);
+        border-radius: 20px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: -1;
+    }
+
+    .action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+        border-color: rgba(102, 126, 234, 0.5);
+    }
+
+    .action-card:hover::before {
+        opacity: 1;
+    }
+
+    .action-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.4));
+    }
+
+    .action-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .action-description {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+    }
+
+    /* Recent Activity */
+    .recent-activity {
+        background: var(--bg-card);
+        backdrop-filter: blur(10px);
+        border-radius: 25px;
+        padding: 2.5rem;
+        box-shadow: var(--shadow-glow);
+        margin-bottom: 2rem;
+        border: 1px solid var(--border-color);
+    }
+
+    .activity-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
     }
 
     .activity-item {
         display: flex;
         align-items: center;
-        padding: 1rem 0;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 1.25rem;
+        border-bottom: 1px solid var(--border-color);
+        transition: background 0.3s ease;
+    }
+
+    .activity-item:hover {
+        background: rgba(102, 126, 234, 0.05);
     }
 
     .activity-item:last-child {
@@ -257,12 +354,12 @@
         width: 50px;
         height: 50px;
         border-radius: 50%;
-        background: rgba(102, 126, 234, 0.1);
+        background: rgba(102, 126, 234, 0.2);
         display: flex;
         align-items: center;
         justify-content: center;
         margin-right: 1rem;
-        font-size: 1.2rem;
+        font-size: 1.5rem;
     }
 
     .activity-content {
@@ -271,7 +368,7 @@
 
     .activity-title {
         font-weight: 600;
-        color: #2d3748 !important;
+        color: var(--text-primary);
         margin-bottom: 0.25rem;
     }
 
@@ -281,38 +378,25 @@
     }
 
     /* Mobile Responsive */
-    @media (max-width: 768px) {
-        .dashboard-hero {
-            padding: 2rem 1rem;
+    @media (max-width: 1024px) {
+        .dashboard-container {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-sidebar {
+            position: static;
             margin-bottom: 2rem;
         }
+    }
 
-        .welcome-text {
-            font-size: 1.2rem;
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 1rem;
+            gap: 1rem;
         }
 
-        .welcome-subtitle {
-            font-size: 1.1rem;
-        }
-
-        .main-options {
-            grid-template-columns: 1fr;
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .option-card {
-            padding: 2rem 1.5rem;
-        }
-
-        .option-icon {
-            width: 100px;
-            height: 100px;
-            font-size: 2.5rem;
-        }
-
-        .option-title {
-            font-size: 1.5rem;
+        .welcome-title {
+            font-size: 1.75rem;
         }
 
         .stats-grid {
@@ -320,8 +404,13 @@
             gap: 1rem;
         }
 
-        .stats-section, .recent-activity {
-            padding: 2rem 1.5rem;
+        .actions-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .quick-actions,
+        .recent-activity {
+            padding: 1.5rem;
         }
     }
 
@@ -334,188 +423,182 @@
 {% endblock %}
 
 {% block content %}
-
-<div class="main-options fade-in-on-scroll">
-    <div class="option-card available" onclick="location.href='{% url 'voice_roleplay' %}'">
-        <div class="option-icon">🎭</div>
-        <h2 class="option-title">AI Roleplay</h2>
-        <p class="option-description">Engage with diverse AI characters in immersive voice conversations to build confidence and communication skills.</p>
-        
-        <ul class="option-features">
-            <li>Diverse AI characters</li>
-            <li>Immersive scenarios</li>
-            <li>Natural voice interactions</li>
-            <li>Character-specific personalities</li>
-            <li>Session transcripts & analysis</li>
-        </ul>
-        
-        <a href="{% url 'voice_roleplay' %}" class="btn btn-primary">
-            Start Roleplay
-            <div class="voice-wave">
-                <div class="wave-bar"></div>
-                <div class="wave-bar"></div>
-                <div class="wave-bar"></div>
-                <div class="wave-bar"></div>
+<div class="dashboard-container">
+    <!-- Sidebar Navigation -->
+    <aside class="dashboard-sidebar">
+        <div class="sidebar-header">
+            <div class="user-avatar">
+                {{ user.username|slice:":1"|upper }}
             </div>
-        </a>
-    </div>
-    <div class="option-card disabled" onclick="location.href='{% url 'interview_types' %}'">
-        <div class="option-icon">🎤</div>
-        <h2 class="option-title">AI Mock Interviews</h2>
-        <p class="option-description">Practice with AI-powered mock interviews that adapt to your responses and provide instant feedback.</p>
-        
-        <ul class="option-features">
-            <li>Natural voice conversations</li>
-            <li>Role-specific questions</li>
-            <li>Instant detailed feedback</li>
-            <li>Progress tracking</li>
-            <li>Personalized recommendations</li>
-        </ul>
-        
-<div class="coming-soon">Coming Soon</div>
-    </div>
+            <div class="user-name">{{ user.get_full_name|default:user.username }}</div>
+            <div class="user-email">{{ user.email }}</div>
+        </div>
 
-    <!-- Learn Courses - Disabled -->
-    <div class="option-card disabled">
-        <div class="option-icon">📚</div>
-        <h2 class="option-title">Learn Courses</h2>
-        <p class="option-description">Interactive AI-powered courses on programming, data science, and professional skills.</p>
-        
-        <ul class="option-features">
-            <li>Voice-guided lessons</li>
-            <li>Interactive examples</li>
-            <li>Hands-on practice</li>
-            <li>Adaptive curriculum</li>
-            <li>Skill assessments</li>
-        </ul>
-        
-        <div class="coming-soon">Coming Soon</div>
-    </div>
+        <nav>
+            <div class="nav-section">
+                <div class="nav-section-title">Main</div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="{% url 'dashboard' %}" class="nav-link active">
+                            <span class="nav-icon">🏠</span>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'profile' %}" class="nav-link">
+                            <span class="nav-icon">👤</span>
+                            My Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'voice_roleplay' %}" class="nav-link">
+                            <span class="nav-icon">🎭</span>
+                            AI Roleplay
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Marketplace</div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="{% url 'voice_roleplay' %}" class="nav-link">
+                            <span class="nav-icon">🛍️</span>
+                            Browse Bots
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'my-roleplay-bots' %}" class="nav-link">
+                            <span class="nav-icon">📦</span>
+                            My Bots
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Creator</div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="{% url 'creator-program' %}" class="nav-link">
+                            <span class="nav-icon">⭐</span>
+                            Creator Program
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'create_roleplay_bot' %}" class="nav-link">
+                            <span class="nav-icon">➕</span>
+                            Create Bot
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'my-roleplay-bots' %}" class="nav-link">
+                            <span class="nav-icon">🤖</span>
+                            My Creations
+                            {% if user_bots_count %}
+                            <span class="nav-badge">{{ user_bots_count }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'my-earnings' %}" class="nav-link">
+                            <span class="nav-icon">💰</span>
+                            My Earnings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Account</div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="{% url 'purchase_credits' %}" class="nav-link">
+                            <span class="nav-icon">💳</span>
+                            Pricing & Credits
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'profile' %}" class="nav-link">
+                            <span class="nav-icon">⚙️</span>
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <!-- Welcome Hero -->
+        <div class="welcome-hero">
+            <div class="welcome-content">
+                <h1 class="welcome-title">Welcome back, {{ user.get_full_name|default:user.username }}! 👋</h1>
+                <p class="welcome-subtitle">Ready to continue your AI journey?</p>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="section-header">
+                <h2 class="section-title">Quick Actions</h2>
+            </div>
+            <div class="actions-grid">
+                <a href="{% url 'voice_roleplay' %}" class="action-card">
+                    <div class="action-icon">🎭</div>
+                    <div class="action-title">Start Roleplay</div>
+                    <div class="action-description">Chat with AI characters</div>
+                </a>
+                <a href="{% url 'marketplace' %}" class="action-card">
+                    <div class="action-icon">🛍️</div>
+                    <div class="action-title">Browse Marketplace</div>
+                    <div class="action-description">Discover new bots</div>
+                </a>
+                <a href="{% url 'create_roleplay_bot' %}" class="action-card">
+                    <div class="action-icon">➕</div>
+                    <div class="action-title">Create Bot</div>
+                    <div class="action-description">Build your AI character</div>
+                </a>
+                <a href="{% url 'purchase_credits' %}" class="action-card">
+                    <div class="action-icon">💳</div>
+                    <div class="action-title">Buy Credits</div>
+                    <div class="action-description">Power up your account</div>
+                </a>
+            </div>
+        </div>
+    </main>
 </div>
-
-<!-- User Stats Section -->
-{% comment %} <div class="stats-section fade-in-on-scroll">
-    <h3 class="section-title">Your Progress</h3>
-    <div class="stats-grid">
-        <div class="stat-item">
-            <div class="stat-number">{{ interview_count|default:0 }}</div>
-            <div class="stat-label">Mock Interviews</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number">{{ avg_score|default:"--" }}{% if avg_score %}%{% endif %}</div>
-            <div class="stat-label">Average Score</div>
-        </div>
-
-    </div>
-</div> {% endcomment %}
-
-<!-- Recent Activity -->
-{% comment %} <div class="recent-activity fade-in-on-scroll">
-    <h3 class="section-title">Recent Activity</h3>
-    
-    {% if recent_interviews %}
-        {% for interview in recent_interviews %}
-        <div class="activity-item">
-            <div class="activity-icon">🎤</div>
-            <div class="activity-content">
-                <div class="activity-title">{{ interview.role_type|title }} Interview</div>
-                <div class="activity-time">Score: {{ interview.overall_score }}% • {{ interview.created_at|timesince }} ago</div>
-            </div>
-        </div>
-        {% endfor %}
-    {% else %}
-        <div class="activity-item">
-            <div class="activity-icon">🚀</div>
-            <div class="activity-content">
-                <div class="activity-title">Ready to start your first mock interview?</div>
-                <div class="activity-time">Click "Start Mock Interview" above to begin practicing</div>
-            </div>
-        </div>
-    {% endif %}
-    
-    {% if recent_interviews|length > 0 %}
-    <div class="text-center mt-4">
-        <a href="{% url 'interview_history' %}" class="btn btn-outline-primary">View All Interviews</a>
-    </div>
-    {% endif %}
-</div> {% endcomment %}
-
-<!-- Quick Tips -->
-{% comment %} <div class="card fade-in-on-scroll mt-4">
-    <div class="card-body">
-        <h5 class="card-title">💡 Quick Tips for Better Interview Performance</h5>
-        <div class="row">
-            <div class="col-md-4">
-                <h6>🗣️ Speak Clearly</h6>
-                <p class="small text-muted">Articulate your thoughts clearly and maintain a steady pace when responding.</p>
-            </div>
-            <div class="col-md-4">
-                <h6>📝 Structure Answers</h6>
-                <p class="small text-muted">Use the STAR method (Situation, Task, Action, Result) for behavioral questions.</p>
-            </div>
-            <div class="col-md-4">
-                <h6>🔄 Practice Regularly</h6>
-                <p class="small text-muted">Regular practice sessions help build confidence and improve your interview skills.</p>
-            </div>
-        </div>
-    </div>
-</div> {% endcomment %}
 {% endblock %}
 
 {% block extra_js %}
 <script>
 $(document).ready(function() {
-    // Add click handler for available option cards
-    $('.option-card.available').on('click', function() {
-        if ($(this).find('a').length > 0) {
-            window.location.href = $(this).find('a').attr('href');
-        }
+    // Smooth scroll animations
+    $('.fade-in-on-scroll').each(function() {
+        $(this).css('opacity', '0');
     });
 
-    // Add hover effects for better UX
-    $('.option-card.available').on('mouseenter', function() {
-        $(this).find('.voice-wave').addClass('active');
-    }).on('mouseleave', function() {
-        $(this).find('.voice-wave').removeClass('active');
-    });
-
-    // Animate stats numbers on scroll
-    const animateStats = () => {
-        $('.stat-number').each(function() {
-            const $this = $(this);
-            const countTo = parseInt($this.text()) || 0;
-            
-            if (countTo > 0) {
-                $({ countNum: 0 }).animate({
-                    countNum: countTo
-                }, {
-                    duration: 2000,
-                    easing: 'swing',
-                    step: function() {
-                        $this.text(Math.floor(this.countNum));
-                    },
-                    complete: function() {
-                        $this.text(this.countNum);
-                    }
-                });
-            }
-        });
-    };
-
-    // Trigger stats animation when section comes into view
-    const statsObserver = new IntersectionObserver((entries) => {
+    const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                animateStats();
-                statsObserver.unobserve(entry.target);
+                $(entry.target).animate({ opacity: 1 }, 600);
             }
         });
     });
 
-    const statsSection = document.querySelector('.stats-section');
-    if (statsSection) {
-        statsObserver.observe(statsSection);
-    }
+    $('.fade-in-on-scroll').each(function() {
+        observer.observe(this);
+    });
+
+    // Highlight active navigation
+    const currentPath = window.location.pathname;
+    $('.nav-link').each(function() {
+        if ($(this).attr('href') === currentPath) {
+            $(this).addClass('active');
+        }
+    });
 });
 </script>
 {% endblock %}

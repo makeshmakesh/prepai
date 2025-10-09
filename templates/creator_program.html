@@ -1,480 +1,720 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create AI Voice Bots & Earn Money - PrepAI Creator Program</title>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-EMFD0GPFNQ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+{% extends 'base.html' %}
+{% load static %}
 
-  gtag('config', 'G-EMFD0GPFNQ');
-</script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+{% block title %}Neural Creator Protocol - PrepAI{% endblock %}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #1e293b;
-            background: #f8fafc;
-        }
+{% block extra_css %}
+<style>
+    /* Override base content layout */
+    .content {
+        flex: 0 0 auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 clamp(1rem, 3vw, 2rem);
-        }
+    /* Futuristic Creator Program Page */
+    .creator-page {
+        min-height: 100vh;
+        position: relative;
+        padding: 0;
+    }
 
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: clamp(3rem, 8vw, 5rem) 0;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
+    .creator-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 clamp(1rem, 3vw, 2rem);
+        position: relative;
+        z-index: 2;
+    }
 
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="2" fill="white" opacity="0.1"/></svg>');
-            opacity: 0.3;
-        }
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+        backdrop-filter: blur(20px);
+        color: white;
+        padding: clamp(4rem, 8vw, 6rem) 0;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        border-bottom: 2px solid var(--border-color);
+        margin-bottom: clamp(3rem, 6vw, 5rem);
+    }
 
-        .hero-content {
-            position: relative;
-            z-index: 1;
-        }
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+        animation: rotate 20s linear infinite;
+    }
 
-        .hero h1 {
-            font-size: clamp(2rem, 7vw, 3.5rem);
-            font-weight: 900;
-            margin-bottom: 1rem;
-            line-height: 1.1;
-        }
+    @keyframes rotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
 
-        .hero-subtitle {
-            font-size: clamp(1.1rem, 3vw, 1.5rem);
-            margin-bottom: 2rem;
-            opacity: 0.95;
-            font-weight: 500;
-        }
+    .hero-content {
+        position: relative;
+        z-index: 1;
+    }
 
-        .cta-primary {
-            display: inline-block;
-            background: white;
-            color: #667eea;
-            padding: 1.25rem 3rem;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: clamp(1rem, 2.5vw, 1.1rem);
-            text-decoration: none;
-            transition: all 0.3s;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
+    .hero-section h1 {
+        font-size: clamp(2.5rem, 7vw, 4.5rem);
+        font-weight: 900;
+        margin-bottom: 1.5rem;
+        line-height: 1.1;
+        background: linear-gradient(135deg, #fff 0%, #e2e8f0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.02em;
+    }
 
-        .cta-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-        }
+    .hero-subtitle {
+        font-size: clamp(1.2rem, 3vw, 1.6rem);
+        margin-bottom: 2.5rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+        line-height: 1.6;
+    }
 
-        /* Stats Section */
-        .stats {
-            background: white;
-            padding: clamp(2rem, 5vw, 3rem) 0;
-            margin-top: -3rem;
-            position: relative;
-            z-index: 2;
-        }
+    .cta-primary {
+        display: inline-block;
+        background: var(--secondary-gradient);
+        color: white;
+        padding: 1.25rem 3rem;
+        border-radius: 16px;
+        font-weight: 800;
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+        text-decoration: none;
+        transition: all 0.3s;
+        box-shadow: 0 15px 40px rgba(240, 147, 251, 0.4);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: relative;
+        overflow: hidden;
+    }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            text-align: center;
-        }
+    .cta-primary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
 
-        .stat-item {
-            padding: 1.5rem;
-        }
+    .cta-primary:hover::before {
+        left: 100%;
+    }
 
-        .stat-number {
-            font-size: clamp(2rem, 5vw, 3rem);
-            font-weight: 900;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
-        }
+    .cta-primary:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 50px rgba(240, 147, 251, 0.6);
+        color: white;
+        text-decoration: none;
+    }
 
-        .stat-label {
-            color: #64748b;
-            font-weight: 600;
-            font-size: 1rem;
-        }
+    /* Stats Section */
+    .stats-section {
+        padding: clamp(2rem, 5vw, 3rem) 0;
+        margin-bottom: clamp(3rem, 6vw, 5rem);
+    }
 
-        /* Section */
-        .section {
-            padding: clamp(3rem, 8vw, 5rem) 0;
-        }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: clamp(1.5rem, 3vw, 2rem);
+        text-align: center;
+    }
 
-        .section-header {
-            text-align: center;
-            margin-bottom: clamp(2rem, 6vw, 4rem);
-        }
+    .stat-item {
+        background: rgba(30, 27, 75, 0.3);
+        backdrop-filter: blur(20px);
+        padding: clamp(2rem, 4vw, 2.5rem);
+        border-radius: 20px;
+        border: 2px solid var(--border-color);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
 
-        .section-title {
-            font-size: clamp(1.75rem, 5vw, 2.5rem);
-            font-weight: 800;
-            margin-bottom: 1rem;
-            color: #1e293b;
-        }
+    .stat-item::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+        animation: rotate 15s linear infinite;
+    }
 
-        .section-subtitle {
-            font-size: clamp(1rem, 2.5vw, 1.2rem);
-            color: #64748b;
-            max-width: 700px;
-            margin: 0 auto;
-        }
+    .stat-item:hover {
+        transform: translateY(-5px);
+        border-color: #667eea;
+        box-shadow: 0 15px 50px rgba(102, 126, 234, 0.4);
+    }
 
-        /* Use Cases Grid */
-        .use-cases-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-        }
+    .stat-number {
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        font-weight: 900;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.75rem;
+        position: relative;
+        z-index: 1;
+    }
 
-        .use-case-card {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s;
-            border: 2px solid transparent;
-        }
+    .stat-label {
+        color: var(--text-secondary);
+        font-weight: 600;
+        font-size: clamp(0.9rem, 2vw, 1rem);
+        line-height: 1.5;
+        position: relative;
+        z-index: 1;
+    }
 
-        .use-case-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
-            border-color: rgba(102, 126, 234, 0.3);
-        }
+    /* Section */
+    .section {
+        padding: clamp(3rem, 8vw, 5rem) 0;
+    }
 
-        .use-case-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
+    .section-header {
+        text-align: center;
+        margin-bottom: clamp(3rem, 6vw, 5rem);
+    }
 
-        .use-case-card h3 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 0.75rem;
-            color: #1e293b;
-        }
+    .section-title {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 900;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #fff 0%, #667eea 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.02em;
+    }
 
-        .use-case-card p {
-            color: #64748b;
-            line-height: 1.7;
-            margin-bottom: 1rem;
-        }
+    .section-subtitle {
+        font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+        color: var(--text-secondary);
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
 
-        .use-case-examples {
-            background: rgba(102, 126, 234, 0.05);
-            padding: 1rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            color: #475569;
-        }
+    /* Use Cases Grid */
+    .use-cases-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: clamp(2rem, 4vw, 2.5rem);
+    }
 
-        .use-case-examples strong {
-            color: #667eea;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
+    .use-case-card {
+        background: rgba(30, 27, 75, 0.3);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: clamp(2rem, 4vw, 2.5rem);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s;
+        border: 2px solid var(--border-color);
+        position: relative;
+        overflow: hidden;
+    }
 
-        /* How It Works */
-        .steps-container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
+    .use-case-card::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: var(--primary-gradient);
+        border-radius: 20px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: -1;
+    }
 
+    .use-case-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+    }
+
+    .use-case-card:hover::before {
+        opacity: 1;
+    }
+
+    .use-case-icon {
+        font-size: clamp(2.5rem, 6vw, 3.5rem);
+        margin-bottom: 1rem;
+        filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.4));
+    }
+
+    .use-case-card h3 {
+        font-size: clamp(1.2rem, 3vw, 1.5rem);
+        font-weight: 800;
+        margin-bottom: 1rem;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .use-case-card p {
+        color: var(--text-secondary);
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+        font-size: clamp(0.95rem, 2vw, 1.05rem);
+    }
+
+    .use-case-examples {
+        background: rgba(102, 126, 234, 0.1);
+        padding: 1rem;
+        border-radius: 12px;
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        color: var(--text-secondary);
+        border: 1px solid var(--border-color);
+    }
+
+    .use-case-examples strong {
+        color: #667eea;
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* How It Works */
+    .steps-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .step {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: clamp(1.5rem, 4vw, 2.5rem);
+        margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+        align-items: start;
+    }
+
+    .step-number {
+        background: var(--primary-gradient);
+        color: white;
+        width: clamp(60px, 15vw, 80px);
+        height: clamp(60px, 15vw, 80px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        flex-shrink: 0;
+        box-shadow: 0 10px 35px rgba(102, 126, 234, 0.4);
+        position: relative;
+    }
+
+    .step-number::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        animation: shine 3s infinite;
+    }
+
+    @keyframes shine {
+        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    .step-content {
+        background: rgba(30, 27, 75, 0.3);
+        backdrop-filter: blur(20px);
+        padding: clamp(2rem, 4vw, 2.5rem);
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        border: 2px solid var(--border-color);
+    }
+
+    .step-content h3 {
+        font-size: clamp(1.3rem, 3vw, 1.8rem);
+        font-weight: 800;
+        margin-bottom: 1rem;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .step-content p {
+        color: var(--text-secondary);
+        line-height: 1.7;
+        font-size: clamp(0.95rem, 2vw, 1.1rem);
+    }
+
+    /* Earnings Section */
+    .earnings-bg {
+        background: rgba(102, 126, 234, 0.05);
+    }
+
+    .earnings-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: clamp(2rem, 4vw, 3rem);
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .earnings-card {
+        background: rgba(30, 27, 75, 0.3);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: clamp(2rem, 4vw, 2.5rem);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        border: 2px solid var(--border-color);
+        transition: all 0.3s;
+    }
+
+    .earnings-card:hover {
+        border-color: #667eea;
+        transform: translateY(-5px);
+        box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+    }
+
+    .earnings-card h3 {
+        font-size: clamp(1.3rem, 3vw, 1.6rem);
+        font-weight: 800;
+        margin-bottom: 0.75rem;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .earnings-card > p {
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+        font-size: clamp(0.9rem, 2vw, 1rem);
+    }
+
+    .earnings-breakdown {
+        margin-bottom: 1.5rem;
+    }
+
+    .earnings-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(88, 80, 236, 0.2);
+    }
+
+    .earnings-row:last-child {
+        border-bottom: none;
+    }
+
+    .earnings-label {
+        color: var(--text-secondary);
+        font-weight: 600;
+        font-size: clamp(0.9rem, 2vw, 1rem);
+    }
+
+    .earnings-value {
+        font-weight: 700;
+        color: #667eea;
+        font-size: clamp(0.9rem, 2vw, 1rem);
+    }
+
+    .earnings-total {
+        background: var(--primary-gradient);
+        color: white;
+        padding: 1.25rem;
+        border-radius: 16px;
+        text-align: center;
+        font-size: clamp(1.2rem, 3vw, 1.5rem);
+        font-weight: 900;
+        margin-top: 1.5rem;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .earnings-total a {
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .earnings-total a:hover {
+        color: #e2e8f0;
+        text-decoration: underline;
+    }
+
+    .earnings-note {
+        background: rgba(102, 126, 234, 0.1);
+        padding: 1rem;
+        border-radius: 12px;
+        margin-top: 1rem;
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        color: var(--text-secondary);
+        border-left: 3px solid #667eea;
+        line-height: 1.6;
+    }
+
+    /* Features Grid */
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: clamp(1.5rem, 3vw, 2rem);
+    }
+
+    .feature-item {
+        background: rgba(30, 27, 75, 0.3);
+        backdrop-filter: blur(20px);
+        padding: clamp(1.5rem, 3vw, 2rem);
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: start;
+        gap: 1rem;
+        border: 2px solid var(--border-color);
+        transition: all 0.3s ease;
+    }
+
+    .feature-item:hover {
+        transform: translateY(-5px);
+        border-color: #667eea;
+        box-shadow: 0 15px 50px rgba(102, 126, 234, 0.4);
+    }
+
+    .feature-icon {
+        font-size: clamp(2rem, 5vw, 2.5rem);
+        filter: drop-shadow(0 0 15px rgba(102, 126, 234, 0.4));
+    }
+
+    .feature-content h4 {
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        color: #fff;
+        font-size: clamp(1rem, 2.5vw, 1.1rem);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .feature-content p {
+        color: var(--text-secondary);
+        font-size: clamp(0.9rem, 2vw, 0.95rem);
+        line-height: 1.6;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+        backdrop-filter: blur(20px);
+        color: white;
+        padding: clamp(4rem, 8vw, 6rem) 0;
+        text-align: center;
+        border-top: 2px solid var(--border-color);
+        margin-top: clamp(3rem, 6vw, 5rem);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+        animation: rotate 20s linear infinite;
+    }
+
+    .cta-section > div {
+        position: relative;
+        z-index: 1;
+    }
+
+    .cta-section h2 {
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        font-weight: 900;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #fff 0%, #e2e8f0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.02em;
+    }
+
+    .cta-section p {
+        font-size: clamp(1.1rem, 3vw, 1.4rem);
+        margin-bottom: 2.5rem;
+        color: var(--text-secondary);
+    }
+
+    .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 1.25rem 2.5rem;
+        border-radius: 16px;
+        font-weight: 800;
+        font-size: clamp(1rem, 2.5vw, 1.1rem);
+        text-decoration: none;
+        transition: all 0.3s;
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+    .btn-white {
+        background: white;
+        color: #667eea;
+        box-shadow: 0 10px 35px rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-outline {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-white:hover {
+        color: #667eea;
+        background: #e2e8f0;
+    }
+
+    /* Passive Income Box */
+    .passive-income-box {
+        text-align: center;
+        margin-top: 3rem;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        background: rgba(30, 27, 75, 0.3);
+        backdrop-filter: blur(20px);
+        padding: clamp(2rem, 4vw, 3rem);
+        border-radius: 20px;
+        border: 2px solid var(--border-color);
+    }
+
+    .passive-income-box p {
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+        color: var(--text-secondary);
+        line-height: 1.8;
+    }
+
+    .passive-income-box strong {
+        color: #667eea;
+        font-weight: 800;
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
         .step {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            gap: 2rem;
-            margin-bottom: 3rem;
-            align-items: start;
+            grid-template-columns: 1fr;
+            gap: 1rem;
         }
 
         .step-number {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .step-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .step-content h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.75rem;
-            color: #1e293b;
-        }
-
-        .step-content p {
-            color: #64748b;
-            line-height: 1.7;
-        }
-
-        /* Earnings Section */
-        .earnings-bg {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(240, 147, 251, 0.05) 100%);
-        }
-
-        .earnings-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 900px;
             margin: 0 auto;
         }
 
-        .earnings-card {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border: 3px solid transparent;
-            transition: all 0.3s;
-        }
-
-        .earnings-card:hover {
-            border-color: #667eea;
-            transform: translateY(-5px);
-        }
-
-        .earnings-card h3 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: #1e293b;
-        }
-
-        .earnings-breakdown {
-            margin-bottom: 1.5rem;
-        }
-
-        .earnings-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .earnings-row:last-child {
-            border-bottom: none;
-        }
-
-        .earnings-label {
-            color: #64748b;
-            font-weight: 600;
-        }
-
-        .earnings-value {
-            font-weight: 700;
-            color: #667eea;
-        }
-
-        .earnings-total {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1rem;
-            border-radius: 12px;
-            text-align: center;
-            font-size: 1.3rem;
-            font-weight: 800;
-            margin-top: 1rem;
-        }
-
-        .earnings-note {
-            background: rgba(102, 126, 234, 0.05);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            color: #475569;
-            border-left: 3px solid #667eea;
-        }
-
-        /* Features Grid */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .feature-item {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            display: flex;
-            align-items: start;
-            gap: 1rem;
-        }
-
-        .feature-icon {
-            font-size: 2rem;
-        }
-
-        .feature-content h4 {
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: #1e293b;
-        }
-
-        .feature-content p {
-            color: #64748b;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: clamp(3rem, 8vw, 5rem) 0;
-            text-align: center;
-        }
-
-        .cta-section h2 {
-            font-size: clamp(2rem, 5vw, 3rem);
-            font-weight: 900;
-            margin-bottom: 1rem;
-        }
-
-        .cta-section p {
-            font-size: clamp(1rem, 2.5vw, 1.3rem);
-            margin-bottom: 2rem;
-            opacity: 0.95;
+        .earnings-cards {
+            grid-template-columns: 1fr;
         }
 
         .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: stretch;
         }
 
         .btn {
-            padding: 1.25rem 2.5rem;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            text-decoration: none;
-            transition: all 0.3s;
-            display: inline-block;
+            width: 100%;
         }
+    }
 
-        .btn-white {
-            background: white;
-            color: #667eea;
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
         }
+    }
+</style>
+{% endblock %}
 
-        .btn-outline {
-            background: transparent;
-            color: white;
-            border: 2px solid white;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Mobile */
-        @media (max-width: 768px) {
-            .step {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .step-number {
-                width: 50px;
-                height: 50px;
-                font-size: 1.2rem;
-                margin: 0 auto;
-            }
-
-            .earnings-cards {
-                grid-template-columns: 1fr;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .btn {
-                width: 100%;
-            }
-        }
-    </style>
-</head>
-<body>
+{% block content %}
+<div class="creator-page">
     <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
+    <section class="hero-section">
+        <div class="creator-container">
             <div class="hero-content">
-                <h1>Turn Your Expertise Into Income</h1>
-                <p class="hero-subtitle">Create AI voice bots, share them, and earn real money from every conversation</p>
-                <a href="{% url 'dashboard' %}" class="cta-primary">Start Creating Today</a>
+                <h1>⚡ Neural Creator Protocol</h1>
+                <p class="hero-subtitle">Transform expertise into autonomous revenue streams through AI voice systems</p>
+                <a href="{% url 'create_roleplay_bot' %}" class="cta-primary">🚀 Deploy First System</a>
             </div>
         </div>
     </section>
 
     <!-- Stats Section -->
-    <section class="stats">
-        <div class="container">
+    <section class="stats-section">
+        <div class="creator-container">
             <div class="stats-grid">
                 <div class="stat-item">
                     <div class="stat-number">20-30%</div>
-                    <div class="stat-label">Revenue Share</div>
+                    <div class="stat-label">Revenue Distribution</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-number">Unlimited</div>
-                    <div class="stat-label">Earning Potential</div>
+                    <div class="stat-label">Scaling Potential</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-number">Free</div>
-                    <div class="stat-label">Sign up and get 50 free credits — enough to create 5 bots.</div>
+                    <div class="stat-label">Initialize with 50 credits — Deploy 5 neural systems</div>
                 </div>
             </div>
         </div>
@@ -482,70 +722,70 @@
 
     <!-- Use Cases Section -->
     <section class="section">
-        <div class="container">
+        <div class="creator-container">
             <div class="section-header">
-                <h2 class="section-title">Create Bots for Any Niche</h2>
-                <p class="section-subtitle">Whatever your expertise, there's an audience waiting to learn from your AI bot</p>
+                <h2 class="section-title">Deploy Bots Across Domains</h2>
+                <p class="section-subtitle">Every expertise area represents untapped revenue potential in neural markets</p>
             </div>
 
             <div class="use-cases-grid">
                 <div class="use-case-card">
                     <div class="use-case-icon">💼</div>
-                    <h3>Interview Preparation</h3>
-                    <p>Help job seekers practice interviews with realistic AI conversations tailored to specific roles and industries.</p>
+                    <h3>Career Simulation</h3>
+                    <p>Neural interview systems providing realistic candidate assessment and preparation protocols.</p>
                     <div class="use-case-examples">
-                        <strong>Examples:</strong>
-                        Software Engineer interviews, Product Manager mock interviews, Sales role-plays, Consulting case practices
+                        <strong>Deployment Examples:</strong>
+                        Software Engineering • Product Management • Sales Operations • Consulting Strategy
                     </div>
                 </div>
 
                 <div class="use-case-card">
                     <div class="use-case-icon">🗣️</div>
-                    <h3>Language Learning</h3>
-                    <p>Create conversational partners that help learners practice speaking in any language with natural dialogue.</p>
+                    <h3>Language Systems</h3>
+                    <p>Conversational AI partners enabling natural language acquisition through immersive dialogue.</p>
                     <div class="use-case-examples">
-                        <strong>Examples:</strong>
-                        Spanish tutor, Business English coach, IELTS speaking prep, Casual conversation practice
+                        <strong>Deployment Examples:</strong>
+                        Spanish Fluency • Business English • IELTS Protocol • Conversational Practice
                     </div>
                 </div>
 
                 <div class="use-case-card">
                     <div class="use-case-icon">🎓</div>
                     <h3>Professional Training</h3>
-                    <p>Build scenario-based training bots for workplace skills, customer service, sales, and more.</p>
+                    <p>Scenario-based training protocols for workplace competencies and skill advancement.</p>
                     <div class="use-case-examples">
-                        <strong>Examples:</strong>
-                        Customer support scenarios, Sales pitch practice, Difficult conversation training, Presentation coaching
+                        <strong>Deployment Examples:</strong>
+                        Customer Support • Sales Training • Communication Protocols • Presentation Systems
                     </div>
                 </div>
 
                 <div class="use-case-card">
                     <div class="use-case-icon">🧠</div>
-                    <h3>Personal Development</h3>
-                    <p>Design bots that coach users through personal growth, confidence building, and communication skills.</p>
+                    <h3>Development Programs</h3>
+                    <p>Personal growth systems for confidence building and advanced communication mastery.</p>
                     <div class="use-case-examples">
-                        <strong>Examples:</strong>
-                        Public speaking coach, Negotiation trainer, Conflict resolution practice, Dating conversation prep
+                        <strong>Deployment Examples:</strong>
+                        Public Speaking • Negotiation Protocols • Conflict Resolution • Social Dynamics
                     </div>
                 </div>
 
                 <div class="use-case-card">
                     <div class="use-case-icon">🏥</div>
                     <h3>Healthcare & Wellness</h3>
-                    <p>Create supportive bots for medical exam prep, patient communication, or wellness coaching.</p>
+                    <p>Medical simulation systems for examination preparation and patient interaction training.</p>
                     <div class="use-case-examples">
-                        <strong>Examples:</strong>
-                        Medical exam prep, Patient consultation practice, Therapy conversation skills, Wellness check-ins
+                        <strong>Deployment Examples:</strong>
+                        Medical Exams • Patient Communication • Therapy Protocols • Wellness Coaching
                     </div>
                 </div>
 
                 <div class="use-case-card">
                     <div class="use-case-icon">🎭</div>
-                    <h3>Creative & Entertainment</h3>
-                    <p>Build character roleplay bots, storytelling companions, or creative practice partners.</p>
+                    <h3>Creative Systems</h3>
+                    <p>Character roleplay protocols, storytelling engines, and creative practice companions.</p>
                     <div class="use-case-examples">
-                        <strong>Examples:</strong>
-                        Fictional character chats, Improv practice, Creative writing prompts, D&D dungeon master
+                        <strong>Deployment Examples:</strong>
+                        Character Systems • Improv Training • Creative Writing • D&D Protocols
                     </div>
                 </div>
             </div>
@@ -554,42 +794,42 @@
 
     <!-- How It Works Section -->
     <section class="section">
-        <div class="container">
+        <div class="creator-container">
             <div class="section-header">
-                <h2 class="section-title">How It Works</h2>
-                <p class="section-subtitle">Four simple steps to start earning</p>
+                <h2 class="section-title">Protocol Architecture</h2>
+                <p class="section-subtitle">Four-phase revenue generation system</p>
             </div>
 
             <div class="steps-container">
                 <div class="step">
                     <div class="step-number">1</div>
                     <div class="step-content">
-                        <h3>Create Your Bot</h3>
-                        <p>Design an AI voice bot with custom personality, expertise, and conversation style. Set up scenarios, define responses, and configure the voice. No coding required.</p>
+                        <h3>Engineer Neural Bot</h3>
+                        <p>Design AI voice systems with custom personality matrices, domain expertise, and conversational protocols. Configure scenarios and voice synthesis parameters. Zero coding required.</p>
                     </div>
                 </div>
 
                 <div class="step">
                     <div class="step-number">2</div>
                     <div class="step-content">
-                        <h3>Publish & Share</h3>
-                        <p>Make your bot public on PrepAI's marketplace. Share your unique bot link on social media, with your audience, or through affiliate programs.</p>
+                        <h3>Deploy & Distribute</h3>
+                        <p>Publish neural systems to PrepAI marketplace. Generate unique distribution links for social networks, audience channels, and affiliate programs.</p>
                     </div>
                 </div>
 
                 <div class="step">
                     <div class="step-number">3</div>
                     <div class="step-content">
-                        <h3>Users Engage</h3>
-                        <p>When people use your bot, they spend credits for each conversation. Every interaction generates revenue that's automatically tracked.</p>
+                        <h3>User Engagement</h3>
+                        <p>When users interact with your system, they consume credits per conversation. Each engagement generates tracked revenue streams automatically.</p>
                     </div>
                 </div>
 
                 <div class="step">
                     <div class="step-number">4</div>
                     <div class="step-content">
-                        <h3>Earn & Withdraw</h3>
-                        <p>Receive your share of credits from every conversation. Convert your earnings to real money and withdraw anytime.</p>
+                        <h3>Extract & Monetize</h3>
+                        <p>Receive credit allocation from all engagements. Convert accumulated earnings to fiat currency and execute withdrawals on demand.</p>
                     </div>
                 </div>
             </div>
@@ -598,20 +838,20 @@
 
     <!-- Earnings Section -->
     <section class="section earnings-bg">
-        <div class="container">
+        <div class="creator-container">
             <div class="section-header">
-                <h2 class="section-title">Transparent Earnings Model</h2>
-                <p class="section-subtitle">See exactly how much you earn from every interaction</p>
+                <h2 class="section-title">Revenue Distribution Model</h2>
+                <p class="section-subtitle">Complete transparency on every credit transaction</p>
             </div>
 
             <div class="earnings-cards">
                 <div class="earnings-card">
-                    <h3>Direct Usage</h3>
-                    <p style="color: #64748b; margin-bottom: 1.5rem;">When users discover and use your bot directly</p>
+                    <h3>🎯 Direct Access</h3>
+                    <p>Users discover and engage with your neural system organically</p>
                     
                     <div class="earnings-breakdown">
                         <div class="earnings-row">
-                            <span class="earnings-label">User Pays</span>
+                            <span class="earnings-label">User Payment</span>
                             <span class="earnings-value">10 credits</span>
                         </div>
                         <div class="earnings-row">
@@ -619,31 +859,31 @@
                             <span class="earnings-value">-5 credits</span>
                         </div>
                         <div class="earnings-row">
-                            <span class="earnings-label" style="color: #22c55e;">You Earn</span>
+                            <span class="earnings-label" style="color: #22c55e;">Creator Revenue</span>
                             <span class="earnings-value" style="color: #22c55e;">3 credits</span>
                         </div>
                         <div class="earnings-row">
-                            <span class="earnings-label">Platform</span>
+                            <span class="earnings-label">Platform Share</span>
                             <span class="earnings-value">2 credits</span>
                         </div>
                     </div>
 
                     <div class="earnings-total">
-                        30% Revenue Share
+                        30% Revenue Split
                     </div>
 
                     <div class="earnings-note">
-                        Higher earnings when users find your bot organically
+                        Maximum earnings through organic user discovery
                     </div>
                 </div>
 
                 <div class="earnings-card">
-                    <h3>Referred Usage</h3>
-                    <p style="color: #64748b; margin-bottom: 1.5rem;">When users come through an affiliate referral link</p>
+                    <h3>🔗 Affiliate Channel</h3>
+                    <p>Users arrive through referral distribution networks</p>
                     
                     <div class="earnings-breakdown">
                         <div class="earnings-row">
-                            <span class="earnings-label">User Pays</span>
+                            <span class="earnings-label">User Payment</span>
                             <span class="earnings-value">10 credits</span>
                         </div>
                         <div class="earnings-row">
@@ -651,36 +891,36 @@
                             <span class="earnings-value">-5 credits</span>
                         </div>
                         <div class="earnings-row">
-                            <span class="earnings-label" style="color: #22c55e;">You Earn</span>
+                            <span class="earnings-label" style="color: #22c55e;">Creator Revenue</span>
                             <span class="earnings-value" style="color: #22c55e;">2 credits</span>
                         </div>
                         <div class="earnings-row">
-                            <span class="earnings-label">Referrer Earns</span>
+                            <span class="earnings-label">Affiliate Revenue</span>
                             <span class="earnings-value">1 credit</span>
                         </div>
                         <div class="earnings-row">
-                            <span class="earnings-label">Platform</span>
+                            <span class="earnings-label">Platform Share</span>
                             <span class="earnings-value">2 credits</span>
                         </div>
                     </div>
 
                     <div class="earnings-total">
-                        20% Revenue Share
+                        20% Revenue Split
                     </div>
 
                     <div class="earnings-note">
-                        Referrers help promote your bot to wider audiences
+                        Affiliate networks amplify system reach exponentially
                     </div>
                 </div>
             </div>
-                                <div class="earnings-total">
-                                    <a href="{% url 'pricing-guide' %}">View Complete Earning Guide</a>
-                        
-                    </div>
 
-            <div style="text-align: center; margin-top: 3rem; max-width: 700px; margin-left: auto; margin-right: auto;">
-                <p style="font-size: 1.1rem; color: #64748b; line-height: 1.8;">
-                    <strong style="color: #667eea;">Passive Income Potential:</strong> Create once, earn forever. Your bots work 24/7, generating revenue while you sleep. Scale your income by creating multiple bots across different niches.
+            <div class="earnings-total" style="margin-top: 3rem;">
+                <a href="{% url 'pricing-guide' %}">📊 Complete Revenue Intelligence</a>
+            </div>
+
+            <div class="passive-income-box">
+                <p>
+                    <strong>💰 Autonomous Revenue Generation:</strong> Deploy once, generate perpetually. Neural systems operate continuously, accumulating revenue during inactive periods. Scale income through multi-domain deployment strategies.
                 </p>
             </div>
         </div>
@@ -688,57 +928,57 @@
 
     <!-- Features Section -->
     <section class="section">
-        <div class="container">
+        <div class="creator-container">
             <div class="section-header">
-                <h2 class="section-title">Why Creators Choose PrepAI</h2>
+                <h2 class="section-title">Creator Advantages</h2>
             </div>
 
             <div class="features-grid">
                 <div class="feature-item">
                     <div class="feature-icon">💰</div>
                     <div class="feature-content">
-                        <h4>Real Money</h4>
-                        <p>Convert your credits to cash and withdraw to your bank account</p>
+                        <h4>Fiat Conversion</h4>
+                        <p>Transform credits to currency with direct bank extraction protocols</p>
                     </div>
                 </div>
 
                 <div class="feature-item">
                     <div class="feature-icon">📊</div>
                     <div class="feature-content">
-                        <h4>Analytics Dashboard</h4>
-                        <p>Track usage, earnings, and user engagement in real-time</p>
+                        <h4>Analytics Matrix</h4>
+                        <p>Real-time monitoring of engagement metrics and revenue generation</p>
                     </div>
                 </div>
 
                 <div class="feature-item">
                     <div class="feature-icon">🔗</div>
                     <div class="feature-content">
-                        <h4>Affiliate Program</h4>
-                        <p>Let others promote your bots and expand your reach</p>
+                        <h4>Affiliate Network</h4>
+                        <p>Enable distributed promotion for exponential reach expansion</p>
                     </div>
                 </div>
 
                 <div class="feature-item">
                     <div class="feature-icon">🎨</div>
                     <div class="feature-content">
-                        <h4>Full Customization</h4>
-                        <p>Control personality, voice, scenarios, and conversation flow</p>
+                        <h4>Complete Control</h4>
+                        <p>Configure personality, voice synthesis, scenarios, and conversation logic</p>
                     </div>
                 </div>
 
                 <div class="feature-item">
                     <div class="feature-icon">🚀</div>
                     <div class="feature-content">
-                        <h4>Easy to Start</h4>
-                        <p>No technical skills needed, intuitive bot builder interface</p>
+                        <h4>Zero Friction</h4>
+                        <p>Intuitive deployment interface requiring zero technical knowledge</p>
                     </div>
                 </div>
 
                 <div class="feature-item">
                     <div class="feature-icon">🔒</div>
                     <div class="feature-content">
-                        <h4>Your IP Protected</h4>
-                        <p>You maintain ownership of your bot designs and content</p>
+                        <h4>IP Protection</h4>
+                        <p>Maintain complete ownership of neural designs and content systems</p>
                     </div>
                 </div>
             </div>
@@ -747,16 +987,15 @@
 
     <!-- CTA Section -->
     <section class="cta-section" id="get-started">
-        <div class="container">
-            <h2>Ready to Start Earning?</h2>
-            <p>Join thousands of creators building profitable AI voice bots</p>
+        <div class="creator-container">
+            <h2>🎯 Initialize Revenue Protocol</h2>
+            <p>Join neural creators generating autonomous income streams</p>
             <div class="cta-buttons">
-                <a href="{% url 'dashboard' %}" class="btn btn-white">Create Your First Bot</a>
-                <a href="{% url 'login' %}" class="btn btn-outline">Sign In</a>
-                <a href="{% url 'pricing-guide' %}" class="btn btn-outline">Earning Guide</a>
+                <a href="{% url 'create_roleplay_bot' %}" class="btn btn-white">⚡ Deploy First System</a>
+                <a href="{% url 'login' %}" class="btn btn-outline">🔐 Access Portal</a>
+                <a href="{% url 'pricing-guide' %}" class="btn btn-outline">📊 Revenue Guide</a>
             </div>
         </div>
     </section>
-
-</body>
-</html>
+</div>
+{% endblock %}

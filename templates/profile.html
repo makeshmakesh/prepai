@@ -1,25 +1,47 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Profile - PrepAI{% endblock %}
+{% block title %}Neural Profile - PrepAI{% endblock %}
 
 {% block extra_css %}
 <style>
-    /* Profile-specific styles */
-    .profile-container {
-        max-width: 800px;
-        margin: 0 auto;
+    /* Override base content layout */
+    .content {
+        flex: 0 0 auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
     }
 
+    /* Futuristic Profile Page */
+    .profile-page {
+        min-height: 100vh;
+        position: relative;
+        padding: 0;
+    }
+
+    .profile-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 3vw, 2rem);
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Profile Header */
     .profile-header {
-        background: var(--primary-gradient);
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+        backdrop-filter: blur(20px);
         color: white;
         border-radius: 25px;
-        padding: 3rem;
+        padding: clamp(2.5rem, 6vw, 4rem);
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: clamp(2rem, 5vw, 3rem);
         position: relative;
         overflow: hidden;
+        border: 2px solid var(--border-color);
+        box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+        animation: fadeInUp 0.8s ease 0.2s both;
     }
 
     .profile-header::before {
@@ -29,165 +51,217 @@
         left: -50%;
         width: 200%;
         height: 200%;
-        background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.1) 100%);
-        animation: shimmer 3s infinite;
+        background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+        animation: rotate 20s linear infinite;
     }
 
-    @keyframes shimmer {
+    @keyframes rotate {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
 
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
     .profile-avatar {
-        width: 120px;
-        height: 120px;
-        background: rgba(255, 255, 255, 0.2);
+        width: clamp(100px, 25vw, 140px);
+        height: clamp(100px, 25vw, 140px);
+        background: var(--primary-gradient);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 4rem;
+        font-size: clamp(3rem, 10vw, 5rem);
         margin: 0 auto 1.5rem;
-        border: 4px solid rgba(255, 255, 255, 0.3);
+        border: 4px solid rgba(102, 126, 234, 0.3);
         position: relative;
         z-index: 1;
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+    }
+
+    .profile-avatar::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        animation: shine 3s infinite;
+    }
+
+    @keyframes shine {
+        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
     }
 
     .profile-name {
-        font-size: 1.2rem;
-        font-weight: 800;
-        margin-bottom: 0.5rem;
+        font-size: clamp(1.8rem, 5vw, 2.5rem);
+        font-weight: 900;
+        margin-bottom: 0.75rem;
         position: relative;
         z-index: 1;
+        background: linear-gradient(135deg, #fff 0%, #e2e8f0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.02em;
     }
 
     .profile-email {
-        font-size: 1.2rem;
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
         opacity: 0.9;
         position: relative;
         z-index: 1;
+        color: var(--text-secondary);
     }
 
+    /* Profile Stats */
     .profile-stats {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
+        gap: clamp(1.5rem, 3vw, 2rem);
+        margin-bottom: clamp(2rem, 5vw, 3rem);
     }
 
     .stat-card {
-        background: white;
+        background: rgba(30, 27, 75, 0.3);
+        backdrop-filter: blur(20px);
         border-radius: 20px;
-        padding: 2rem;
+        padding: clamp(2rem, 4vw, 2.5rem);
         text-align: center;
-        box-shadow: var(--shadow-light);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
+        border: 2px solid var(--border-color);
+        animation: fadeInUp 0.8s ease both;
     }
+
+    .stat-card:nth-child(1) { animation-delay: 0.3s; }
 
     .stat-card::before {
         content: '';
         position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-        transition: left 0.6s ease;
-    }
-
-    .stat-card:hover::before {
-        left: 100%;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(240, 147, 251, 0.15) 0%, transparent 70%);
+        animation: rotate 15s linear infinite;
     }
 
     .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-medium);
+        transform: translateY(-8px);
+        box-shadow: 0 20px 60px rgba(240, 147, 251, 0.4);
+        border-color: #f093fb;
     }
 
     .stat-icon {
-        font-size: 3rem;
+        font-size: clamp(2.5rem, 8vw, 4rem);
         margin-bottom: 1rem;
         display: block;
+        position: relative;
+        z-index: 1;
+        filter: drop-shadow(0 0 20px rgba(240, 147, 251, 0.4));
     }
 
     .stat-value {
-        font-size: 2rem;
-        font-weight: 800;
-        color: black;
+        font-size: clamp(2rem, 6vw, 3rem);
+        font-weight: 900;
+        background: var(--secondary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
     }
 
     .stat-label {
         color: var(--text-secondary);
-        font-weight: 600;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: clamp(0.8rem, 2vw, 0.95rem);
+        position: relative;
+        z-index: 1;
     }
 
-    .credits-card {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        color: white;
-    }
-
-    .credits-card .stat-value {
-        color: white;
-    }
-
-    .credits-card .stat-label {
-        color: rgba(255, 255, 255, 0.9);
-    }
-
+    /* Profile Sections */
     .profile-sections {
         display: grid;
-        gap: 2rem;
+        gap: clamp(2rem, 4vw, 2.5rem);
     }
 
     .profile-section {
-        background: white;
+        background: rgba(30, 27, 75, 0.3);
+        backdrop-filter: blur(20px);
         border-radius: 20px;
-        padding: 2rem;
-        box-shadow: var(--shadow-light);
+        padding: clamp(2rem, 4vw, 2.5rem);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        border: 2px solid var(--border-color);
+        animation: fadeInUp 0.8s ease both;
     }
+
+    .profile-section:nth-child(1) { animation-delay: 0.4s; }
+    .profile-section:nth-child(2) { animation-delay: 0.5s; }
+    .profile-section:nth-child(3) { animation-delay: 0.6s; }
 
     .section-header {
         display: flex;
-        justify-content: between;
+        justify-content: space-between;
         align-items: center;
-        margin-bottom: 1.5rem;
-        border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
+        border-bottom: 2px solid rgba(88, 80, 236, 0.2);
         padding-bottom: 1rem;
+        flex-wrap: wrap;
+        gap: 1rem;
     }
 
     .section-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--text-primary);
+        font-size: clamp(1.3rem, 4vw, 1.8rem);
+        font-weight: 800;
+        color: #fff;
         margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
     .edit-btn {
         background: var(--secondary-gradient);
         color: white;
         border: none;
-        padding: 0.5rem 1rem;
+        padding: 0.75rem 1.5rem;
         border-radius: 15px;
         font-size: 0.9rem;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
         transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 5px 20px rgba(240, 147, 251, 0.3);
     }
 
     .edit-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(240, 147, 251, 0.3);
+        box-shadow: 0 10px 30px rgba(240, 147, 251, 0.5);
     }
 
     .info-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 1rem 0;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 1.5rem 0;
+        border-bottom: 1px solid rgba(88, 80, 236, 0.2);
     }
 
     .info-row:last-child {
@@ -195,95 +269,194 @@
     }
 
     .info-label {
-        font-weight: 600;
+        font-weight: 700;
         color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
     }
 
     .info-value {
-        color: black;
-        font-weight: 500;
+        color: #fff;
+        font-weight: 600;
+        font-size: clamp(0.95rem, 2vw, 1.05rem);
     }
 
+    /* Credits Actions */
     .credits-actions {
         display: flex;
         gap: 1rem;
         justify-content: center;
         margin-top: 2rem;
+        flex-wrap: wrap;
     }
 
     .btn-credits {
         background: var(--accent-gradient);
         color: white;
-        padding: 0.8rem 2rem;
-        border-radius: 25px;
-        font-weight: 600;
+        padding: 1rem 2rem;
+        border-radius: 15px;
+        font-weight: 700;
         text-decoration: none;
         transition: all 0.3s ease;
+        box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: clamp(0.9rem, 2vw, 1rem);
+    }
+
+    .btn-credits::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .btn-credits:hover::before {
+        left: 100%;
     }
 
     .btn-credits:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 15px 30px rgba(79, 172, 254, 0.4);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(79, 172, 254, 0.6);
         color: white;
         text-decoration: none;
     }
 
-    .achievement-badges {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        margin-top: 1rem;
+    /* Logout Button */
+    .btn-outline-danger {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+        border: 2px solid rgba(239, 68, 68, 0.3);
+        padding: 1rem 2rem;
+        border-radius: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: clamp(0.9rem, 2vw, 1rem);
+        width: 100%;
     }
 
-    .badge {
+    .btn-outline-danger:hover {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        border-color: transparent;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
+    }
+
+    /* Modal Styles */
+    .modal-content {
+        border-radius: 20px;
+        border: 2px solid var(--border-color);
+        background: rgba(30, 27, 75, 0.95);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+        border-bottom: 2px solid rgba(88, 80, 236, 0.2);
+        border-radius: 20px 20px 0 0;
+        padding: 2rem;
+        background: rgba(102, 126, 234, 0.1);
+    }
+
+    .modal-title {
+        color: #fff;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .modal-body {
+        padding: 2rem;
+        color: var(--text-primary);
+    }
+
+    .modal-footer {
+        border-top: 2px solid rgba(88, 80, 236, 0.2);
+        border-radius: 0 0 20px 20px;
+        padding: 2rem;
+        background: rgba(102, 126, 234, 0.05);
+    }
+
+    .close {
+        color: var(--text-primary);
+        opacity: 0.7;
+    }
+
+    .close:hover {
+        color: #fff;
+        opacity: 1;
+    }
+
+    /* Form Styles */
+    .form-group label {
+        font-weight: 700;
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.85rem;
+    }
+
+    .form-control {
+        border-radius: 12px;
+        border: 2px solid var(--border-color);
+        padding: 0.875rem 1.25rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: rgba(30, 27, 75, 0.5);
+        color: var(--text-primary);
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        background: rgba(30, 27, 75, 0.7);
+        color: var(--text-primary);
+    }
+
+    .btn-primary {
         background: var(--primary-gradient);
         color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 15px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
     }
 
-    .activity-item {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 1rem 0;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
     }
 
-    .activity-item:last-child {
-        border-bottom: none;
-    }
-
-    .activity-icon {
-        width: 40px;
-        height: 40px;
-        background: var(--secondary-gradient);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 1.2rem;
-    }
-
-    .activity-details {
-        flex: 1;
-    }
-
-    .activity-title {
-        font-weight: 600;
+    .btn-secondary {
+        background: rgba(100, 116, 139, 0.3);
         color: var(--text-primary);
-        margin-bottom: 0.2rem;
+        border: 2px solid var(--border-color);
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
-    .activity-time {
-        color: var(--text-secondary);
-        font-size: 0.9rem;
+    .btn-secondary:hover {
+        background: rgba(100, 116, 139, 0.5);
+        color: #fff;
+        transform: translateY(-2px);
     }
 
     /* Mobile responsive */
@@ -292,186 +465,143 @@
             padding: 2rem 1.5rem;
         }
 
-        .profile-name {
-            font-size: 1.2rem;
-        }
-
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            font-size: 3rem;
-        }
-
-        .profile-stats {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .credits-actions {
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .btn-credits {
-            width: 100%;
-            max-width: 250px;
-        }
-    }
-
-    @media (max-width: 480px) {
         .profile-stats {
             grid-template-columns: 1fr;
         }
 
+        .credits-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-credits {
+            width: 100%;
+        }
+
+        .section-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .edit-btn {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 480px) {
         .info-row {
             flex-direction: column;
             align-items: flex-start;
-            gap: 0.5rem;
+            gap: 0.75rem;
+        }
+    }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
         }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="profile-container fade-in-on-scroll">
-    <!-- Profile Header -->
-    <div class="profile-header">
-        <div class="profile-avatar">
-            👤
+<div class="profile-page">
+    <div class="profile-container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar">
+                👤
+            </div>
+            <h1 class="profile-name">{{ user.get_full_name|default:user.username|title }}</h1>
+            <p class="profile-email">{{ user.email }}</p>
         </div>
-        <h1 class="profile-name">{{ user.get_full_name|default:user.username|title }}</h1>
-        <p class="profile-email">{{ user.email }}</p>
-    </div>
 
-    <!-- Profile Stats -->
-    <div class="profile-stats">
-        <div class="stat-card credits-card">
-            <span class="stat-icon">💳</span>
-            <div class="stat-value">{{ user.profile.credits|default:0 }}</div>
-            <div class="stat-label">Available Credits</div>
-        </div>
-    </div>
-
-    <!-- Profile Sections -->
-    <div class="profile-sections">
-        <!-- Account Information -->
-        <div class="profile-section">
-            <div class="section-header">
-                <h2 class="section-title">Account Information</h2>
-                {% comment %} <button class="edit-btn" onclick="editProfile()">Edit Profile</button> {% endcomment %}
-            </div>
-            
-            <div class="info-row">
-                <span class="info-label">Full Name</span>
-                <span class="info-value">{{ user.get_full_name|default:"Not provided" }}</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="info-label">Username</span>
-                <span class="info-value">{{ user.username }}</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="info-label">Email</span>
-                <span class="info-value">{{ user.email }}</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="info-label">Member Since</span>
-                <span class="info-value">{{ user.date_joined|date:"F d, Y" }}</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="info-label">Last Login</span>
-                <span class="info-value">{{ user.last_login|date:"F d, Y H:i" }}</span>
+        <!-- Profile Stats -->
+        <div class="profile-stats">
+            <div class="stat-card">
+                <span class="stat-icon">💳</span>
+                <div class="stat-value">{{ user.profile.credits|default:0 }}</div>
+                <div class="stat-label">⚡ Neural Credits</div>
             </div>
         </div>
 
-        <!-- Credits Management -->
-        <div class="profile-section">
-            <div class="section-header">
-                <h2 class="section-title">Credits Management</h2>
-            </div>
-            
-            <div class="info-row">
-                <span class="info-label">Current Balance</span>
-                <span class="info-value">{{ user.profile.credits|default:0 }} credits</span>
-            </div>
-        
-            <div class="credits-actions">
-                <a href="{% url 'purchase_credits' %}" class="btn-credits">
-                    💳 Purchase Credits
-                </a>
-                <a href="#" class="btn-credits" onclick="viewTransactions()">
-                    📊 View History
-                </a>
-            </div>
-
-
-        </div>
-
-                <div class="profile-section">
-            <div class="section-header">
-                <h2 class="section-title">Logout</h2>
-            </div>
-            
-            <div class="info-row">
-                    <form method="post" action="{% url 'logout' %}" style="display: inline; margin: 0;">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-outline-danger">Logout</button>
-        </form>
-            </div>
-
-
-        </div>
-
-        {% comment %} <!-- Achievements -->
-        <div class="profile-section">
-            <div class="section-header">
-                <h2 class="section-title">Achievements</h2>
-            </div>
-            
-            <div class="achievement-badges">
-                {% if user.interview_sessions.count >= 1 %}
-                    <span class="badge">🥉 First Interview</span>
-                {% endif %}
-                {% if user.interview_sessions.count >= 5 %}
-                    <span class="badge">🥈 Interview Rookie</span>
-                {% endif %}
-                {% if user.interview_sessions.count >= 10 %}
-                    <span class="badge">🥇 Interview Pro</span>
-                {% endif %}
-                {% if user.course_enrollments.count >= 1 %}
-                    <span class="badge">📚 Learning Started</span>
-                {% endif %}
-                {% if user.profile.total_score >= 80 %}
-                    <span class="badge">⭐ High Achiever</span>
-                {% endif %}
-            </div>
-        
-        </div>
-
-        <!-- Recent Activity -->
-        <div class="profile-section">
-            <div class="section-header">
-                <h2 class="section-title">Recent Activity</h2>
-            </div>
-            
-            {% if user.interview_sessions.all %}
-                {% for session in user.interview_sessions.all|slice:":5" %}
-                    <div class="activity-item">
-                        <div class="activity-icon">🎯</div>
-                        <div class="activity-details">
-                            <div class="activity-title">Completed {{ session.template.title }}</div>
-                            <div class="activity-time">{{ session.completed_at|timesince }} ago</div>
-                        </div>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <div class="text-center" style="padding: 2rem; color: var(--text-secondary);">
-                    No activity yet. Start your first interview to see activity here!
+        <!-- Profile Sections -->
+        <div class="profile-sections">
+            <!-- Account Information -->
+            <div class="profile-section">
+                <div class="section-header">
+                    <h2 class="section-title">🔐 Account Data</h2>
+                    {% comment %} <button class="edit-btn" onclick="editProfile()">⚙ Configure</button> {% endcomment %}
                 </div>
-            {% endif %}
-        </div> {% endcomment %}
+                
+                <div class="info-row">
+                    <span class="info-label">Full Name</span>
+                    <span class="info-value">{{ user.get_full_name|default:"Not configured" }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Username</span>
+                    <span class="info-value">{{ user.username }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Email ID</span>
+                    <span class="info-value">{{ user.email }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Registration</span>
+                    <span class="info-value">{{ user.date_joined|date:"F d, Y" }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Last Access</span>
+                    <span class="info-value">{{ user.last_login|date:"F d, Y H:i" }}</span>
+                </div>
+            </div>
+
+            <!-- Credits Management -->
+            <div class="profile-section">
+                <div class="section-header">
+                    <h2 class="section-title">💰 Credit System</h2>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Current Balance</span>
+                    <span class="info-value">{{ user.profile.credits|default:0 }} credits</span>
+                </div>
+            
+                <div class="credits-actions">
+                    <a href="{% url 'purchase_credits' %}" class="btn-credits">
+                        💳 Acquire Credits
+                    </a>
+                    <a href="#" class="btn-credits" onclick="viewTransactions()">
+                        📊 Transaction Log
+                    </a>
+                </div>
+            </div>
+
+            <!-- Logout Section -->
+            <div class="profile-section">
+                <div class="section-header">
+                    <h2 class="section-title">🚪 Session Control</h2>
+                </div>
+                
+                <div class="info-row">
+                    <form method="post" action="{% url 'logout' %}" style="width: 100%; margin: 0;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-outline-danger">
+                            🔓 Terminate Session
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -480,7 +610,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Edit Profile</h5>
+                <h5 class="modal-title">⚙ Configure Profile</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -497,7 +627,7 @@
                         <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}">
                     </div>
                     <div class="form-group">
-                        <label for="email">Email</label>
+                        <label for="email">Email ID</label>
                         <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
                     </div>
                 </div>
@@ -518,9 +648,35 @@ function editProfile() {
 }
 
 function viewTransactions() {
-    // Redirect to transaction history page
-    alert('Transaction history feature coming soon!');
-    // window.location.href = '/credits/history/';
+    // Custom alert styled like the page
+    const alertDiv = $('<div>')
+        .css({
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            background: 'rgba(30, 27, 75, 0.95)',
+            backdropFilter: 'blur(20px)',
+            border: '2px solid rgba(102, 126, 234, 0.5)',
+            borderRadius: '20px',
+            padding: '2rem',
+            maxWidth: '400px',
+            textAlign: 'center',
+            zIndex: 10000,
+            color: '#e2e8f0',
+            boxShadow: '0 25px 60px rgba(102, 126, 234, 0.4)'
+        })
+        .html(`
+            <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+            <h3 style="font-weight: 700; margin-bottom: 0.5rem; color: #fff;">Transaction Log</h3>
+            <p style="color: #94a3b8; margin-bottom: 1.5rem;">Feature deployment in progress</p>
+            <button onclick="$(this).parent().remove()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;">Acknowledged</button>
+        `);
+    
+    $('body').append(alertDiv);
+    
+    // Remove after 5 seconds if not clicked
+    setTimeout(() => alertDiv.remove(), 5000);
 }
 
 // Auto-hide success messages

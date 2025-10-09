@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrepAI - Next-Gen AI Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: #e2e8f0;
+            background: #0a0a0f;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(ellipse at top, #1e1b4b 0%, #0a0a0f 50%);
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(90deg, rgba(88, 80, 236, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(88, 80, 236, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Floating orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: float 20s infinite ease-in-out;
+            z-index: -1;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            top: -200px;
+            right: -200px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            bottom: -150px;
+            left: -150px;
+            animation-delay: 7s;
+        }
+
+        .orb-3 {
+            width: 350px;
+            height: 350px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            top: 50%;
+            right: 10%;
+            animation-delay: 14s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 30px) scale(0.9); }
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(88, 80, 236, 0.1);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 clamp(1rem, 5vw, 3rem);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+            position: relative;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #667eea, transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo:hover::after {
+            opacity: 1;
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .nav-toggle span {
+            width: 25px;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: clamp(1.5rem, 3vw, 2.5rem);
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+        }
+
+        .nav-links a:hover::before {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: clamp(80px, 15vh, 100px);
+            padding-bottom: clamp(3rem, 10vh, 6rem);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            text-align: center;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5.5rem);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #fff 0%, #667eea 50%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.8s ease;
+            letter-spacing: -0.02em;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1.2rem, 4vw, 2rem);
+            margin-bottom: 1.5rem;
+            color: #94a3b8;
+            font-weight: 600;
+            animation: fadeInUp 0.8s ease 0.2s both;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background: linear-gradient(135deg, #94a3b8 0%, #667eea 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            color: #cbd5e1;
+            margin-bottom: 3rem;
+            line-height: 1.8;
+            animation: fadeInUp 0.8s ease 0.4s both;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: clamp(1rem, 2vw, 1.3rem) clamp(2rem, 4vw, 3rem);
+            border-radius: 50px;
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.6);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: clamp(3rem, 8vw, 5rem) 0;
+            background: rgba(15, 15, 25, 0.5);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(88, 80, 236, 0.1);
+            border-bottom: 1px solid rgba(88, 80, 236, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: clamp(2rem, 5vw, 3rem);
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 2rem;
+            background: rgba(30, 27, 75, 0.3);
+            border-radius: 20px;
+            border: 1px solid rgba(88, 80, 236, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            border-color: rgba(88, 80, 236, 0.5);
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .stat-item h3 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-item p {
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            color: #94a3b8;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Products Section */
+        .products {
+            padding: clamp(5rem, 10vw, 8rem) 0;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: clamp(3rem, 8vw, 6rem);
+        }
+
+        .section-header h2 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #667eea 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .section-header p {
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            color: #94a3b8;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+            gap: clamp(2rem, 5vw, 3rem);
+        }
+
+        .product-card {
+            background: rgba(30, 27, 75, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: clamp(2rem, 5vw, 3rem);
+            border: 1px solid rgba(88, 80, 236, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 24px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+
+        .product-card:not(.disabled):hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+        }
+
+        .product-card:not(.disabled):hover::before {
+            opacity: 1;
+        }
+
+        .product-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .product-icon {
+            width: clamp(70px, 15vw, 90px);
+            height: clamp(70px, 15vw, 90px);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(2rem, 5vw, 2.8rem);
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            position: relative;
+        }
+
+        .product-card.disabled .product-icon {
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .product-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .product-card h3 {
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            color: #fff;
+        }
+
+        .product-card .tagline {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: #667eea;
+            margin-bottom: 1.25rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .product-card.disabled .tagline {
+            color: #64748b;
+        }
+
+        .product-card p {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-size: clamp(0.95rem, 2vw, 1.05rem);
+        }
+
+        .use-cases {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .use-cases li {
+            padding: 0.7rem 0;
+            color: #94a3b8;
+            position: relative;
+            padding-left: 2rem;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            transition: color 0.3s ease;
+        }
+
+        .use-cases li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            top: 0.7rem;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .product-card:hover .use-cases li {
+            color: #cbd5e1;
+        }
+
+        .product-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: clamp(1rem, 2vw, 1.1rem);
+            transition: all 0.3s ease;
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #667eea;
+            border-radius: 50px;
+        }
+
+        .product-link:hover {
+            background: #667eea;
+            color: white;
+            gap: 0.75rem;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .coming-soon-badge {
+            display: inline-block;
+            background: rgba(100, 116, 139, 0.3);
+            color: #94a3b8;
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            font-weight: 600;
+            margin-top: 0.5rem;
+            border: 1px solid rgba(100, 116, 139, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Features Section */
+        .features {
+            padding: clamp(5rem, 10vw, 8rem) 0;
+            background: rgba(15, 15, 25, 0.5);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(88, 80, 236, 0.1);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+            gap: clamp(2rem, 5vw, 3rem);
+        }
+
+        .feature-item {
+            background: rgba(30, 27, 75, 0.3);
+            backdrop-filter: blur(10px);
+            padding: clamp(2rem, 5vw, 2.5rem);
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid rgba(88, 80, 236, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-item:hover::before {
+            opacity: 1;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-8px);
+            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 0 15px 45px rgba(102, 126, 234, 0.2);
+        }
+
+        .feature-icon {
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.5));
+        }
+
+        .feature-item h3 {
+            font-size: clamp(1.3rem, 3vw, 1.6rem);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: #fff;
+        }
+
+        .feature-item p {
+            color: #94a3b8;
+            line-height: 1.7;
+            font-size: clamp(0.95rem, 2vw, 1.05rem);
+        }
+
+        /* CTA Section */
+        .final-cta {
+            padding: clamp(5rem, 10vw, 8rem) 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .final-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+        }
+
+        .final-cta-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .final-cta h2 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #667eea 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .final-cta p {
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            margin-bottom: 3rem;
+            color: #94a3b8;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: clamp(1.1rem, 2vw, 1.4rem) clamp(2.5rem, 4vw, 3.5rem);
+            border-radius: 50px;
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+            border: 2px solid transparent;
+        }
+
+        .cta-btn-secondary {
+            background: rgba(30, 27, 75, 0.5);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: clamp(1.1rem, 2vw, 1.4rem) clamp(2.5rem, 4vw, 3.5rem);
+            border: 2px solid rgba(102, 126, 234, 0.5);
+            border-radius: 50px;
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .cta-btn-primary:hover,
+        .cta-btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.5);
+        }
+
+        .cta-btn-secondary:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(20px);
+            color: #94a3b8;
+            padding: clamp(3rem, 8vw, 5rem) 0 clamp(2rem, 5vw, 3rem);
+            border-top: 1px solid rgba(88, 80, 236, 0.2);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+            gap: clamp(2rem, 5vw, 3rem);
+            margin-bottom: clamp(2rem, 5vw, 3rem);
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+            font-weight: 700;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: #94a3b8;
+            line-height: 1.8;
+            text-decoration: none;
+            display: block;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            transition: color 0.3s ease;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a:hover {
+            color: #667eea;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: clamp(1.5rem, 4vw, 2rem);
+            border-top: 1px solid rgba(88, 80, 236, 0.2);
+            color: #64748b;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+        }
+
+        .footer-bottom a {
+            color: #64748b;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-bottom a:hover {
+            color: #667eea;
+        }
+
+        /* Mobile Menu */
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: rgba(10, 10, 15, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                justify-content: flex-start;
+                padding: 2rem;
+                gap: 1.5rem;
+                transition: left 0.3s ease;
+                border-right: 1px solid rgba(88, 80, 236, 0.2);
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .nav-links a {
+                font-size: 1.2rem;
+                padding: 0.75rem 0;
+                border-bottom: 1px solid rgba(88, 80, 236, 0.1);
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .products-grid {
+                gap: 2rem;
+            }
+
+            .hero-cta,
+            .cta-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .cta-button,
+            .cta-btn-primary,
+            .cta-btn-secondary {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <header>
+        <nav class="container">
+            <a href="/" class="logo">PrepAI</a>
+            <button class="nav-toggle" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#products">Products</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="mailto:support@prepai.online">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Next-Gen AI Intelligence</h1>
+                <p class="subtitle">Powered by Advanced Neural Networks</p>
+                <p>Experience the future of AI with PrepAI's cutting-edge voice technology. From immersive roleplay to enterprise automation, we're redefining what's possible with artificial intelligence.</p>
+                <div class="hero-cta">
+                    <a href="#products" class="cta-button">Explore the Future →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>15K+</h3>
+                    <p>AI Models Deployed</p>
+                </div>
+                <div class="stat-item">
+                    <h3>750K+</h3>
+                    <p>Daily Interactions</p>
+                </div>
+                <div class="stat-item">
+                    <h3>98%</h3>
+                    <p>Accuracy Rate</p>
+                </div>
+                <div class="stat-item">
+                    <h3>60+</h3>
+                    <p>Countries</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="products" id="products">
+        <div class="container">
+            <div class="section-header">
+                <h2>AI Product Ecosystem</h2>
+                <p>Advanced artificial intelligence solutions engineered for the modern world</p>
+            </div>
+
+            <div class="products-grid">
+                <div class="product-card roleplay">
+                    <div class="product-icon">🎭</div>
+                    <h3>PrepAI RolePlay</h3>
+                    <p class="tagline">Neural Voice Synthesis</p>
+                    <p>Revolutionary voice AI platform powered by advanced neural networks. Create, customize, and interact with hyper-realistic AI personas across unlimited scenarios.</p>
+                    <ul class="use-cases">
+                        <li>Immersive Character Interactions</li>
+                        <li>Real-Time Voice Synthesis</li>
+                        <li>Multi-Scenario Simulations</li>
+                        <li>Creator Monetization Engine</li>
+                        <li>Adaptive AI Personalities</li>
+                        <li>Cross-Platform Integration</li>
+                    </ul>
+                    <a href="/roleplay" class="product-link">Launch Platform →</a>
+                </div>
+
+                <div class="product-card career disabled">
+                    <div class="product-icon">💼</div>
+                    <h3>PrepAI Career</h3>
+                    <p class="tagline">Professional Development AI</p>
+                    <p>AI-driven career advancement platform featuring realistic interview simulations, skill assessments, and personalized learning pathways powered by machine learning.</p>
+                    <ul class="use-cases">
+                        <li>AI Mock Interview Engine</li>
+                        <li>Adaptive Learning Paths</li>
+                        <li>Skills Gap Analysis</li>
+                        <li>Performance Analytics</li>
+                        <li>Industry-Specific Training</li>
+                        <li>Certification Preparation</li>
+                    </ul>
+                    <span class="coming-soon-badge">Coming Soon</span>
+                </div>
+
+                <div class="product-card hr disabled">
+                    <div class="product-icon">🎯</div>
+                    <h3>PrepAI HR Partner</h3>
+                    <p class="tagline">Intelligent Recruitment System</p>
+                    <p>Enterprise-grade AI recruitment platform utilizing natural language processing and machine learning for automated candidate screening and evaluation.</p>
+                    <ul class="use-cases">
+                        <li>Automated CV Parsing</li>
+                        <li>AI Interview Conductor</li>
+                        <li>Predictive Candidate Scoring</li>
+                        <li>Bias-Free Assessment</li>
+                        <li>Real-Time Analytics Dashboard</li>
+                        <li>Integration APIs</li>
+                    </ul>
+                    <span class="coming-soon-badge">Coming Soon</span>
+                </div>
+
+                <div class="product-card chatbot disabled">
+                    <div class="product-icon">💬</div>
+                    <h3>PrepAI Chatbot</h3>
+                    <p class="tagline">Intelligent Automation Framework</p>
+                    <p>Enterprise chatbot infrastructure with advanced NLP capabilities. Train custom models on your data with zero-code deployment and white-label solutions.</p>
+                    <ul class="use-cases">
+                        <li>Document Intelligence Training</li>
+                        <li>Zero-Code Bot Builder</li>
+                        <li>White-Label Deployment</li>
+                        <li>Omnichannel Integration</li>
+                        <li>Custom Model Fine-Tuning</li>
+                        <li>Enterprise Security Standards</li>
+                    </ul>
+                    <span class="coming-soon-badge">Coming Soon</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Advanced AI Capabilities</h2>
+                <p>Built on cutting-edge technology and powered by neural networks</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">🎙️</div>
+                    <h3>Neural Voice Engine</h3>
+                    <p>Hyper-realistic voice synthesis powered by deep learning models trained on millions of voice samples.</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Real-Time Processing</h3>
+                    <p>Ultra-low latency AI inference with optimized neural architectures for instantaneous responses.</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🔧</div>
+                    <h3>Zero-Code Platform</h3>
+                    <p>Intuitive interface for creating sophisticated AI solutions without any programming knowledge.</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">💰</div>
+                    <h3>Dynamic Pricing</h3>
+                    <p>Transparent credit-based system with flexible consumption models and creator revenue sharing.</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">📊</div>
+                    <h3>Predictive Analytics</h3>
+                    <p>Advanced metrics and ML-powered insights for optimizing performance and engagement.</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Military-Grade Security</h3>
+                    <p>End-to-end encryption, SOC 2 compliance, and enterprise-level data protection protocols.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="final-cta">
+        <div class="container">
+            <div class="final-cta-content">
+                <h2>Join the AI Revolution</h2>
+                <p>Experience the future of artificial intelligence today</p>
+                <div class="cta-buttons">
+                    <a href="/roleplay" class="cta-btn-primary">Launch RolePlay →</a>
+                    <a href="mailto:support@prepai.online" class="cta-btn-secondary">Contact Support</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PrepAI Platform</h3>
+                    <p>Next-generation AI solutions for roleplay, career development, recruitment automation, and intelligent chatbots.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Product Suite</h3>
+                    <a href="/roleplay">PrepAI RolePlay</a>
+                    <p style="color: #475569;">PrepAI Career (Coming Soon)</p>
+                    <p style="color: #475569;">PrepAI HR Partner (Coming Soon)</p>
+                    <p style="color: #475569;">PrepAI Chatbot (Coming Soon)</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <p>For inquiries and assistance:</p>
+                    <a href="mailto:support@prepai.online">support@prepai.online</a>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>
+                    <a href="/privacy-policy">Privacy Policy</a> | 
+                    <a href="/terms-of-service">Terms of Service</a>
+                </p>
+                <p>&copy; 2025 PrepAI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navLinks').classList.remove('active');
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            const navLinks = document.getElementById('navLinks');
+            const navToggle = document.querySelector('.nav-toggle');
+            
+            if (!navLinks.contains(e.target) && !navToggle.contains(e.target)) {
+                navLinks.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
