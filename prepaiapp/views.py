@@ -898,9 +898,9 @@ class PurchaseCredits(View):
         """Detect country from IP address with caching"""
         # Check cache first
         cache_key = f"country_{ip}"
-        cached_country = cache.get(cache_key)
-        if cached_country:
-            return cached_country
+        # cached_country = cache.get(cache_key)
+        # if cached_country:
+        #     return cached_country
 
         # Handle localhost/development
         if ip in ["127.0.0.1", "localhost", "::1"]:
