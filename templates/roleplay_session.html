@@ -984,7 +984,7 @@ class RoleplaySession {
         
         setTimeout(() => {
             alert(`Session ended due to insufficient credits!\n\nCredits used: ${data.credits_used}\n\nPlease purchase more credits to continue.`);
-            window.location.href = '/voice_roleplay/';
+            window.location.href = '/roleplay/voice_roleplay/';
         }, 2000);
     }
 
@@ -1019,7 +1019,7 @@ class RoleplaySession {
         setTimeout(() => {
             const creditsMsg = data.credits_used ? `\nCredits used: ${data.credits_used}` : '';
             alert(`Roleplay session completed!\n\nDuration: ${Math.floor(data.duration_seconds / 60)}:${(data.duration_seconds % 60).toString().padStart(2, '0')}\nMessages: ${data.transcript_length}${creditsMsg}`);
-            window.location.href = '/voice_roleplay/';
+            window.location.href = '/roleplay/voice_roleplay/';
         }, 1000);
     }
 
@@ -1133,23 +1133,28 @@ class RoleplaySession {
     }
 
     showEndModal() {
-        $('#endSessionModal').modal('show');
+        this.endRoleplay();
+
     }
 
-    endRoleplay() {
-        this.roleplayEnded = true;
-        this.removeBeforeUnload();
-        this.updateConnectionStatus('Ending session...', 'connecting');
-        this.disableControls();
-        this.showLoadingOverlay();
-        
-        if (this.isConnected) {
-            this.socket.send(JSON.stringify({ type: 'end_roleplay' }));
-        }
-        
-        this.addMessage('system', 'Roleplay session ended by user');
-        $('#endSessionModal').modal('hide');
+endRoleplay() {
+    this.roleplayEnded = true;
+    this.removeBeforeUnload();
+    this.updateConnectionStatus('Ending session...', 'connecting');
+    this.disableControls();
+    this.showLoadingOverlay();
+    
+    if (this.isConnected) {
+        this.socket.send(JSON.stringify({ type: 'end_roleplay' }));
     }
+    
+    this.addMessage('system', 'Roleplay session ended by user');
+    
+    // Redirect after a short delay
+    setTimeout(() => {
+        window.location.href = '/roleplay/voice_roleplay/';
+    }, 1000);
+}
 
     updateCharacterStatus(status) {
         this.characterStatusEl.textContent = status;
@@ -1303,11 +1308,6 @@ class RoleplaySession {
         }
         return bytes.buffer;
     }
-}
-
-// Global function for modal
-function endRoleplay() {
-    window.roleplaySession.endRoleplay();
 }
 
 // Initialize when page loads
