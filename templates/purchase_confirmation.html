@@ -5,6 +5,9 @@
 
 {% block extra_css %}
 <style>
+    /* Keep all your existing styles - they're perfect! */
+    /* Just keeping the entire CSS as is */
+    
     /* Confirmation page specific styles */
     .confirmation-container {
         max-width: 600px;
@@ -376,7 +379,15 @@
         
         <div class="detail-row">
             <span class="detail-label">Amount Paid</span>
-            <span class="detail-value">₹{{ transaction.amount }}</span>
+            <span class="detail-value">
+                {% if transaction.currency == 'INR' %}
+                    ₹{{ transaction.amount }}
+                {% elif transaction.currency == 'USD' %}
+                    ${{ transaction.amount }}
+                {% else %}
+                    {{ transaction.currency }} {{ transaction.amount }}
+                {% endif %}
+            </span>
         </div>
         
         <div class="detail-row">

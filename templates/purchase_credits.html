@@ -585,23 +585,22 @@
             
             <div class="credit-plans">
                 <!-- Mini Plan -->
-                <div class="plan-card mini" onclick="selectPlan('mini', 40, 49)">
+                <div class="plan-card mini" onclick="selectPlan('mini', {{ plans.mini.credits }}, {{ plans.mini.price }})">
                     <div class="plan-header">
                         <h3 class="plan-name">Mini Protocol</h3>
                         <div class="plan-price">
-                            <span class="plan-price-currency">₹</span>49 
-                            <span class="plan-alt-price"> / $0.59</span>
+                            <span class="plan-price-currency">{{ currency_symbol }}</span>{{ plans.mini.price }}
                         </div>
                         <div class="plan-billing">Single acquisition deployment</div>
                     </div>
 
                     <div class="plan-credits">
-                        <div class="plan-credits-amount">40 Credits</div>
-                        <div class="plan-credits-time">~4 minutes neural runtime</div>
+                        <div class="plan-credits-amount">{{ plans.mini.credits }} Credits</div>
+                        <div class="plan-credits-time">~{{ plans.mini.minutes }} minutes neural runtime</div>
                     </div>
 
                     <div class="plan-rate">
-                        <div class="plan-rate-value">₹12.25 / $0.15 per minute</div>
+                        <div class="plan-rate-value">{{ currency_symbol }}{{ plans.mini.rate }} per minute</div>
                         <div class="plan-rate-label">Efficiency Coefficient</div>
                     </div>
 
@@ -609,23 +608,22 @@
                 </div>
 
                 <!-- Growth Plan -->
-                <div class="plan-card popular" onclick="selectPlan('growth', 300, 249)">
+                <div class="plan-card popular" onclick="selectPlan('growth', {{ plans.growth.credits }}, {{ plans.growth.price }})">
                     <div class="plan-header">
                         <h3 class="plan-name">Growth Matrix</h3>
                         <div class="plan-price">
-                            <span class="plan-price-currency">₹</span>249 
-                            <span class="plan-alt-price"> / $3.00</span>
+                            <span class="plan-price-currency">{{ currency_symbol }}</span>{{ plans.growth.price }}
                         </div>
                         <div class="plan-billing">Single acquisition deployment</div>
                     </div>
 
                     <div class="plan-credits">
-                        <div class="plan-credits-amount">300 Credits</div>
-                        <div class="plan-credits-time">~30 minutes neural runtime</div>
+                        <div class="plan-credits-amount">{{ plans.growth.credits }} Credits</div>
+                        <div class="plan-credits-time">~{{ plans.growth.minutes }} minutes neural runtime</div>
                     </div>
 
                     <div class="plan-rate">
-                        <div class="plan-rate-value">₹8.3 / $0.10 per minute</div>
+                        <div class="plan-rate-value">{{ currency_symbol }}{{ plans.growth.rate }} per minute</div>
                         <div class="plan-rate-label">Efficiency Coefficient</div>
                     </div>
 
@@ -633,23 +631,22 @@
                 </div>
 
                 <!-- Pro Plan -->
-                <div class="plan-card best-value" onclick="selectPlan('pro', 1500, 999)">
+                <div class="plan-card best-value" onclick="selectPlan('pro', {{ plans.pro.credits }}, {{ plans.pro.price }})">
                     <div class="plan-header">
                         <h3 class="plan-name">Professional Nexus</h3>
                         <div class="plan-price">
-                            <span class="plan-price-currency">₹</span>999 
-                            <span class="plan-alt-price"> / $12.00</span>
+                            <span class="plan-price-currency">{{ currency_symbol }}</span>{{ plans.pro.price }}
                         </div>
                         <div class="plan-billing">Single acquisition deployment</div>
                     </div>
 
                     <div class="plan-credits">
-                        <div class="plan-credits-amount">1,500 Credits</div>
-                        <div class="plan-credits-time">~150 minutes neural runtime</div>
+                        <div class="plan-credits-amount">{{ plans.pro.credits }} Credits</div>
+                        <div class="plan-credits-time">~{{ plans.pro.minutes }} minutes neural runtime</div>
                     </div>
 
                     <div class="plan-rate">
-                        <div class="plan-rate-value">₹6.6 / $0.08 per minute</div>
+                        <div class="plan-rate-value">{{ currency_symbol }}{{ plans.pro.rate }} per minute</div>
                         <div class="plan-rate-label">Efficiency Coefficient</div>
                     </div>
 
@@ -668,6 +665,7 @@ function selectPlan(planType, credits, price) {
         plan_type: planType,
         credits: credits,
         price: price,
+        currency: '{{ currency }}',
         csrfmiddlewaretoken: '{{ csrf_token }}'
     };
     
@@ -703,5 +701,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+</script>
 </script>
 {% endblock %}
