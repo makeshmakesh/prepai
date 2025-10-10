@@ -892,6 +892,10 @@ class PurchaseCredits(View):
             ip = x_forwarded_for.split(",")[0].strip()
         else:
             ip = request.META.get("REMOTE_ADDR")
+            
+        print(f"DEBUG - Detected IP: {ip}")
+        print(f"DEBUG - X-Forwarded-For: {x_forwarded_for}")
+        print(f"DEBUG - Remote Addr: {request.META.get('REMOTE_ADDR')}")
         return ip
 
     def get_country_from_ip(self, ip):
@@ -904,12 +908,14 @@ class PurchaseCredits(View):
 
         # Handle localhost/development
         if ip in ["127.0.0.1", "localhost", "::1"]:
+            print("DEBUG - Localhost detected, defaulting to IN")
             return "IN"
 
         try:
             response = requests.get(f"http://ip-api.com/json/{ip}", timeout=3)
             if response.status_code == 200:
                 data = response.json()
+                print(f"DEBUG - IP API Response: {data}")
                 if data.get("status") == "success":
                     country_code = data.get("countryCode", "US")
                     # Cache for 24 hours
