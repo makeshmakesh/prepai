@@ -1528,7 +1528,7 @@ class SignupView(View):
 
     def post(self, request):
         # Get form data
-        username = request.POST.get("email")
+        username = request.POST.get("username")
         email = request.POST.get("email")
         password1 = request.POST.get("password1")
         password2 = request.POST.get("password2")
@@ -1579,7 +1579,7 @@ class SignupView(View):
             except RolePlayShare.DoesNotExist:
                 pass
         messages.success(request, "Signup successful!")
-        if next_url and next_url != '/login/':
+        if next_url and next_url not in ['/login/', '/signup/']:
                 return redirect(next_url)
         return redirect("voice_roleplay")  # Redirect to dashboard
 

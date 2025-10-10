@@ -134,6 +134,37 @@
         border-color: #22c55e;
     }
 
+.password-wrapper {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.5rem;
+    font-size: 1.1rem;
+    transition: color 0.2s ease;
+    z-index: 10;
+}
+
+.password-toggle:hover {
+    color: var(--text-primary);
+}
+
+.password-toggle:focus {
+    outline: none;
+}
+
+.form-control.has-toggle {
+    padding-right: 3rem;
+}
+
     /* Password helper text */
     .password-helper {
         font-size: 0.8rem;
@@ -418,33 +449,54 @@
             </div>
 
             <div class="form-group">
-                <label for="password1">Password</label>
-                <input type="password" 
-                       name="password1" 
-                       id="password1" 
+                <label for="username">User Name</label>
+                <input type="text" 
+                       name="username" 
+                       id="username" 
                        class="form-control" 
-                       placeholder="Enter password" 
+                       placeholder="Enter User name" 
                        required
-                       autocomplete="new-password">
-                <ul class="password-requirements" id="passwordRequirements">
-                    <li id="req-length">At least 8 characters</li>
-                    <li id="req-uppercase">At least 1 uppercase letter</li>
-                    <li id="req-lowercase">At least 1 lowercase letter</li>
-                    <li id="req-special">At least 1 special character (!@#$%^&*)</li>
-                </ul>
+                       autocomplete="username">
             </div>
 
-            <div class="form-group">
-                <label for="password2">Confirm Password</label>
-                <input type="password" 
-                       name="password2" 
-                       id="password2" 
-                       class="form-control" 
-                       placeholder="Confirm password" 
-                       required
-                       autocomplete="new-password">
-                <small class="password-helper" id="matchHelper"></small>
-            </div>
+<div class="form-group">
+    <label for="password1">Password</label>
+    <div class="password-wrapper">
+        <input type="password" 
+               name="password1" 
+               id="password1" 
+               class="form-control has-toggle" 
+               placeholder="Enter password" 
+               required
+               autocomplete="new-password">
+        <button type="button" class="password-toggle" id="togglePassword1" aria-label="Toggle password visibility">
+            👁️
+        </button>
+    </div>
+    <ul class="password-requirements" id="passwordRequirements">
+        <li id="req-length">At least 8 characters</li>
+        <li id="req-uppercase">At least 1 uppercase letter</li>
+        <li id="req-lowercase">At least 1 lowercase letter</li>
+        <li id="req-special">At least 1 special character (!@#$%^&*)</li>
+    </ul>
+</div>
+
+<div class="form-group">
+    <label for="password2">Confirm Password</label>
+    <div class="password-wrapper">
+        <input type="password" 
+               name="password2" 
+               id="password2" 
+               class="form-control has-toggle" 
+               placeholder="Confirm password" 
+               required
+               autocomplete="new-password">
+        <button type="button" class="password-toggle" id="togglePassword2" aria-label="Toggle password visibility">
+            👁️
+        </button>
+    </div>
+    <small class="password-helper" id="matchHelper"></small>
+</div>
 
             {% if messages %}
                 <div class="alert alert-danger">
@@ -570,6 +622,27 @@ document.addEventListener('DOMContentLoaded', function() {
         checkPasswordMatch();
         updateSubmitButton();
     });
+
+    function setupPasswordToggle(toggleButtonId, passwordInputId) {
+    const toggleButton = document.getElementById(toggleButtonId);
+    const passwordInput = document.getElementById(passwordInputId);
+    
+    toggleButton.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        // Change icon based on state
+        if (type === 'text') {
+            this.textContent = '🙈'; // Hidden eye when password is visible
+        } else {
+            this.textContent = '👁️'; // Eye when password is hidden
+        }
+    });
+}
+
+// Setup toggle for both password fields
+setupPasswordToggle('togglePassword1', 'password1');
+setupPasswordToggle('togglePassword2', 'password2');
 
     emailInput.addEventListener('input', updateSubmitButton);
 
