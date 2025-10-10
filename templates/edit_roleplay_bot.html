@@ -5,107 +5,142 @@
 {% block extra_css %}
 <style>
     /* Override base background */
+    body {
+        background: var(--bg-dark) !important;
+    }
 
     /* File Upload Styling */
-.file-upload-wrapper {
-    position: relative;
-}
-
-.form-control-file {
-    border: 2px dashed #e2e8f0;
-    border-radius: 12px;
-    padding: 2rem;
-    background: #f8fafc;
-    cursor: pointer;
-    transition: all 0.2s;
-    width: 100%;
-    font-size: 1rem;
-}
-
-.form-control-file:hover {
-    border-color: #f59e0b;
-    background: #fef3c7;
-}
-
-.image-preview {
-    position: relative;
-    margin-top: 1rem;
-    border-radius: 12px;
-    overflow: hidden;
-    max-width: 300px;
-}
-
-.image-preview img {
-    width: 100%;
-    height: auto;
-    display: block;
-    border-radius: 12px;
-}
-
-.remove-image {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    background: rgba(220, 38, 38, 0.9);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    font-size: 24px;
-    line-height: 1;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.remove-image:hover {
-    background: #dc2626;
-    transform: scale(1.1);
-}
-
-@media (max-width: 768px) {
-    .form-control-file {
-        padding: 1.5rem 1rem;
-        font-size: 16px;
+    .file-upload-wrapper {
+        position: relative;
     }
-}
-    body {
-        background: #f8fafc !important;
+
+    .form-group p {
+        color: var(--text-secondary);
+    }
+
+    .form-control-file {
+        border: 2px dashed var(--border-color);
+        border-radius: 12px;
+        padding: 2rem;
+        background: rgba(30, 27, 75, 0.3);
+        cursor: pointer;
+        transition: all 0.3s;
+        width: 100%;
+        font-size: 1rem;
+        color: var(--text-primary);
+    }
+
+    .form-control-file:hover {
+        border-color: #667eea;
+        background: rgba(102, 126, 234, 0.1);
+    }
+
+    .image-preview {
+        position: relative;
+        margin-top: 1rem;
+        border-radius: 12px;
+        overflow: hidden;
+        max-width: 300px;
+        border: 1px solid var(--border-color);
+    }
+
+    .image-preview img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 12px;
+    }
+
+    .remove-image {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: rgba(239, 68, 68, 0.9);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        font-size: 24px;
+        line-height: 1;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .remove-image:hover {
+        background: #dc2626;
+        transform: scale(1.1);
+    }
+
+    /* Current avatar preview */
+    .current-avatar-preview {
+        margin-bottom: 1rem;
+    }
+
+    .current-avatar-preview p {
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .current-avatar-preview img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 2px solid var(--border-color);
     }
 
     /* Clean, mobile-friendly form */
     .form-container {
         max-width: 800px;
         margin: 2rem auto;
-        background: white;
+        background: rgba(30, 27, 75, 0.5);
+        backdrop-filter: blur(20px);
         border-radius: 16px;
         padding: 2rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        border-top: 4px solid #f59e0b;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        border: 1px solid var(--border-color);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .form-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--primary-gradient);
     }
 
     .form-header {
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: 2.5rem;
     }
 
     .form-header h1 {
         font-size: clamp(1.75rem, 4vw, 2.5rem);
-        font-weight: 700;
-        color: #1e293b;
+        font-weight: 900;
+        background: linear-gradient(135deg, #fff 0%, #667eea 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
     }
 
     .form-header p {
-        color: #64748b;
+        color: var(--text-secondary);
         font-size: 1rem;
         line-height: 1.5;
     }
 
     /* Bot Preview Card */
     .bot-preview {
-        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-        border: 1px solid #e2e8f0;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        border: 1px solid var(--border-color);
         border-radius: 12px;
         padding: 1.5rem;
         margin-bottom: 2rem;
@@ -118,7 +153,7 @@
         width: 64px;
         height: 64px;
         border-radius: 12px;
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        background: var(--primary-gradient);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -137,24 +172,40 @@
     .bot-preview-info h3 {
         margin: 0 0 0.25rem 0;
         font-weight: 700;
-        color: #1e293b;
+        color: var(--text-primary);
         font-size: 1.125rem;
     }
 
     .bot-preview-info p {
         margin: 0;
-        color: #64748b;
+        color: var(--text-muted);
         font-size: 0.875rem;
+    }
+
+    /* Template Link */
+    .template-link {
+        display: inline-block;
+        color: #667eea;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .template-link:hover {
+        color: #764ba2;
+        text-decoration: none;
     }
 
     /* Form Groups */
     .form-group {
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem;
     }
 
     .form-group label {
         font-weight: 600;
-        color: #1e293b;
+        color: var(--text-primary);
         margin-bottom: 0.5rem;
         font-size: 1rem;
         display: block;
@@ -162,52 +213,57 @@
 
     /* Form Controls - Mobile Optimized */
     .form-control {
-        border-radius: 12px;
-        border: 2px solid #e2e8f0;
-        padding: 0.875rem 1rem;
-        font-size: 16px;
+        border-radius: 15px;
+        border: 2px solid var(--border-color);
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
         transition: all 0.2s ease;
-        background: white;
+        background: rgba(30, 27, 75, 0.5);
         width: 100%;
-        color: black;
-        box-sizing: border-box;
+        color: var(--text-primary);
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        background: rgba(30, 27, 75, 0.7);
+        outline: none;
+        color: var(--text-primary);
+    }
+
+    .form-control::placeholder {
+        color: var(--text-muted);
+    }
+
+    /* Select Dropdown */
+    select.form-control {
+        background-color: rgba(30, 27, 75, 0.5);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23667eea' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 16px;
+        padding-right: 3rem;
+        padding-bottom: 0.001rem;
+        cursor: pointer;
+        height: auto;
+        color: #e2e8f0 !important;
+        font-weight: 500;
         -webkit-appearance: none;
         -moz-appearance: none;
         appearance: none;
     }
 
-    .form-control:focus {
-        border-color: #f59e0b;
-        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
-        background: white;
-        outline: none;
-    }
-
-    .form-control::placeholder {
-        color: #94a3b8;
-    }
-
-    /* Select Dropdown */
-    select.form-control {
-        background-color: white;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%231e293b' d='M4.427 6.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 6H4.604a.25.25 0 00-.177.427z'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 1rem center;
-        background-size: 16px;
-        padding-right: 3rem;
-        padding-left: 1rem;
-        padding-bottom :0.1rem;
-        cursor: pointer;
-        height: 48px;
-        line-height: 1.5;
-        color: #1e293b;
-        font-weight: 500;
-    }
-
     select.form-control option {
-        color: #1e293b;
-        background: white;
+        color: #1e293b !important;
+        background: white !important;
         padding: 0.5rem;
+    }
+
+    select.form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        outline: none;
+        color: #e2e8f0 !important;
     }
 
     /* Textarea */
@@ -228,7 +284,7 @@
     /* Help Text */
     .help-text {
         font-size: 0.875rem;
-        color: #475569;
+        color: var(--text-muted);
         margin-top: 0.5rem;
         line-height: 1.4;
     }
@@ -238,24 +294,24 @@
         display: flex;
         align-items: center;
         gap: 0.75rem;
-        background: #f8fafc;
+        background: rgba(30, 27, 75, 0.5);
         padding: 1rem;
         border-radius: 12px;
-        border: 2px solid #e2e8f0;
+        border: 2px solid var(--border-color);
         cursor: pointer;
         transition: all 0.2s;
         margin-bottom: 0.75rem;
     }
 
     .checkbox-group:hover {
-        background: #f1f5f9;
-        border-color: #cbd5e1;
+        background: rgba(102, 126, 234, 0.2);
+        border-color: #667eea;
     }
 
     .checkbox-group input[type="checkbox"] {
         width: 20px;
         height: 20px;
-        accent-color: #f59e0b;
+        accent-color: #667eea;
         cursor: pointer;
         flex-shrink: 0;
     }
@@ -266,16 +322,26 @@
         cursor: pointer;
         flex: 1;
         font-size: 0.95rem;
-        color: #1e293b;
+        color: var(--text-primary);
     }
 
     /* Character Counter */
     .character-count {
         font-size: 0.875rem;
-        color: #475569;
+        color: var(--text-muted);
         text-align: right;
         margin-top: 0.5rem;
         font-weight: 500;
+    }
+
+    /* Section Headers */
+    .section-header {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 2rem 0 1rem 0;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--border-color);
     }
 
     /* Form Actions */
@@ -287,7 +353,7 @@
 
     .btn-update {
         flex: 1;
-        background: #f59e0b;
+        background: var(--primary-gradient);
         color: white;
         padding: 1rem 2rem;
         font-size: 1rem;
@@ -295,32 +361,50 @@
         border-radius: 12px;
         border: none;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-update::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .btn-update:hover::before {
+        left: 100%;
     }
 
     .btn-update:hover {
-        background: #d97706;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
     }
 
     .btn-update:disabled {
-        background: #cbd5e1;
+        background: rgba(100, 116, 139, 0.5);
         cursor: not-allowed;
         transform: none;
+        box-shadow: none;
     }
 
     .btn-delete {
-        background: white;
-        color: #dc2626;
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
         padding: 1rem 1.5rem;
         font-size: 1rem;
         font-weight: 600;
-        border: 2px solid #fecaca;
+        border: 2px solid rgba(239, 68, 68, 0.3);
         border-radius: 12px;
         cursor: pointer;
         transition: all 0.2s ease;
@@ -331,17 +415,17 @@
     }
 
     .btn-delete:hover {
-        background: #fef2f2;
-        border-color: #dc2626;
+        background: rgba(239, 68, 68, 0.2);
+        border-color: #ef4444;
     }
 
     .btn-cancel {
-        background: white;
-        color: #64748b;
+        background: rgba(30, 27, 75, 0.5);
+        color: var(--text-secondary);
         padding: 1rem 1.5rem;
         font-size: 1rem;
         font-weight: 600;
-        border: 2px solid #e2e8f0;
+        border: 2px solid var(--border-color);
         border-radius: 12px;
         cursor: pointer;
         transition: all 0.2s ease;
@@ -353,29 +437,16 @@
     }
 
     .btn-cancel:hover {
-        background: #f8fafc;
-        border-color: #cbd5e1;
-        color: #475569;
+        background: rgba(102, 126, 234, 0.2);
+        border-color: #667eea;
+        color: var(--text-primary);
         text-decoration: none;
     }
 
-    /* Modal Styles */
-    .modal-content {
-        border-radius: 16px;
-        border: none;
-    }
 
-    .modal-title {
-        color: #1e293b;
-        font-weight: 700;
-    }
 
-    .modal-body {
-        color: #1e293b;
-    }
-
-    .text-dark {
-        color: #1e293b !important;
+    .text-danger {
+        color: #fca5a5 !important;
     }
 
     /* Mobile Responsive */
@@ -387,7 +458,7 @@
         }
 
         .form-header {
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .form-header h1 {
@@ -414,10 +485,9 @@
         }
 
         select.form-control {
-            height: 52px;
-            font-size: 16px;
+            height: auto;
             padding: 1rem;
-            padding-bottom :0.01rem;
+            font-size: 16px;
             background-position: right 0.75rem center;
         }
 
@@ -445,6 +515,11 @@
         .checkbox-group {
             padding: 0.875rem;
         }
+
+        .form-control-file {
+            padding: 1.5rem 1rem;
+            font-size: 16px;
+        }
     }
 
     @media (max-width: 480px) {
@@ -463,10 +538,12 @@
         }
 
         select.form-control {
-            height: 50px;
             padding: 0.875rem;
-            padding-bottom: 0.1rem;
             background-size: 14px;
+        }
+
+        .help-text {
+            font-size: 0.8125rem;
         }
     }
 
@@ -505,10 +582,10 @@
 {% endblock %}
 
 {% block content %}
-<div style="background: #f8fafc; min-height: 100vh; padding: 2rem 0;">
+<div style="background: var(--bg-dark); min-height: 100vh; padding: 2rem 0;">
     <div class="form-container">
         <div class="form-header">
-            <h1>Edit Roleplay Bot</h1>
+            <h1>Edit Neural Bot</h1>
             <p>Update your AI companion's personality, behavior, and settings</p>
         </div>
 
@@ -532,7 +609,7 @@
             
             <!-- Basic Information -->
             <div class="form-group">
-                <label for="name">Bot Name *</label>
+                <label for="name">Bot Designation *</label>
                 <input type="text" 
                        id="name" 
                        name="name" 
@@ -540,74 +617,75 @@
                        value="{{ bot.name }}"
                        required
                        maxlength="200">
-                <div class="help-text">Choose a memorable name for your bot</div>
+                <div class="help-text">Define a unique identifier for your neural bot</div>
             </div>
 
             <div class="form-group">
-                <label for="voice">Voice Selection</label>
+                <label for="voice">Voice Synthesis Module</label>
                 <select id="voice" name="voice" class="form-control">
-<option value="alloy" {% if bot.voice == "alloy" %}selected{% endif %}>Alloy (Male)</option>
-<option value="ash" {% if bot.voice == "ash" %}selected{% endif %}>Ash (Male)</option>
-<option value="ballad" {% if bot.voice == "ballad" %}selected{% endif %}>Ballad (Female)</option>
-<option value="coral" {% if bot.voice == "coral" %}selected{% endif %}>Coral (Female)</option>
-<option value="echo" {% if bot.voice == "echo" %}selected{% endif %}>Echo (Male)</option>
-<option value="sage" {% if bot.voice == "sage" %}selected{% endif %}>Sage (Male)</option>
-<option value="shimmer" {% if bot.voice == "shimmer" %}selected{% endif %}>Shimmer (Female)</option>
-<option value="verse" {% if bot.voice == "verse" %}selected{% endif %}>Verse (Male)</option>
-<option value="marin" {% if bot.voice == "marin" %}selected{% endif %}>Marin (Female)</option>
-<option value="cedar" {% if bot.voice == "cedar" %}selected{% endif %}>Cedar (Male)</option>
-
+                    <option value="alloy" {% if bot.voice == "alloy" %}selected{% endif %}>Alloy (Male)</option>
+                    <option value="ash" {% if bot.voice == "ash" %}selected{% endif %}>Ash (Male)</option>
+                    <option value="ballad" {% if bot.voice == "ballad" %}selected{% endif %}>Ballad (Female)</option>
+                    <option value="coral" {% if bot.voice == "coral" %}selected{% endif %}>Coral (Female)</option>
+                    <option value="echo" {% if bot.voice == "echo" %}selected{% endif %}>Echo (Male)</option>
+                    <option value="sage" {% if bot.voice == "sage" %}selected{% endif %}>Sage (Male)</option>
+                    <option value="shimmer" {% if bot.voice == "shimmer" %}selected{% endif %}>Shimmer (Female)</option>
+                    <option value="verse" {% if bot.voice == "verse" %}selected{% endif %}>Verse (Male)</option>
+                    <option value="marin" {% if bot.voice == "marin" %}selected{% endif %}>Marin (Female)</option>
+                    <option value="cedar" {% if bot.voice == "cedar" %}selected{% endif %}>Cedar (Male)</option>
                 </select>
-                <div class="help-text">Voice used during roleplay sessions</div>
+                <div class="help-text">Voice synthesis engine for neural interactions</div>
             </div>
 
             <div class="form-group">
-                <label for="description">Description</label>
                 <textarea id="description" 
                           name="description" 
                           class="form-control" 
                           rows="4">{{ bot.description|default:"" }}</textarea>
-                <div class="help-text">Explain your bot's purpose and target audience</div>
+                <div class="help-text">Define system purpose and operational parameters</div>
             </div>
 
-<div class="form-group">
-    <label for="avatar_image">Avatar Image</label>
-    
-    <!-- Current Avatar Preview -->
-    {% if bot.avatar_url %}
-    <div class="current-avatar-preview" style="margin-bottom: 1rem;">
-        <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 0.5rem;">Current Avatar:</p>
-        <img src="{{ bot.avatar_url }}" alt="{{ bot.name }} avatar" style="width: 120px; height: 120px; object-fit: cover; border-radius: 12px; border: 2px solid #e2e8f0;">
-    </div>
-    {% endif %}
-    
-    <!-- File Upload -->
-    <div class="file-upload-wrapper">
-        <input type="file" 
-               id="avatar_image" 
-               name="avatar_image" 
-               class="form-control-file" 
-               accept="image/jpeg,image/png,image/jpg,image/webp">
-        <div class="image-preview" id="imagePreview" style="display: none;">
-            <img id="previewImg" src="" alt="New avatar preview">
-            <button type="button" class="remove-image" onclick="removeImage()">×</button>
-        </div>
-    </div>
-    <div class="help-text">Upload a new avatar image (JPEG, PNG, or WebP, max 5MB) or keep the current one</div>
-</div>
+            <div class="form-group">
+                <label for="avatar_image">Avatar Interface</label>
+                
+                <!-- Current Avatar Preview -->
+                {% if bot.avatar_url %}
+                <div class="current-avatar-preview">
+                    <p>Current Avatar:</p>
+                    <img src="{{ bot.avatar_url }}" alt="{{ bot.name }} avatar">
+                </div>
+                {% endif %}
+                
+                <!-- File Upload -->
+                <div class="file-upload-wrapper">
+                    <input type="file" 
+                           id="avatar_image" 
+                           name="avatar_image" 
+                           class="form-control-file" 
+                           accept="image/jpeg,image/png,image/jpg,image/webp">
+                    <div class="image-preview" id="imagePreview" style="display: none;">
+                        <img id="previewImg" src="" alt="New avatar preview">
+                        <button type="button" class="remove-image" onclick="removeImage()">×</button>
+                    </div>
+                </div>
+                <div class="help-text">Upload new visual representation (JPEG, PNG, WebP, max 5MB) or keep current</div>
+            </div>
 
             <!-- System Prompt -->
+            <div class="section-header">Neural Instructions</div>
+            
             <div class="form-group">
-                <label for="system_prompt">System Prompt *</label>
                 <textarea id="system_prompt" 
                           name="system_prompt" 
                           class="form-control system-prompt-textarea" 
                           required>{{ bot.system_prompt }}</textarea>
                 <div class="character-count" id="char-count">0 / 15,000 characters</div>
-                <div class="help-text">Define your bot's personality, expertise, and behavior</div>
+                <div class="help-text">Define neural architecture, behavioral patterns, and operational protocols</div>
             </div>
 
             <!-- Settings -->
+            <div class="section-header">Deployment Configuration</div>
+
             <div class="form-group">
                 <div class="checkbox-group" onclick="toggleCheckbox('is_active')">
                     <input type="checkbox" 
@@ -615,7 +693,7 @@
                            name="is_active" 
                            {% if bot.is_active %}checked{% endif %}>
                     <label for="is_active">
-                        Make bot active and available for use
+                        Activate neural system for immediate deployment
                     </label>
                 </div>
 
@@ -625,7 +703,7 @@
                            name="is_public" 
                            {% if bot.is_public %}checked{% endif %}>
                     <label for="is_public">
-                        Make bot publicly visible in marketplace
+                        Publish to public marketplace network
                     </label>
                 </div>
             </div>
@@ -633,7 +711,7 @@
             <!-- Form Actions -->
             <div class="form-actions">
                 <button type="submit" class="btn-update" id="submitBtn">
-                    Update Bot
+                    Update Neural Bot
                 </button>
                 <button type="button" class="btn-delete" onclick="confirmDelete()">
                     Delete
@@ -643,38 +721,18 @@
                 </a>
             </div>
         </form>
-    </div>
-</div>
 
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Delete Roleplay Bot</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p class="text-dark">Are you sure you want to delete <strong>"{{ bot.name }}"</strong>?</p>
-                <p class="text-danger">This action cannot be undone. All conversation history and settings will be permanently lost.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <form method="post" action="{% url 'delete-roleplay-bot' bot.id %}" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Delete Forever</button>
-                </form>
-            </div>
-        </div>
+                <!-- Separate Delete Form -->
+        <form method="post" action="{% url 'delete-roleplay-bot' bot.id %}" id="deleteForm" style="display: none;">
+            {% csrf_token %}
+        </form>
     </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    // Image preview functionality
+// Image preview functionality
 $('#avatar_image').on('change', function(e) {
     const file = e.target.files[0];
     if (file) {
@@ -708,6 +766,7 @@ function removeImage() {
     $('#imagePreview').hide();
     $('#previewImg').attr('src', '');
 }
+
 $(document).ready(function() {
     const systemPrompt = $('#system_prompt');
     const charCount = $('#char-count');
@@ -740,28 +799,28 @@ $(document).ready(function() {
 
         if (!name) {
             e.preventDefault();
-            alert('Bot name is required.');
+            alert('Bot designation is required.');
             $('#name').focus();
             return false;
         }
 
         if (!prompt) {
             e.preventDefault();
-            alert('System prompt is required.');
+            alert('Neural instructions are required.');
             systemPrompt.focus();
             return false;
         }
 
         if (prompt.length < 50) {
             e.preventDefault();
-            alert('System prompt should be at least 50 characters for an effective bot.');
+            alert('Neural instructions should be at least 50 characters for effective deployment.');
             systemPrompt.focus();
             return false;
         }
 
         if (prompt.length > 15000) {
             e.preventDefault();
-            alert('System prompt is too long. Please keep it under 15,000 characters.');
+            alert('Neural instructions exceed maximum length. Please keep under 15,000 characters.');
             systemPrompt.focus();
             return false;
         }
@@ -790,9 +849,13 @@ function toggleCheckbox(id) {
     checkbox.prop('checked', !checkbox.prop('checked'));
 }
 
-// Delete confirmation
 function confirmDelete() {
-    $('#deleteModal').modal('show');
+    const botName = "{{ bot.name }}";
+    const message = `Are you sure you want to delete "${botName}"?\n\nThis action cannot be undone. All conversation history and settings will be permanently lost.`;
+    
+    if (confirm(message)) {
+        document.getElementById('deleteForm').submit();
+    }
 }
 </script>
 {% endblock %}
