@@ -896,6 +896,10 @@ class PurchaseCredits(View):
         print(f"DEBUG - Detected IP: {ip}")
         print(f"DEBUG - X-Forwarded-For: {x_forwarded_for}")
         print(f"DEBUG - Remote Addr: {request.META.get('REMOTE_ADDR')}")
+        logger.info(f"🔍 CLIENT IP DETECTION:")
+        logger.info(f"   X-Forwarded-For: {x_forwarded_for}")
+        logger.info(f"   Remote Addr: {request.META.get('REMOTE_ADDR')}")
+        logger.info(f"   Final IP: {ip}")
         return ip
 
     def get_country_from_ip(self, ip):
@@ -916,6 +920,7 @@ class PurchaseCredits(View):
             if response.status_code == 200:
                 data = response.json()
                 print(f"DEBUG - IP API Response: {data}")
+                logger.info(f"📍 IP API Data: {data}")
                 if data.get("status") == "success":
                     country_code = data.get("countryCode", "US")
                     # Cache for 24 hours
